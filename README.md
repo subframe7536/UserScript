@@ -1,2 +1,4 @@
 # ModifiedBrowserScript
 油猴脚本修改
+## 原地址
+[百度美化](https://greasyfork.org/zh-CN/scripts/406336-%E7%99%BE%E5%BA%A6%E6%90%9C%E7%B4%A2%E5%8E%BB%E5%B9%BF%E5%91%8A-%E7%99%BE%E5%BA%A6%E9%A1%B5%E9%9D%A2%E7%BE%8E%E5%8C%96-%E6%94%AF%E6%8C%81%E7%99%BE%E5%BA%A6%E9%BB%91%E8%89%B2%E4%B8%BB%E9%A2%98-%E4%BB%A3%E7%A0%81%E7%B2%BE%E7%AE%80%E9%AB%98%E6%95%88)
