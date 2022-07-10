@@ -1,4 +1,34 @@
-# ModifiedBrowserScript
-油猴脚本修改
-## 原地址
-[百度美化](https://greasyfork.org/zh-CN/scripts/406336-%E7%99%BE%E5%BA%A6%E6%90%9C%E7%B4%A2%E5%8E%BB%E5%B9%BF%E5%91%8A-%E7%99%BE%E5%BA%A6%E9%A1%B5%E9%9D%A2%E7%BE%8E%E5%8C%96-%E6%94%AF%E6%8C%81%E7%99%BE%E5%BA%A6%E9%BB%91%E8%89%B2%E4%B8%BB%E9%A2%98-%E4%BB%A3%E7%A0%81%E7%B2%BE%E7%AE%80%E9%AB%98%E6%95%88)
+## 自用油猴脚本
+
+- 强制使用浏览器的 monospace 和 sans-serif 字体，并可添加自定义样式
+- 美化滚动条和字体显示
+- 添加 `` Ctrl+`  ``回到顶部的快捷键
+
+### 用法
+
+```js
+const specialList = [
+  //change code to monospace
+  {
+    github: 'table *,pre,pre *',
+    runoob: '.example_code',
+    csdn: '*[class*=hljs]',
+    cnblog: '.cnblogs-markdown code, .cnblogs_code, .cnblogs_code *'
+  },
+  //change ui to sans-serif
+  {
+    'mp.weixin': 'p,span',
+    'csdn': '#csdn-toolbar *, #csdn_tool_otherPlace *',
+    'tsdm': 'a',
+    'stackoverflow': ':not(em,i,b)'
+  },
+  //change other to other font like fontawesome for compatibility
+  {
+    rust: ['pre button', 'FontAwesome']
+  },
+  //add custom style
+  {
+    baidu: '@charset "UTF-8";body[baidu]{position:relative;background-……'
+  }
+]
+```
