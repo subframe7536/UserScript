@@ -11,7 +11,15 @@
 // ==/UserScript==
 ;(function () {
   'use strict'
-  const blacklist = []
+  const blacklist = [
+    'font',
+    'ziti',
+    'izihun',
+    'foundertype',
+    'hanyi',
+    'adobe',
+    'localhost'
+  ]
   const current = document.domain
   const specialList = [
     //monospace
@@ -47,6 +55,9 @@
       })
     },
     checkBlackList: () => {
+      if (current === '') {
+        return false
+      }
       for (let i = 0; i < blacklist.length; i++) {
         if (current.indexOf(blacklist[i]) != -1) {
           return false
