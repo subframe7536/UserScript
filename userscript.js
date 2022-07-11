@@ -26,7 +26,7 @@
     {
       github: 'table *,pre,pre *',
       runoob: '.example_code',
-      csdn: '*[class*=hljs]',
+      csdn: '*[class*=hljs],pre code[class*=language-] span.token',
       cnblog: '.cnblogs-markdown code, .cnblogs_code, .cnblogs_code *'
     },
     //sans-serif
@@ -34,7 +34,10 @@
       'mp.weixin': 'p,span',
       'csdn': '#csdn-toolbar *, #csdn_tool_otherPlace *',
       'tsdm': 'a',
-      'stackoverflow': ':not(em,i,b)'
+      'stackoverflow': ':not(em,i,b)',
+      'runoob': '.article-body p',
+      'bilibili':
+        '.bili-comment.browser-pc *,h1,.h :not(em,i,b),bilibili-player-area *:not(em,i,b),.video-page-card-small .card-box .info .title'
     },
     //other font
     {
