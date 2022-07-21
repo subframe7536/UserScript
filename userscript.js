@@ -25,19 +25,23 @@
     //monospace
     {
       github: 'table *,pre,pre *',
-      runoob: '.example_code',
+      runoob: '.example_code,.example_code *',
       csdn: '*[class*=hljs],pre code[class*=language-] span.token',
-      cnblog: '.cnblogs-markdown code, .cnblogs_code, .cnblogs_code *'
+      cnblog: '.cnblogs-markdown code, .cnblogs_code, .cnblogs_code *',
+      gitee: '.commit-id,input,textarea'
     },
     //sans-serif
     {
       'mp.weixin': 'p,span',
       'csdn': '#csdn-toolbar *, #csdn_tool_otherPlace *',
-      'tsdm': 'a',
+      'tsdm39': 'a',
       'stackoverflow': ':not(em,i,b)',
       'runoob': '.article-body p',
       'bilibili':
-        '.bili-comment.browser-pc *,h1,.h :not(em,i,b),bilibili-player-area *:not(em,i,b),.video-page-card-small .card-box .info .title'
+        '.bili-comment.browser-pc *,h1,.h :not(em,i,b),bilibili-player-area *:not(em,i,b),.video-page-card-small .card-box .info .title,#i_cecream :not(em,i,b)',
+      'sspai': '.wangEditor-txt',
+      'baidu': '.wrapper_new .s_ipt',
+      'gitee': 'button,.ui:not(.iconfont)'
     },
     //other font
     {
@@ -46,7 +50,9 @@
     //other style
     {
       baidu:
-        '@charset "UTF-8";body[baidu]{position:relative;background-color:rgba(222,241,239,.4)}body[baidu] #s_lg_img_new{display:none!important}body[baidu] #content_left>.c-container{border-radius:10px;padding:20px;background-color:#fdfdfd!important;box-shadow:0 0 10px 2px #ddd;transition:.2s}body[baidu] #content_left>.c-container:hover{box-shadow:0 0 10px 8px #ddd;transition:.2s}body[baidu] #content_left>.c-container h3{margin-bottom:16px!important;background-color:#fdfdfd!important}body[baidu] #content_left>.c-container h3 a{position:relative;text-decoration:none!important}body[baidu] #content_left>.c-container h3 a:before{content:"";position:absolute;bottom:-2px;width:0;right:0;height:2px;background:rgba(78,110,242,.6666666667);transition:all .3s;border-radius:4px;transform-origin:right}body[baidu] #content_left>.c-container h3 a:hover:before{width:100%;left:0;transform-origin:left}body[baidu] .c-border{box-shadow:unset!important}body[baidu] .c-group-wrapper{background-color:#fdfdfd;border-radius:10px;margin-right:-40px;margin-left:0!important;box-shadow:0 0 10px 2px #ddd;transition:.2s}body[baidu] .c-group-wrapper:hover{box-shadow:0 0 10px 8px #ddd;transition:.2s}body[baidu] .wrapper_new #form .bdsug-new ul li{font-family:sans-serif!important}body[baidu] .wrapper_new #s_tab{background-color:#fff}body[google] #rso .g,body[google] .f6F9Be,body[google] .k8XOCe,body[google] .sfbg{background-color:#fdfdfd!important}body[google] .sfbg{margin-top:-10px}body[google] .yg51vc{background-color:transparent!important}'
+        '@charset "UTF-8";body[baidu]{position:relative;background-color:rgba(222,241,239,.4)}body[baidu] #s_lg_img_new{display:none!important}body[baidu] #content_left>.c-container{border-radius:10px;padding:20px;background-color:#fdfdfd!important;box-shadow:1px 1px 2px rgba(0,0,0,.2705882353),-1px -1px 2px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] #content_left>.c-container:hover{box-shadow:2px 2px 4px rgba(0,0,0,.2705882353),-2px -2px 4px rgba(221,221,221,.2666666667);transform:translateY(-2px);transition:.2s}body[baidu] #content_left>.c-container h3{margin-bottom:16px!important;background-color:#fdfdfd!important}body[baidu] #content_left>.c-container h3 a{position:relative;text-decoration:none!important}body[baidu] #content_left>.c-container h3 a:before{content:"";position:absolute;bottom:-2px;width:0;right:0;height:2px;background:rgba(78,110,242,.6666666667);transition:all .3s;border-radius:4px;transform-origin:right}body[baidu] #content_left>.c-container h3 a:hover:before{width:100%;left:0;transform-origin:left}body[baidu] .c-border{box-shadow:unset!important}body[baidu] .c-group-wrapper{background-color:#fdfdfd;border-radius:10px;margin-right:-40px;margin-left:0!important;box-shadow:1px 1px 2px rgba(0,0,0,.2705882353),-1px -1px 2px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] .c-group-wrapper:hover{box-shadow:2px 2px 4px rgba(0,0,0,.2705882353),-2px -2px 4px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] .wrapper_new #form .bdsug-new ul li{font-family:sans-serif!important}body[baidu] .wrapper_new #s_tab{background-color:#fff}body[google] #rso .g,body[google] .f6F9Be,body[google] .k8XOCe,body[google] .sfbg{background-color:#fdfdfd!important}body[google] .sfbg{margin-top:-10px}body[google] .yg51vc{background-color:transparent!important}',
+      gitee: '#git-header-nav #navbar-search-form{border-radius:8px!important}',
+      mozilla: ':root{--font-body:sans-serif!important}'
     }
   ]
 
@@ -83,9 +89,14 @@
     addCustomFont: (selector, family) => {
       utils.addStyle(`${selector}{font-family:${family}!important}`)
     },
+    addCustomCSS: css => {
+      utils.addStyle(css)
+    },
     special: () => {
-      utils.addStyle(':not(em,i,b){font-family:sans-serif}')
-      utils.addCodeFont(`pre *,code *,code .token,.prettyprint *`)
+      utils.addStyle(`:not(em,i,b){font-family:sans-serif}`)
+      utils.addCodeFont(
+        `pre,pre *,code,code *,code .token,pre code *,.prettyprint *,.hljs,.hljs *,*[class*='language-'],*[class*='language-'] *`
+      )
       current.split('.').forEach(e => {
         if (specialList[0].hasOwnProperty(e)) {
           utils.addCodeFont(specialList[0][e])
@@ -97,7 +108,7 @@
           utils.addCustomFont(specialList[2][e][0], specialList[2][e][1])
         }
         if (specialList[3].hasOwnProperty(e)) {
-          utils.addUIFont(specialList[3][e])
+          utils.addCustomCSS(specialList[3][e])
         }
       })
     }
@@ -117,7 +128,7 @@
   utils.addStyle(
     '::-webkit-scrollbar{width:8px!important;height:8px!important;}::-webkit-scrollbar-thumb{background-color:rgba(153,153,153,0.6)!important;-webkit-border-radius:5px!important;border-radius:5px!important;}::-webkit-scrollbar-thumb:horizontal:hover,::-webkit-scrollbar-thumb:vertical:hover{background-color:rgba(102,102,102,0.3)!important;}::-webkit-scrollbar-thumb:horizontal:active,::-webkit-scrollbar-thumb:vertical:active{background-color:rgba(51,51,51,0.3)!important;}::-webkit-scrollbar-button{display:none!important;}::-webkit-scrollbar-track{background-color:#f1f1f1!important;border-radius: 5px !important;}*{-webkit-font-smoothing:antialiased!important;font-feature-settings:"liga" 0;font-optical-sizing:auto;font-kerning:auto;-webkit-text-stroke:initial!important;}'
   )
-  if (utils.checkBlackList) {
+  if (utils.checkBlackList()) {
     console.log(current)
     utils.special()
   }
