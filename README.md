@@ -9,7 +9,7 @@
 
 ```js
 const specialList = [
-  //设置代码字体为monospace
+  //设置代码字体为monospace，sans-serif作为callback字体
   {
     github: 'table *,pre,pre *',
     runoob: '.example_code',
