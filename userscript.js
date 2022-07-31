@@ -87,7 +87,7 @@
       utils.addStyle(`${selector}{font-family:sans-serif!important}`)
     },
     addCodeFont: selector => {
-      utils.addStyle(`${selector}{font-family:monospace!important;font-feature-settings:"liga" 1}`)
+      utils.addStyle(`${selector}{font-family:monospace,sans-serif!important;font-feature-settings:"liga" 1}`)
     },
     addCustomFont: (selector, family) => {
       utils.addStyle(`${selector}{font-family:${family}!important}`)
