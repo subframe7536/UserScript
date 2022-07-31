@@ -1,6 +1,7 @@
 ## 自用油猴脚本
 
 - 强制使用浏览器的 monospace 和 sans-serif 字体，并可添加自定义样式
+  - Chrome/Edge:设置 - 外观 - 自定义字体
 - 美化滚动条和字体显示
 - 添加 `` Ctrl+`  ``回到顶部的快捷键
 
@@ -8,25 +9,25 @@
 
 ```js
 const specialList = [
-  //change code to monospace
+  //设置代码字体为monospace
   {
     github: 'table *,pre,pre *',
     runoob: '.example_code',
     csdn: '*[class*=hljs]',
     cnblog: '.cnblogs-markdown code, .cnblogs_code, .cnblogs_code *'
   },
-  //change ui to sans-serif
+  //设置普通的字体为sans-serif
   {
     'mp.weixin': 'p,span',
     'csdn': '#csdn-toolbar *, #csdn_tool_otherPlace *',
     'tsdm': 'a',
     'stackoverflow': ':not(em,i,b)'
   },
-  //change other to other font like fontawesome for compatibility
+  //为其他的元素设置字体(主要用于兼容性)
   {
     rust: ['pre button', 'FontAwesome']
   },
-  //add custom style
+  //为网站添加自定义样式
   {
     baidu: '@charset "UTF-8";body[baidu]{position:relative;background-……'
   }
