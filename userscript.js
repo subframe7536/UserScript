@@ -22,17 +22,17 @@
     'localhost',
     'mono',
     'latex',
-    'design',
     'typeof',
     'jetbrains',
     'unicode',
-    'math'
+    'math',
+    'twitter'
   ]
   const current = document.domain
   const specialList = [
     //设置代码字体为monospace，sans-serif作为callback字体
     {
-      'github': 'table:not(.d-block) *,pre,pre *',
+      'github': 'table:not(.d-block) *,pre,pre *,textarea',
       'runoob': '.example_code,.example_code *',
       'csdn':
         '*[class*=hljs],pre code[class*=language-] span.token,body .markdown_views pre code.prism .token.comment',
@@ -42,24 +42,26 @@
       '51cto':
         '#result [class*=language-], .prettyprint *, code[class*=language-] *, div[class*=language-] *, pre[class*=language-] *',
       'docker': 'input[data-testid="copyPullCommandPullCommand"]',
-      'yuque': '.ne-code'
+      'yuque': '.ne-code',
+      'cnblogs':
+        '.syntaxhighlighter :is(a,div,code,table,table td,table tr,table tbody,table thead,table caption,textarea), pre[class*="brush:"][class*="language-"], pre[class*="brush:"]'
     },
     //设置普通的字体为sans-serif
     {
-      'mp.weixin': 'p,span',
-      'csdn':
-        '#csdn-toolbar *, #csdn_tool_otherPlace *,body #content_views > pre > code > div.hljs-button',
-      'tsdm39': 'a',
-      'stackoverflow': ':not(em,i,b)',
-      'runoob': '.article-body p',
-      'bilibili':
+      weixin: 'p,span,section *',
+      csdn: '#csdn-toolbar *, #csdn_tool_otherPlace *,body #content_views > pre > code > div.hljs-button',
+      tsdm39: 'a',
+      stackoverflow: ':not(em,i,b)',
+      runoob: '.article-body p',
+      bilibili:
         '.bili-comment.browser-pc *,h1,.h :not(em,i,b),bilibili-player-area *:not(em,i,b),.video-page-card-small .card-box .info .title,#i_cecream :not(em,i,b)',
-      'sspai': '.wangEditor-txt',
-      'baidu': '.wrapper_new .s_ipt',
-      'gitee': 'button,.ui:not(.iconfont)',
-      'v2ex': 'textarea',
-      'baijiahao': '.index-module_articleTitle_28fPT',
-      'jianshu': 'a.title'
+      sspai: '.wangEditor-txt',
+      baidu: '.wrapper_new .s_ipt',
+      gitee: 'button,.ui:not(.iconfont)',
+      v2ex: 'textarea',
+      baijiahao: '.index-module_articleTitle_28fPT',
+      jianshu: 'a.title',
+      mail: '.btn_blue, .btn_red, .btn_gray, .tcolor'
     },
     //为其他的元素设置字体(主要用于兼容性)
     {
@@ -73,7 +75,8 @@
       mozilla: ':root{--font-body:sans-serif!important}',
       stackoverflow:
         '.comment-copy,a.question-hyperlink,code{font-size:14px!important}',
-      juejin: '.markdown-body pre>code.copyable.hljs[lang]:before{right:90px}'
+      juejin:
+        '.markdown-body pre>code.copyable.hljs[lang]:before{right:90px}copy-code-btn{top:8px}'
     }
   ]
 
@@ -116,8 +119,19 @@
       subUtils.addStyle(css)
     },
     scrollToTop: () => {
+      function compatible(selector) {
+        if (document.querySelector(selector)) {
+          document
+            .querySelector(selector)
+            .scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }
       if (document.documentElement.scrollIntoView) {
-        document.body.scrollIntoView({ behavior: 'smooth', inline: 'start' })
+        document.body.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        //vue
+        compatible('#app')
+        //csdn
+        compatible('.main_father')
       } else {
         window.scrollTo(0, 0)
       }
@@ -172,29 +186,25 @@
   })
   // 滚动条美化
   subUtils.addStyle(`
-    html,body {
-      overflow: overlay;
-      margin: 0;
-      padding: 0;
-    }
     *::-webkit-scrollbar {
-      background-color: transparent !important;
-      width: 10px !important;
-      height: 10px !important;
+      width: 8px !important;
+      height: 8px !important;
     }
     ::-webkit-scrollbar-track {
       background-color: transparent !important;
+      border-radius:4px !important;
+      box-shadow: none !important;
     }
     *::-webkit-scrollbar-thumb {
-      box-shadow: inset 0 0 0 10px;
-      border-radius: 6px !important;
+      box-shadow: inset 0 0 0 10px !important;
+      border-radius: 4px !important;
+      border:2px solid transparent!important;
       background-clip: content-box;
       background-color: transparent !important;
-      border: 3px solid transparent;
-      color: #6669;
+      color: #0003;
     }
     *::-webkit-scrollbar-thumb:hover {
-      color: #3339 !important;
+      color: #0006 !important;
     }
     *::-webkit-scrollbar-thumb:active {
       color: #0009 !important;
@@ -202,13 +212,13 @@
   `)
   // 添加字体样式
   subUtils.addStyle(
-    '*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;-webkit-text-stroke:0.05px!important;}'
+    '*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:0.05px!important;}'
   )
   if (subUtils.checkBlackList()) {
     console.log(current)
     subUtils.addStyle(`:not(em,i,b){font-family:sans-serif}`)
     subUtils.addCodeFont(
-      `pre,pre *,pre.CodeMirror-line *,code,code *,.code,.code *,.token,pre code *,.prettyprint *,.hljs,.hljs *,pre[class*=language-] *,*[class*='language-'],body .prism .token,.cm-editor *,.font-mono,.mono,*[role='code'] *`
+      `pre,pre *,pre.CodeMirror-line *,code,code *,.code,.code *,.mono,.text-mono,pre .token,pre code *,body pre code.hljs,.prettyprint *,.hljs,.hljs *,code[class*="language-"] *, pre[class*="language-"] *,*[class*='language-'],body .prism .token,.cm-editor *,.font-mono,.mono,*[role='code'] *,monaco-editor *,#vscode-editor *`
     )
     subUtils.special()
   }
