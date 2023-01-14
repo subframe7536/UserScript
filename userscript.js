@@ -33,7 +33,7 @@
   const specialList = [
     //设置代码字体为monospace，sans-serif作为callback字体
     {
-      'github': 'table:not(.d-block) *,textarea,.commit .sha-block, .commit .sha',
+      'github': 'table:not(.d-block) *,textarea,.commit .sha-block, .commit .sha, .branch-name',
       'runoob': '.example_code,.example_code *',
       'csdn': '*[class*=hljs],pre code[class*=language-] span.token,body .markdown_views pre code.prism .token.comment',
       'cnblog': '.cnblogs-markdown code, .cnblogs_code, .cnblogs_code *',
@@ -42,16 +42,16 @@
       '51cto': '#result [class*=language-], .prettyprint *, code[class*=language-] *, div[class*=language-] *, pre[class*=language-] *',
       'docker': 'input[data-testid="copyPullCommandPullCommand"]',
       'yuque': '.ne-code',
-      'cnblogs': '.syntaxhighlighter :is(a,div,code,table,table td,table tr,table tbody,table thead,table caption,textarea), pre[class*="brush:"][class*="language-"], pre[class*="brush:"]'
+      'cnblogs': '.syntaxhighlighter :is(a,div,code,table,table td,table tr,table tbody,table thead,table caption,textarea), pre[class*="brush:"][class*="language-"], pre[class*="brush:"]',
+      'w3schools': '.w3-code *'
     },
     //设置普通的字体为sans-serif
     {
       'weixin': 'p,span,section',
       'csdn': '#csdn-toolbar *, #csdn_tool_otherPlace *,body #content_views > pre > code > div.hljs-button',
       'tsdm39': 'a',
-      'stackoverflow': ':not(em,i,b)',
       'runoob': '.article-body p',
-      'bilibili': '.bili-comment.browser-pc *,h1,.h :not(em,i,b),bilibili-player-area *:not(em,i,b),.video-page-card-small .card-box .info .title,#i_cecream :not(em,i,b)',
+      'bilibili': '.bili-comment.browser-pc *,h1,.h :not(em,i,b),bilibili-player-area *:not(em,i,b),.video-page-card-small .card-box .info .title,#i_cecream :not(em,i,b),.bpx-player-subtitle-wrap *',
       'sspai': '.wangEditor-txt',
       'baidu': '.wrapper_new .s_ipt',
       'gitee': 'button,.ui:not(.iconfont)',
@@ -71,7 +71,11 @@
       'gitee': '#git-header-nav #navbar-search-form{border-radius:8px!important}',
       'mozilla': ':root{--font-body:sans-serif!important}',
       'stackoverflow': '.comment-copy,a.question-hyperlink,code{font-size:14px!important}',
-      'juejin': '.markdown-body pre>code.copyable.hljs[lang]:before{right:90px}copy-code-btn{top:8px}'
+      'juejin': '.markdown-body pre>code.copyable.hljs[lang]:before{right:90px}copy-code-btn{top:8px}',
+      'duckduckgo': 'body{--max-content-width: 56vw;}.is-link-style-exp.is-not-mobile-device .footer_cards, .c-info, .c-base, .c-icon, .c-list, .c-product, .c-detail, .zci__main.has-aux, .zci__main--answer, .results--main, .forecast-wrapper .module--forecast .module__detail--hours__labels, .zcm-wrap--header{min-width:580px}.js-header-aside-item-social{display:none}article{border:2px solid var(--theme-col-bg-page-alt-2) !important;--rounded:8px;transition:0.3s ease;padding:1rem !important;}article:hover{background-color:var(--theme-col-bg-page-alt-2) !important;border-color:var(--theme-col-bg-page-alt-1) !important}article :nth-child(3) span{-webkit-line-clamp: 3;text-overflow:ellipsis;display: -webkit-box;-webkit-box-orient: vertical;overflow:hidden}article>:nth-child(2){margin:0.5rem 0}',
+      'bilibili': '.share-wrap{display:none!important}',
+      'stackoverflow': 'body{--ff-sans:sans-serif!important;--ff-mono:monospace,sans-serif!important;}',
+      'neeva': '.nir{font-family:"nicons-regular"!important}.nim{font-family:"nicons-medium"!important}.nis{font-family:"nicons-semibold"!important}body{--tkn-font-family-mono:monospace,sans-serif!important;}'
     },
     //全域名匹配
     {
@@ -91,10 +95,10 @@
       }
       return true
     },
-    addStyle: style => {
+    addStyle: (style, clazz) => {
       document.documentElement.insertAdjacentHTML(
         'beforeend',
-        `<style>${style}</style>`
+        `<style class="${clazz??'plain'}">${style}</style>`
       )
     },
     addUIFont: selector => {
@@ -113,9 +117,9 @@
 
     },
     normal: () => {
-      subUtils.addStyle(`:not(em,i,b){font-family:sans-serif}`)
+      subUtils.addStyle(`:not([class*=icon],.fa,em,i){font-family:sans-serif}`,'normal')
       subUtils.addCodeFont(
-        `pre,pre *,pre.CodeMirror-line *,code,code *,.code,.code *,.mono,.text-mono,pre .token,pre code *,body pre code.hljs,.prettyprint *,.hljs,.hljs *,code[class*="language-"] *, pre[class*="language-"] *,*[class*='language-'],body .prism .token,.cm-editor *,.font-mono,.mono,*[role='code'] *,.monaco-editor *,#vscode-editor *,.enlighter *,.syntaxhighlighter :is(code,.line), table.highlight *, pre[data-lang] code, .Typist, .ace_editor *`
+        `html body pre,pre *,pre.CodeMirror-line *,code,code *,.code,.code *,.mono,.text-mono,pre .token,pre code *,body pre code.hljs,.prettyprint *,.hljs,.hljs *,code[class*="language-"] *, pre[class*="language-"] *,body .prism .token,.cm-editor *,.font-mono,.mono,.monaco-mouse-cursor-text,#vscode-editor *,.enlighter *,.syntaxhighlighter :is(code,.line), table.highlight *, pre[data-lang] code, .Typist, .ace_editor *,[data-rnw-int-class*="codeblock"] *,.codecolorer-container *,.codeblock *`
       )
     },
     scrollbarAndFontBase: () => {
@@ -179,9 +183,26 @@
         ele.className = ele.className.replace(reg, '')
       }
     },
+    waitForElm(selector) {
+        return new Promise(resolve => {
+            if (document.querySelector(selector)) {
+                return resolve(document.querySelector(selector));
+            }
+
+            const observer = new MutationObserver(mutations => {
+                if (document.querySelector(selector)) {
+                    resolve(document.querySelector(selector));
+                    observer.disconnect();
+                }
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    },
     special: () => {
-      // 基础样式
-      subUtils.addUIFont('p')
       // 读取配置
       current.split('.').forEach(e => {
         if (specialList[0].hasOwnProperty(e)) {
@@ -223,7 +244,15 @@
     subUtils.normal()
     subUtils.special()
     window.onload = () => {
-      if (!document.querySelector('body+style')) {
+      subUtils.waitForElm('.monaco-editor').then(()=>{
+        console.log('detect monaco editor')
+        // monaco editor use <span/> to test width
+        // see https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L101
+        document.querySelector('style.normal').remove()
+        monaco.editor.getEditors().forEach(e=>e.updateOptions({fontFamily:'monospace,sans-serif'}))
+        subUtils.addStyle(`:not(.monaco-editor *,[class*=icon],.fa,em,i){font-family:sans-serif}`,'normal')
+      })
+      if(!document.querySelector('body+style')) {
         subUtils.scrollbarAndFontBase()
         subUtils.normal()
         subUtils.special()
