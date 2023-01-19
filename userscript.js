@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         全局滚动条美化&字体修改
+// @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  美化滚动条 beautify the scroller bar, 代码使用monospace
@@ -33,7 +33,7 @@
   const specialList = [
     //设置代码字体为monospace，sans-serif作为callback字体
     {
-      'github': 'table:not(.d-block) *,textarea,.commit .sha-block, .commit .sha, .branch-name',
+      'github': 'table:not(.d-block) *,textarea,.commit .sha-block, .commit .sha, .branch-name,.blame-container *',
       'runoob': '.example_code,.example_code *',
       'csdn': '*[class*=hljs],pre code[class*=language-] span.token,body .markdown_views pre code.prism .token.comment',
       'cnblog': '.cnblogs-markdown code, .cnblogs_code, .cnblogs_code *',
@@ -67,7 +67,8 @@
     },
     //为网站添加自定义样式
     {
-      'baidu': '@charset "UTF-8";body[baidu]{position:relative;background-color:rgba(222,241,239,.4)}body[baidu] #s_lg_img_new{display:none!important}body[baidu] #content_left>.c-container{border-radius:10px;padding:20px;background-color:#fdfdfd!important;box-shadow:1px 1px 2px rgba(0,0,0,.2705882353),-1px -1px 2px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] #content_left>.c-container:hover{box-shadow:2px 2px 4px rgba(0,0,0,.2705882353),-2px -2px 4px rgba(221,221,221,.2666666667);transform:translateY(-2px);transition:.2s}body[baidu] #content_left>.c-container h3{margin-bottom:16px!important;background-color:#fdfdfd!important}body[baidu] #content_left>.c-container h3 a{position:relative;text-decoration:none!important}body[baidu] #content_left>.c-container h3 a:before{content:"";position:absolute;bottom:-2px;width:0;right:0;height:2px;background:rgba(78,110,242,.6666666667);transition:all .3s;border-radius:4px;transform-origin:right}body[baidu] #content_left>.c-container h3 a:hover:before{width:100%;left:0;transform-origin:left}body[baidu] .c-border{box-shadow:unset!important}body[baidu] .c-group-wrapper{background-color:#fdfdfd;border-radius:10px;margin-right:-40px;margin-left:0!important;box-shadow:1px 1px 2px rgba(0,0,0,.2705882353),-1px -1px 2px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] .c-group-wrapper:hover{box-shadow:2px 2px 4px rgba(0,0,0,.2705882353),-2px -2px 4px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] .wrapper_new #form .bdsug-new ul li{font-family:sans-serif!important}body[baidu] .wrapper_new #s_tab{background-color:#fff}body[google] #rso .g,body[google] .f6F9Be,body[google] .k8XOCe,body[google] .sfbg{background-color:#fdfdfd!important}body[google] .sfbg{margin-top:-10px}body[google] .yg51vc{background-color:transparent!important}',
+      'baidu':
+        '@charset "UTF-8";body[baidu]{position:relative;background-color:rgba(222,241,239,.4)}body[baidu] #s_lg_img_new{display:none!important}body[baidu] #content_left>.c-container{border-radius:10px;padding:20px;background-color:#fdfdfd!important;box-shadow:1px 1px 2px rgba(0,0,0,.2705882353),-1px -1px 2px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] #content_left>.c-container:hover{box-shadow:2px 2px 4px rgba(0,0,0,.2705882353),-2px -2px 4px rgba(221,221,221,.2666666667);transform:translateY(-2px);transition:.2s}body[baidu] #content_left>.c-container h3{margin-bottom:16px!important;background-color:#fdfdfd!important}body[baidu] #content_left>.c-container h3 a{position:relative;text-decoration:none!important}body[baidu] #content_left>.c-container h3 a:before{content:"";position:absolute;bottom:-2px;width:0;right:0;height:2px;background:rgba(78,110,242,.6666666667);transition:all .3s;border-radius:4px;transform-origin:right}body[baidu] #content_left>.c-container h3 a:hover:before{width:100%;left:0;transform-origin:left}body[baidu] .c-border{box-shadow:unset!important}body[baidu] .c-group-wrapper{background-color:#fdfdfd;border-radius:10px;margin-right:-40px;margin-left:0!important;box-shadow:1px 1px 2px rgba(0,0,0,.2705882353),-1px -1px 2px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] .c-group-wrapper:hover{box-shadow:2px 2px 4px rgba(0,0,0,.2705882353),-2px -2px 4px rgba(221,221,221,.2666666667);transition:.2s}body[baidu] .wrapper_new #form .bdsug-new ul li{font-family:sans-serif!important}body[baidu] .wrapper_new #s_tab{background-color:#fff}body[google] #rso .g,body[google] .f6F9Be,body[google] .k8XOCe,body[google] .sfbg{background-color:#fdfdfd!important}body[google] .sfbg{margin-top:-10px}body[google] .yg51vc{background-color:transparent!important}',
       'gitee': '#git-header-nav #navbar-search-form{border-radius:8px!important}',
       'mozilla': ':root{--font-body:sans-serif!important}',
       'stackoverflow': '.comment-copy,a.question-hyperlink,code{font-size:14px!important}',
@@ -98,7 +99,7 @@
     addStyle: (style, clazz) => {
       document.documentElement.insertAdjacentHTML(
         'beforeend',
-        `<style class="${clazz??'plain'}">${style}</style>`
+        `<style class="${clazz ?? 'plain'}">${style}</style>`
       )
     },
     addUIFont: selector => {
@@ -117,9 +118,9 @@
 
     },
     normal: () => {
-      subUtils.addStyle(`:not([class*=icon],.fa,em,i){font-family:sans-serif}`,'normal')
+      subUtils.addStyle(`:not([class*=icon],[class*=icon] *,[class*=Icon],[class*=Icon] *,.fa,em,i,svg *){font-family:sans-serif;letter-spacing:0px!important}`, 'normal')
       subUtils.addCodeFont(
-        `html body pre,pre *,pre.CodeMirror-line *,code,code *,.code,.code *,.mono,.text-mono,pre .token,pre code *,body pre code.hljs,.prettyprint *,.hljs,.hljs *,code[class*="language-"] *, pre[class*="language-"] *,body .prism .token,.cm-editor *,.font-mono,.mono,.monaco-mouse-cursor-text,#vscode-editor *,.enlighter *,.syntaxhighlighter :is(code,.line), table.highlight *, pre[data-lang] code, .Typist, .ace_editor *,[data-rnw-int-class*="codeblock"] *,.codecolorer-container *,.codeblock *`
+        `html body pre,pre *,pre.CodeMirror-line *,code,code *,.code,.code *,.mono,.text-mono,pre .token,pre code *,body pre code.hljs,.prettyprint *,.hljs,.hljs *,code[class*="language-"] *, pre[class*="language-"] *,body .prism .token,.cm-editor *,.font-mono,.mono,.monaco-mouse-cursor-text,#vscode-editor *,.enlighter *,.syntaxhighlighter :is(code,.line), table.highlight *, pre[data-lang] code, .Typist, .Typist *, .ace_editor *,[data-rnw-int-class*="codeblock"] *,.codecolorer-container *,.codeblock *,.swagger-ui .code, .swagger-ui code,.dp-highlighter *`
       )
     },
     scrollbarAndFontBase: () => {
@@ -184,23 +185,23 @@
       }
     },
     waitForElm(selector) {
-        return new Promise(resolve => {
-            if (document.querySelector(selector)) {
-                return resolve(document.querySelector(selector));
-            }
+      return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+          return resolve(document.querySelector(selector));
+        }
 
-            const observer = new MutationObserver(mutations => {
-                if (document.querySelector(selector)) {
-                    resolve(document.querySelector(selector));
-                    observer.disconnect();
-                }
-            });
-
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
+        const observer = new MutationObserver(mutations => {
+          if (document.querySelector(selector)) {
+            resolve(document.querySelector(selector));
+            observer.disconnect();
+          }
         });
+
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      });
     },
     special: () => {
       // 读取配置
@@ -244,15 +245,21 @@
     subUtils.normal()
     subUtils.special()
     window.onload = () => {
-      subUtils.waitForElm('.monaco-editor').then(()=>{
+      subUtils.waitForElm('.monaco-editor').then(() => {
         console.log('detect monaco editor')
         // monaco editor use <span/> to test width
         // see https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L101
         document.querySelector('style.normal').remove()
-        monaco.editor.getEditors().forEach(e=>e.updateOptions({fontFamily:'monospace,sans-serif'}))
-        subUtils.addStyle(`:not(.monaco-editor *,[class*=icon],.fa,em,i){font-family:sans-serif}`,'normal')
+        subUtils.addCodeFont('.monaco-editor *')
+        try {
+          const editors = monaco.editor.getEditors()
+          editors.forEach(e => e.updateOptions({ fontFamily: 'monospace,sans-serif' }))
+        } catch (e) {
+          console.error('low version of monaco editor, spaces\' width in selection will reduce')
+        }
+        subUtils.addStyle(`:not(.monaco-editor *,[class*=icon],[class*=icon] *,[class*=Icon],[class*=Icon] *,.fa,em,i,svg *){font-family:sans-serif;letter-spacing:0px!important}`, 'normal')
       })
-      if(!document.querySelector('body+style')) {
+      if (!document.querySelector('body+style')) {
         subUtils.scrollbarAndFontBase()
         subUtils.normal()
         subUtils.special()
