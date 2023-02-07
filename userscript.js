@@ -76,7 +76,8 @@
       'duckduckgo': 'body{--max-content-width: 56vw;}.is-link-style-exp.is-not-mobile-device .footer_cards, .c-info, .c-base, .c-icon, .c-list, .c-product, .c-detail, .zci__main.has-aux, .zci__main--answer, .results--main, .forecast-wrapper .module--forecast .module__detail--hours__labels, .zcm-wrap--header{min-width:580px}.js-header-aside-item-social{display:none}article{border:2px solid var(--theme-col-bg-page-alt-2) !important;--rounded:8px;transition:0.3s ease;padding:1rem !important;}article:hover{background-color:var(--theme-col-bg-page-alt-2) !important;border-color:var(--theme-col-bg-page-alt-1) !important}article :nth-child(3) span{-webkit-line-clamp: 3;text-overflow:ellipsis;display: -webkit-box;-webkit-box-orient: vertical;overflow:hidden}article>:nth-child(2){margin:0.5rem 0}',
       'bilibili': '.share-wrap{display:none!important}',
       'stackoverflow': 'body{--ff-sans:sans-serif!important;--ff-mono:monospace,sans-serif!important;}',
-      'neeva': '.nir{font-family:"nicons-regular"!important}.nim{font-family:"nicons-medium"!important}.nis{font-family:"nicons-semibold"!important}body{--tkn-font-family-mono:monospace,sans-serif!important;}'
+      'neeva': '.nir{font-family:"nicons-regular"!important}.nim{font-family:"nicons-medium"!important}.nis{font-family:"nicons-semibold"!important}body{--tkn-font-family-mono:monospace,sans-serif!important;}',
+      'github': 'body{--color-prettylights-syntax-keyword:#9084e9;--color-prettylights-syntax-entity:#129ede;--color-prettylights-syntax-constant:#e4980c;--color-prettylights-syntax-string:#51bc00;--color-prettylights-syntax-storage-modifier-import:#e4980c;--color-prettylights-syntax-variable:#e4980c;--color-prettylights-syntax-entity-tag:#ff5858}.pl-s1,.pl-s1 .pl-token{text-decoration:underline}.pl-c1{color:var(--color-prettylights-syntax-string)}'
     },
     //全域名匹配
     {
@@ -118,9 +119,9 @@
 
     },
     normal: () => {
-      subUtils.addStyle(`:not([class*=icon],[class*=icon] *,[class*=Icon],[class*=Icon] *,.fa,em,i,svg *){font-family:sans-serif;letter-spacing:0px!important}`, 'normal')
+      subUtils.addStyle(`:not([class*=icon],[class*=icon] *,[class*=Icon],[class*=Icon] *,.fa,em,i,svg *,kbd,kdb *,samp,samp *,var,var *){font-family:sans-serif;letter-spacing:0px!important}`, 'normal')
       subUtils.addCodeFont(
-        `html body pre,pre *,pre.CodeMirror-line *,code,code *,.code,.code *,.mono,.text-mono,pre .token,pre code *,body pre code.hljs,.prettyprint *,.hljs,.hljs *,code[class*="language-"] *, pre[class*="language-"] *,body .prism .token,.cm-editor *,.font-mono,.mono,.monaco-mouse-cursor-text,#vscode-editor *,.enlighter *,.syntaxhighlighter :is(code,.line), table.highlight *, pre[data-lang] code, .Typist, .Typist *, .ace_editor *,[data-rnw-int-class*="codeblock"] *,.codecolorer-container *,.codeblock *,.swagger-ui .code, .swagger-ui code,.dp-highlighter *`
+        `html body pre,pre *,pre.CodeMirror-line *,code,code *,.code,.code *,.mono,.text-mono,pre .token,pre code *,body pre code.hljs,.prettyprint *,.hljs,.hljs *,code[class*="language-"] *, pre[class*="language-"] *,body .prism .token,.cm-editor *,.font-mono,.mono,.monaco-mouse-cursor-text,#vscode-editor *,.enlighter *,.syntaxhighlighter :is(code,.line), table.highlight *, pre[data-lang] code, .Typist, .Typist *, .ace_editor *,[data-rnw-int-class*="codeblock"] *,.codecolorer-container *,.codeblock *,.swagger-ui .code, .swagger-ui code,.dp-highlighter *,.prism-code *,.CodeMirror-code *,[class*="monospace"],[class*="monospace"] *`
       )
     },
     scrollbarAndFontBase: () => {
@@ -257,7 +258,7 @@
         } catch (e) {
           console.error('low version of monaco editor, spaces\' width in selection will reduce')
         }
-        subUtils.addStyle(`:not(.monaco-editor *,[class*=icon],[class*=icon] *,[class*=Icon],[class*=Icon] *,.fa,em,i,svg *){font-family:sans-serif;letter-spacing:0px!important}`, 'normal')
+        subUtils.addStyle(`:not(.monaco-editor *,[class*=icon],[class*=icon] *,[class*=Icon],[class*=Icon] *,.fa,em,i,svg *,kbd,kdb *,samp,samp *,var,var *){font-family:sans-serif;letter-spacing:0px!important}`, 'normal')
       })
       if (!document.querySelector('body+style')) {
         subUtils.scrollbarAndFontBase()
