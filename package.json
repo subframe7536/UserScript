@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "newsite": "esno scripts/newSite.ts",
-    "release": "bumpp -x \"pnpm build\""
+    "release": "bumpp -x \"pnpm build\" --all"
   },
   "devDependencies": {
     "@subframe7536/eslint-config": "^0.2.3",

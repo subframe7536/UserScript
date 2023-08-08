@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       全局滚动条美化 & 字体修改
 // @namespace  http://tampermonkey.net/
-// @version    1.0.1
+// @version    1.0.3
 // @author     subframe7536
 // @icon       https://foruda.gitee.com/avatar/1677064980766394537/5705841_subframe7536_1652618638.png!avatar200
 // @match      *://*/*
