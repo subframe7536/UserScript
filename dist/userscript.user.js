@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    subframe7536
-// @version      1.0.5
+// @version      1.0.6
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -293,9 +293,9 @@
   var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
   var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   const current = window.location.hostname;
-  function notEdgeOnWindows() {
+  function onWindowsAndNotOnEdge() {
     const ua = navigator.userAgent;
-    return /Edg/.test(ua) && /Windows/.test(ua);
+    return /Windows/.test(ua) && !/Edg/.test(ua);
   }
   function loadCSS() {
     if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
@@ -316,7 +316,7 @@
     addSansFontDefault();
     addCodeFont(...monospaceSelectors);
     appendSites(current, SITEMAP);
-    if (notEdgeOnWindows()) {
+    if (onWindowsAndNotOnEdge()) {
       loadStyles(scrollbar);
     }
     loadStyles();
