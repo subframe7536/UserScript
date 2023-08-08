@@ -10,9 +10,9 @@ const current = window.location.hostname
 
 debug && console.log(current)
 
-function notEdgeOnWindows(): boolean {
+function onWindowsAndNotOnEdge(): boolean {
   const ua = navigator.userAgent
-  return /Edg/.test(ua) && /Windows/.test(ua)
+  return /Windows/.test(ua) && !/Edg/.test(ua)
 }
 
 function loadCSS() {
@@ -34,7 +34,7 @@ function loadCSS() {
   addSansFontDefault()
   addCodeFont(...monospaceSelectors)
   appendSites(current, SITEMAP)
-  if (notEdgeOnWindows()) {
+  if (onWindowsAndNotOnEdge()) {
     loadStyles(scrollbar)
   }
   loadStyles()
