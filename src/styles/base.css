@@ -1,0 +1,16 @@
+* {
+  -webkit-font-smoothing: antialiased !important;
+  font-optical-sizing: auto;
+  font-kerning: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-text-stroke: 0.05px !important;
+}
+
+::selection {
+  background-color: #aad0ffd9;
+  color: #111
+}
+
+::highlight {
+  background-color: #f6be49
+}

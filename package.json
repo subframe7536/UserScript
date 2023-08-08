@@ -1,0 +1,23 @@
+{
+  "name": "userscript",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "newsite": "esno scripts/newSite.ts",
+    "release": "bumpp --all"
+  },
+  "devDependencies": {
+    "@subframe7536/eslint-config": "^0.2.3",
+    "@types/node": "^20.4.8",
+    "bumpp": "^9.1.1",
+    "consola": "^3.2.3",
+    "eslint": "^8.46.0",
+    "esno": "^0.17.0",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vite-plugin-monkey": "^3.4.0"
+  }
+}
