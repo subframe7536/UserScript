@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       全局滚动条美化 & 字体修改
 // @namespace  http://tampermonkey.net/
-// @version    0.0.0
+// @version    1.0.1
 // @author     subframe7536
 // @icon       https://foruda.gitee.com/avatar/1677064980766394537/5705841_subframe7536_1652618638.png!avatar200
 // @match      *://*/*
@@ -13,6 +13,12 @@
 (function () {
   'use strict';
 
+  /**
+   * @preserve
+   * 普通字体
+   *
+   * @default 'sans-serif'
+   */
   /**
    * @preserve
    * 需要修改字体的域名的黑名单
@@ -135,14 +141,17 @@
     "openvim"
   ];
   const styleArray = [];
+  const sans = "sans-serif";
+  const mono = "monospace";
+  const monoSetting = "calt";
   function loadStyles(style) {
     document.documentElement.insertAdjacentHTML(
       "beforeend",
       `<style>${style || styleArray.join("")}</style>`
     );
   }
-  function loadStyleAtHTML(selector, style) {
-    document.documentElement.style.setProperty(selector, style);
+  function loadStyleAtHTML(property, value) {
+    document.documentElement.style.setProperty(property, value);
   }
   function addCSS(selectors, styles) {
     selectors = Array.isArray(selectors) ? selectors : [selectors];
@@ -153,8 +162,8 @@
     addCSS(
       selectors,
       [
-        "font-family: monospace, sans-serif !important",
-        'font-feature-settings: "calt", "ss05" !important',
+        `font-family: ${mono}, ${sans} !important`,
+        `font-feature-settings: ${monoSetting} !important`,
         "letter-spacing: 0px !important"
       ]
     );
@@ -163,7 +172,7 @@
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
-        "font-family: sans-serif",
+        `font-family: ${sans}`,
         "letter-spacing: 0px !important"
       ]
     );
@@ -172,7 +181,7 @@
     addCSS(
       selectors,
       [
-        "font-family: sans-serif !important",
+        `font-family: ${sans} !important`,
         "letter-spacing: 0px !important"
       ]
     );
@@ -280,6 +289,10 @@
   var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
   var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   const current = window.location.hostname;
+  function notEdgeOnWindows() {
+    const ua = navigator.userAgent;
+    return /Edg/.test(ua) && /Windows/.test(ua);
+  }
   function loadCSS() {
     if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
       return;
@@ -299,7 +312,9 @@
     addSansFontDefault();
     addCodeFont(...monospaceSelectors);
     appendSites(current, SITEMAP);
-    loadStyles(scrollbar);
+    if (notEdgeOnWindows()) {
+      loadStyles(scrollbar);
+    }
     loadStyles();
     loadStyleAtHTML("--d-border-radius", "0.25rem");
     loadStyleAtHTML("--font-mono", "monospace");

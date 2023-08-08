@@ -1,13 +1,13 @@
 {
   "name": "userscript",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "newsite": "esno scripts/newSite.ts",
-    "release": "bumpp --all"
+    "release": "pnpm build && bumpp --all"
   },
   "devDependencies": {
     "@subframe7536/eslint-config": "^0.2.3",
