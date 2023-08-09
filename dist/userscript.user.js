@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.8
+// @version      1.0.9
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -143,7 +143,7 @@
     "twitter",
     "openvim"
   ];
-  const styleArray = [];
+  let styleArray = [];
   const sans = "sans-serif";
   const mono = "monospace";
   const monoSetting = "calt";
@@ -152,6 +152,7 @@
       "beforeend",
       `<style>${style || styleArray.join("")}</style>`
     );
+    styleArray = [];
   }
   function loadStyleAtHTML(property, value) {
     document.documentElement.style.setProperty(property, value);
@@ -272,7 +273,7 @@
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
-  function appendSites(current2, customs) {
+  function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
     const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./stackoverflow.ts": __vite_glob_0_13, "./w3cschools.ts": __vite_glob_0_14, "./yuque.ts": __vite_glob_0_15 });
@@ -285,6 +286,7 @@
     if (map.has(current2)) {
       (_a = map.get(current2)) == null ? void 0 : _a();
     }
+    loadStyles();
   }
   const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}\n";
   const scrollbar = "::-webkit-scrollbar{width:8px!important;height:8px!important}::-webkit-scrollbar-track{background-color:transparent!important;border-radius:8px!important;box-shadow:none!important}::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 10px!important;border-radius:8px!important;border:2px solid transparent!important;background-clip:content-box;background-color:transparent!important;color:#0003}::-webkit-scrollbar-thumb:hover{color:#0006!important}::-webkit-scrollbar-thumb:active{color:#0009!important}\n";
@@ -297,6 +299,10 @@
     return /Windows/.test(ua) && !/Edg/.test(ua);
   }
   function loadCSS() {
+    if (onWindowsAndNotOnEdge()) {
+      loadStyles(scrollbar);
+    }
+    loadSites(current, SITEMAP);
     if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
       return;
     }
@@ -314,10 +320,6 @@
     }
     addSansFontDefault();
     addCodeFont(...monospaceSelectors);
-    appendSites(current, SITEMAP);
-    if (onWindowsAndNotOnEdge()) {
-      loadStyles(scrollbar);
-    }
     loadStyles();
     loadStyleAtHTML("--d-border-radius", "0.25rem");
     loadStyleAtHTML("--font-mono", "monospace");
