@@ -1,8 +1,9 @@
 import { debug } from '../constants'
+import { loadStyles } from '../utils'
 
 export type Site = [pattern: string, callback: () => void]
 
-export function appendSites(current: string, customs: Site[]) {
+export function loadSites(current: string, customs: Site[]) {
   const map = new Map()
 
   const configs = import.meta.glob('./**.ts', { eager: true, import: 'default' }) as Record<string, Site>
@@ -16,4 +17,5 @@ export function appendSites(current: string, customs: Site[]) {
     debug && console.log(`[${current}] match current!`)
     map.get(current)?.()
   }
+  loadStyles()
 }

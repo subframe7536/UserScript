@@ -1,7 +1,7 @@
 import { BLOCKLIST, SITEMAP } from './_head'
 import { blocklist, debug, monospaceSelectors } from './constants'
 import { addCodeFont, addSansFontDefault, isInBlockList, loadStyleAtHTML, loadStyles } from './utils'
-import { appendSites } from './sites'
+import { loadSites } from './sites'
 import base from './styles/base.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
 import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
@@ -16,6 +16,10 @@ function onWindowsAndNotOnEdge(): boolean {
 }
 
 function loadCSS() {
+  if (onWindowsAndNotOnEdge()) {
+    loadStyles(scrollbar)
+  }
+  loadSites(current, SITEMAP)
   if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
     return
   }
@@ -33,10 +37,6 @@ function loadCSS() {
   }
   addSansFontDefault()
   addCodeFont(...monospaceSelectors)
-  appendSites(current, SITEMAP)
-  if (onWindowsAndNotOnEdge()) {
-    loadStyles(scrollbar)
-  }
   loadStyles()
   loadStyleAtHTML('--d-border-radius', '0.25rem')
   loadStyleAtHTML('--font-mono', 'monospace')
