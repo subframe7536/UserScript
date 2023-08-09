@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.9
+// @version      1.0.10
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -263,20 +263,24 @@
   const __vite_glob_0_12 = ["developer.mozilla.org", () => {
     addCSS(":root", "--font-body:sans-serif!important");
   }];
-  const __vite_glob_0_13 = ["stackoverflow.com", () => {
+  const __vite_glob_0_13 = ["regex101.com", () => {
+    loadStyleAtHTML("--code-font", "monospace,sans-serif!important");
+    loadStyleAtHTML("--app-font", "sans-serif!important");
+  }];
+  const __vite_glob_0_14 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
-  const __vite_glob_0_14 = ["", () => {
+  const __vite_glob_0_15 = ["", () => {
     addCodeFont(".w3-code *");
   }];
-  const __vite_glob_0_15 = ["www.yuque.com", () => {
+  const __vite_glob_0_16 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./stackoverflow.ts": __vite_glob_0_13, "./w3cschools.ts": __vite_glob_0_14, "./yuque.ts": __vite_glob_0_15 });
+    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./regex101.ts": __vite_glob_0_13, "./stackoverflow.ts": __vite_glob_0_14, "./w3cschools.ts": __vite_glob_0_15, "./yuque.ts": __vite_glob_0_16 });
     Object.values(configs).forEach(([pattern, callback]) => {
       map.set(pattern, callback);
     });
