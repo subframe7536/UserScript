@@ -1,4 +1,4 @@
-import { BLOCKLIST, SITEMAP } from './_head'
+import { BASE_CONFIG, BLOCKLIST, SITEMAP } from './_head'
 import { blocklist, monospaceSelectors } from './constants'
 import { addCodeFont, addRootCSS, addSansFontDefault, getDebug, isInBlockList, loadStyles, logger, toggleDebug } from './utils'
 import { loadSites } from './sites'
@@ -19,6 +19,9 @@ function loadCSS() {
   if (onWindowsAndNotOnEdge()) {
     logger.info('on Windows and not on edge')
     loadStyles(scrollbar)
+    if (BASE_CONFIG.SCROLLBAR_WIDTH) {
+      document.documentElement.style.setProperty('--scrollbar-width', BASE_CONFIG.SCROLLBAR_WIDTH)
+    }
   }
   loadSites(current, SITEMAP)
   if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
@@ -50,11 +53,19 @@ function loadCSS() {
     GM_setValue('blocklist', stored)
     location.reload()
   })
+  loadStyles(base)
 }
 
 GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷新`, () => {
   toggleDebug()
   location.reload()
 })
-loadStyles(base)
 loadCSS()
+window.onload = () => {
+  setTimeout(() => {
+    if (!document.querySelector('.scripts-mono')) {
+      logger.warn('未找到 userscript-mono 标签，重新加载')
+      loadCSS()
+    }
+  }, 100)
+}

@@ -2,25 +2,18 @@ import type { Site } from './sites'
 
 /**
  * @preserve
- * 普通字体
- *
- * @default 'sans-serif'
+ * 基础配置
+ * - SANS: 普通字体，默认 'sans-serif'
+ * - MONO: 等宽字体，默认 'monospace'
+ * - MONO_SETTING: 等宽字体 font-feature-settings 设置，默认 'calt'
+ * - SCROLLBAR_WIDTH: 滚动条宽度，可以是任何 css 的宽度，默认 'max(0.85vw, 10px)'
  */
-export const SANS = ''
-/**
- * @preserve
- * 等宽字体
- *
- * @default 'monospace'
- */
-export const MONO = ''
-/**
- * @preserve
- * 等宽字体 font-feature-settings 设置
-*
-* @default "calt"
- */
-export const MONO_SETTING = ''
+export const BASE_CONFIG = {
+  SANS: '',
+  MONO: '',
+  MONO_SETTING: '',
+  SCROLLBAR_WIDTH: 'max(0.85vw,10px)',
+}
 
 /**
  * @preserve

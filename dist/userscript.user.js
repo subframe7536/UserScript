@@ -11,23 +11,26 @@
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
 // @grant        GM_setValue
+// @run-at       document-start
 // ==/UserScript==
 
 (function () {
   'use strict';
 
-  var __defProp = Object.defineProperty;
-  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __publicField = (obj, key, value) => {
-    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-    return value;
-  };
   /**
    * @preserve
-   * 普通字体
-   *
-   * @default 'sans-serif'
+   * 基础配置
+   * - SANS: 普通字体，默认 'sans-serif'
+   * - MONO: 等宽字体，默认 'monospace'
+   * - MONO_SETTING: 等宽字体 font-feature-settings 设置，默认 'calt'
+   * - SCROLLBAR_WIDTH: 滚动条宽度，可以是任何 css 的宽度，默认 'max(0.85vw, 10px)'
    */
+  const BASE_CONFIG = {
+    SANS: "",
+    MONO: "",
+    MONO_SETTING: "",
+    SCROLLBAR_WIDTH: "max(0.85vw,10px)"
+  };
   /**
    * @preserve
    * 需要修改字体的域名的黑名单
@@ -149,45 +152,42 @@
     "twitter",
     "openvim"
   ];
-  var BaseLogger = class {
-    constructor(option = {}) {
-      __publicField(this, "logMode");
-      this.logMode = (option == null ? void 0 : option.logMode) ?? "normal";
-    }
-    withScope(scope) {
-      return new Proxy(this, {
-        get(target, prop, receiver) {
-          if (prop === "log") {
-            return (msg, level, source, e) => target.log(msg, level, scope, e);
-          }
-          return Reflect.get(target, prop, receiver);
-        }
-      });
-    }
-    filter(msg, level, source, e) {
-      if (this.logMode === "normal" && level !== "debug" || this.logMode === "debug") {
-        this.log(msg, level, source, e);
+  function createBaseLogger(option) {
+    let { logMode = "normal", onLog: onLog2, onTimer: onTimer2 } = option;
+    function filter(msg, level, scope, e) {
+      if (logMode === "normal" && level !== "debug" || logMode === "debug") {
+        onLog2(msg, level, scope, e);
       }
     }
-    info(msg, source) {
-      this.filter(msg, "info", source);
-    }
-    debug(msg, source) {
-      this.filter(msg, "debug", source);
-    }
-    warn(msg, source) {
-      this.filter(msg, "warn", source);
-    }
-    error(msg, e, source) {
-      this.filter(msg, "error", source, e);
-    }
-    timer(label) {
-      console.time(label);
-      return () => {
-        console.timeEnd(label);
-      };
-    }
-  };
+    return {
+      info(msg, scope) {
+        filter(msg, "info", scope);
+      },
+      debug(msg, scope) {
+        filter(msg, "debug", scope);
+      },
+      warn(msg, scope) {
+        filter(msg, "warn", scope);
+      },
+      error(msg, e, scope) {
+        filter(msg, "error", scope, e);
+      },
+      timer: onTimer2,
+      setLogMode(mode) {
+        logMode = mode;
+      },
+      withScope(scope) {
+        return {
+          debug: (msg) => this.debug(msg, scope),
+          info: (msg) => this.info(msg, scope),
+          warn: (msg) => this.warn(msg, scope),
+          error: (msg, e) => this.error(msg, e, scope),
+          setLogMode: this.setLogMode,
+          timer: this.timer
+        };
+      }
+    };
+  }
   var scopeColors = ["#3f6894", "#feecd8"];
   var levelColors = {
     info: "#66ba66",
@@ -195,33 +195,35 @@
     warn: "#e6a053",
     error: "#ee4f4f"
   };
-  function renderBadge(fg, bg) {
-    return `font-size:.8rem;padding:2px 6px;background-color:${bg};color:${fg};border-radius:.25rem`;
+  function renderBadge(bg, fg) {
+    return `font-size:.8rem;padding:.1rem .3rem;border-radius:.25rem;margin-inline-end:.25rem;background-color:${bg};color:${fg}`;
   }
-  var WebLogger = class extends BaseLogger {
-    log(msg, level, source, e) {
-      let _msg = `%c${level.toLocaleUpperCase()}%c `;
-      const args = [renderBadge("white", levelColors[level]), ""];
-      if (source) {
-        _msg += `%c${source}%c `;
-        args.push(renderBadge(scopeColors[0], scopeColors[1]), "");
-      }
-      _msg += `%c${msg}`;
-      args.push("");
-      console.log(_msg, ...args);
-      if (e instanceof Error) {
-        console.error(e);
-      }
+  function onLog(msg, level, scope, e) {
+    let _msg = `%c${level.toLocaleUpperCase()}%c`;
+    const args = [renderBadge(levelColors[level], "white"), ""];
+    if (scope) {
+      _msg += `%c${scope}%c`;
+      args.push(renderBadge(scopeColors[0], scopeColors[1]), "");
     }
-    timer(label) {
-      const start = performance.now();
-      return () => console.log(
-        `%c${label}%c ${(performance.now() - start).toFixed(2)}ms`,
-        renderBadge(scopeColors[0], scopeColors[1]),
-        ""
-      );
+    _msg += `%c${msg}`;
+    args.push("");
+    console.log(_msg);
+    console.log(_msg, ...args);
+    if (e instanceof Error) {
+      console.error(e);
     }
-  };
+  }
+  function onTimer(label) {
+    const start = performance.now();
+    return () => console.log(
+      `%c${label}%c${(performance.now() - start).toFixed(2)}ms`,
+      renderBadge(scopeColors[0], scopeColors[1]),
+      ""
+    );
+  }
+  function createWebLogger(logMode) {
+    return createBaseLogger({ logMode, onLog, onTimer });
+  }
   var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
   var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
   var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
@@ -229,14 +231,12 @@
   const sans = "sans-serif";
   const mono = "monospace";
   const monoSetting = "calt";
-  const logger = new WebLogger({
-    logMode: getDebug() ? "debug" : "disable"
-  }).withScope("font changer");
+  const logger = createWebLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
   function loadStyles(style) {
     if (styleArray.length || style) {
       document.documentElement.insertAdjacentHTML(
         "beforeend",
-        `<style>${style || styleArray.join("")}</style>`
+        `<style class="script-mono">${style || styleArray.join("")}</style>`
       );
       if (!style) {
         styleArray = [];
@@ -287,7 +287,7 @@
   }
   function toggleDebug() {
     const debug = !getDebug();
-    logger.logMode = debug ? "debug" : "disable";
+    logger.setLogMode(debug ? "debug" : "disable");
     _GM_setValue("debug", debug);
   }
   const __vite_glob_0_0 = ["www.51cto.com", () => {
@@ -391,7 +391,7 @@
     loadStyles();
   }
   const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}\n";
-  const scrollbar = ":root{--scrollbar-width: max(8px, .9vw)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) / 5) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}\n";
+  const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}\n";
   const current = window.location.hostname;
   logger.info(current);
   function onWindowsAndNotOnEdge() {
@@ -402,6 +402,9 @@
     if (onWindowsAndNotOnEdge()) {
       logger.info("on Windows and not on edge");
       loadStyles(scrollbar);
+      {
+        document.documentElement.style.setProperty("--scrollbar-width", BASE_CONFIG.SCROLLBAR_WIDTH);
+      }
     }
     loadSites(current, SITEMAP);
     if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
@@ -432,12 +435,20 @@
       _GM_setValue("blocklist", stored);
       location.reload();
     });
+    loadStyles(base);
   }
   _GM_registerMenuCommand(`${getDebug() ? "关闭" : "开启"} Debug 模式并刷新`, () => {
     toggleDebug();
     location.reload();
   });
-  loadStyles(base);
   loadCSS();
+  window.onload = () => {
+    setTimeout(() => {
+      if (!document.querySelector(".scripts-mono")) {
+        logger.warn("未找到 userscript-mono 标签，重新加载");
+        loadCSS();
+      }
+    }, 100);
+  };
 
 })();

@@ -1,20 +1,18 @@
-import { WebLogger } from 'consoloo/web'
-import { MONO, MONO_SETTING, SANS } from './_head'
+import { createWebLogger } from 'consoloo/web'
+import { BASE_CONFIG } from './_head'
 import { sansExcludeSelector } from './constants'
 import { GM_getValue, GM_setValue } from '$'
 
 let styleArray: string[] = []
-const sans = SANS || 'sans-serif'
-const mono = MONO || 'monospace'
-const monoSetting = MONO_SETTING || 'calt'
-export const logger = new WebLogger({
-  logMode: getDebug() ? 'debug' : 'disable',
-}).withScope('font changer')
+const sans = BASE_CONFIG.SANS || 'sans-serif'
+const mono = BASE_CONFIG.MONO || 'monospace'
+const monoSetting = BASE_CONFIG.MONO_SETTING || 'calt'
+export const logger = createWebLogger(getDebug() ? 'debug' : 'disable').withScope('scripts-mono')
 
 export function loadStyles(style?: string) {
   if (styleArray.length || style) {
     document.documentElement.insertAdjacentHTML(
-      'beforeend', `<style>${style || styleArray.join('')}</style>`,
+      'beforeend', `<style class="script-mono">${style || styleArray.join('')}</style>`,
     )
     if (!style) {
       styleArray = []
@@ -69,6 +67,6 @@ export function getDebug() {
 }
 export function toggleDebug() {
   const debug = !getDebug()
-  logger.logMode = debug ? 'debug' : 'disable'
+  logger.setLogMode(debug ? 'debug' : 'disable')
   GM_setValue('debug', debug)
 }
