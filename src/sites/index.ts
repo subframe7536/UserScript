@@ -1,5 +1,4 @@
-import { debug } from '../constants'
-import { loadStyles } from '../utils'
+import { loadStyles, logger } from '../utils'
 
 export type Site = [pattern: string, callback: () => void]
 
@@ -14,7 +13,7 @@ export function loadSites(current: string, customs: Site[]) {
     map.set(pattern, callback)
   })
   if (map.has(current)) {
-    debug && console.log(`[${current}] match current!`)
+    logger.info(`[${current}] match current!`)
     map.get(current)?.()
   }
   loadStyles()

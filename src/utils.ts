@@ -1,20 +1,29 @@
+import { WebLogger } from 'consoloo/web'
 import { MONO, MONO_SETTING, SANS } from './_head'
 import { sansExcludeSelector } from './constants'
+import { GM_getValue, GM_setValue } from '$'
 
 let styleArray: string[] = []
 const sans = SANS || 'sans-serif'
 const mono = MONO || 'monospace'
 const monoSetting = MONO_SETTING || 'calt'
+export const logger = new WebLogger({
+  logMode: getDebug() ? 'debug' : 'disable',
+}).withScope('font changer')
 
 export function loadStyles(style?: string) {
-  document.documentElement.insertAdjacentHTML(
-    'beforeend', `<style>${style || styleArray.join('')}</style>`,
-  )
-  styleArray = []
+  if (styleArray.length || style) {
+    document.documentElement.insertAdjacentHTML(
+      'beforeend', `<style>${style || styleArray.join('')}</style>`,
+    )
+    if (!style) {
+      styleArray = []
+    }
+  }
 }
 
-export function loadStyleAtHTML(property: string, value: string) {
-  document.documentElement.style.setProperty(property, value)
+export function addRootCSS(property: string, value: string) {
+  styleArray.push(`:root{${property}:${value}}`)
 }
 
 export function addCSS(selectors: string | string[], styles: string | string[]) {
@@ -37,7 +46,7 @@ export function addSansFontDefault() {
     `body :not(${sansExcludeSelector.join(',')})`,
     [
       `font-family: ${sans}`,
-      'letter-spacing: 0px !important',
+      'letter-spacing: 0px!important',
     ],
   )
 }
@@ -45,12 +54,21 @@ export function addSansFont(...selectors: string[]) {
   addCSS(
     selectors,
     [
-      `font-family: ${sans} !important`,
-      'letter-spacing: 0px !important',
+      `font-family:${sans}!important`,
+      'letter-spacing:0px!important',
     ],
   )
 }
 
 export function isInBlockList(current: string, blocklist: string[]) {
   return current && blocklist.some(pattern => current.includes(pattern))
+}
+
+export function getDebug() {
+  return GM_getValue('debug', false)
+}
+export function toggleDebug() {
+  const debug = !getDebug()
+  logger.logMode = debug ? 'debug' : 'disable'
+  GM_setValue('debug', debug)
 }

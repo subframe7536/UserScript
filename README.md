@@ -50,9 +50,11 @@ const MONO = ''
 const MONO_SETTING = ''
 ```
 
-### 工具方法
+### 工具
 
 ```
+const logger = consola
+
 function loadStyles(style?: string)
 
 function loadStyleAtHTML(property: string, value: string)

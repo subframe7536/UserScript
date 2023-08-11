@@ -1,4 +1,3 @@
-export const debug = import.meta.env.DEV
 export const sansExcludeSelector = [
   '.monaco-editor *',
   'v-text',

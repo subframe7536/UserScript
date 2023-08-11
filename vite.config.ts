@@ -6,6 +6,11 @@ export default defineConfig({
   esbuild: {
     legalComments: 'inline',
   },
+  build: {
+    rollupOptions: {
+      treeshake: true,
+    },
+  },
   plugins: [
     monkey({
       entry: 'src/main.ts',

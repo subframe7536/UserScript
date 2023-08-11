@@ -1,6 +1,6 @@
 import { BLOCKLIST, SITEMAP } from './_head'
-import { blocklist, debug, monospaceSelectors } from './constants'
-import { addCodeFont, addSansFontDefault, isInBlockList, loadStyleAtHTML, loadStyles } from './utils'
+import { blocklist, monospaceSelectors } from './constants'
+import { addCodeFont, addRootCSS, addSansFontDefault, getDebug, isInBlockList, loadStyles, logger, toggleDebug } from './utils'
 import { loadSites } from './sites'
 import base from './styles/base.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
@@ -8,7 +8,7 @@ import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
 const current = window.location.hostname
 
-debug && console.log(current)
+logger.info(current)
 
 function onWindowsAndNotOnEdge(): boolean {
   const ua = navigator.userAgent
@@ -17,6 +17,7 @@ function onWindowsAndNotOnEdge(): boolean {
 
 function loadCSS() {
   if (onWindowsAndNotOnEdge()) {
+    logger.info('on Windows and not on edge')
     loadStyles(scrollbar)
   }
   loadSites(current, SITEMAP)
@@ -24,6 +25,7 @@ function loadCSS() {
     return
   }
   if (isInBlockList(current, GM_getValue('blocklist', []))) {
+    logger.warn('排除当前域名')
     GM_registerMenuCommand('恢复当前域名并刷新', () => {
       const stored: string[] = GM_getValue('blocklist', [])
       const index = stored.indexOf(current)
@@ -37,10 +39,10 @@ function loadCSS() {
   }
   addSansFontDefault()
   addCodeFont(...monospaceSelectors)
+  addRootCSS('--d-border-radius', '0.25rem') // for discourse
+  addRootCSS('--font-mono', 'monospace')
+  addRootCSS('--font-monospace', 'monospace')
   loadStyles()
-  loadStyleAtHTML('--d-border-radius', '0.25rem')
-  loadStyleAtHTML('--font-mono', 'monospace')
-  loadStyleAtHTML('--font-monospace', 'monospace')
 
   GM_registerMenuCommand('排除当前域名并刷新', () => {
     const stored: string[] = GM_getValue('blocklist', [])
@@ -50,5 +52,9 @@ function loadCSS() {
   })
 }
 
+GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷新`, () => {
+  toggleDebug()
+  location.reload()
+})
 loadStyles(base)
 loadCSS()

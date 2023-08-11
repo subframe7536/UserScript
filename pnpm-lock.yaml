@@ -13,6 +13,9 @@ devDependencies:
   consola:
     specifier: ^3.2.3
     version: 3.2.3
+  consoloo:
+    specifier: 0.6.0
+    version: 0.6.0
   eslint:
     specifier: ^8.46.0
     version: 8.46.0
@@ -1250,6 +1253,12 @@ packages:
   /consola@3.2.3:
     resolution: {integrity: sha512-I5qxpzLv+sJhTVEoLYNcTW+bThDCPsit0vLNKShZx6rLtpilNpmmeTPaeqJb9ZE9dV3DGaeby6Vuhrw38WjeyQ==}
     engines: {node: ^14.18.0 || >=16.10.0}
+    dev: true
+
+  /consoloo@0.6.0:
+    resolution: {integrity: sha512-unbn8E5aExAPBpwKQHdREoyVYZmJSOPpdBv1Hoz25V7+OvEVGn5X+Wr0MdBQjM1aHeJSGzpDSI7btogW2w4oNg==}
+    dependencies:
+      picocolors: 1.0.0
     dev: true
 
   /cross-spawn@7.0.3:
