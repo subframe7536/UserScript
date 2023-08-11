@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.10
+// @version      1.0.11
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -16,6 +16,12 @@
 (function () {
   'use strict';
 
+  var __defProp = Object.defineProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __publicField = (obj, key, value) => {
+    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+    return value;
+  };
   /**
    * @preserve
    * 普通字体
@@ -143,19 +149,102 @@
     "twitter",
     "openvim"
   ];
+  var BaseLogger = class {
+    constructor(option = {}) {
+      __publicField(this, "logMode");
+      this.logMode = (option == null ? void 0 : option.logMode) ?? "normal";
+    }
+    withScope(scope) {
+      return new Proxy(this, {
+        get(target, prop, receiver) {
+          if (prop === "log") {
+            return (msg, level, source, e) => target.log(msg, level, scope, e);
+          }
+          return Reflect.get(target, prop, receiver);
+        }
+      });
+    }
+    filter(msg, level, source, e) {
+      if (this.logMode === "normal" && level !== "debug" || this.logMode === "debug") {
+        this.log(msg, level, source, e);
+      }
+    }
+    info(msg, source) {
+      this.filter(msg, "info", source);
+    }
+    debug(msg, source) {
+      this.filter(msg, "debug", source);
+    }
+    warn(msg, source) {
+      this.filter(msg, "warn", source);
+    }
+    error(msg, e, source) {
+      this.filter(msg, "error", source, e);
+    }
+    timer(label) {
+      console.time(label);
+      return () => {
+        console.timeEnd(label);
+      };
+    }
+  };
+  var scopeColors = ["#3f6894", "#feecd8"];
+  var levelColors = {
+    info: "#66ba66",
+    debug: "#129ede",
+    warn: "#e6a053",
+    error: "#ee4f4f"
+  };
+  function renderBadge(fg, bg) {
+    return `font-size:.8rem;padding:2px 6px;background-color:${bg};color:${fg};border-radius:.25rem`;
+  }
+  var WebLogger = class extends BaseLogger {
+    log(msg, level, source, e) {
+      let _msg = `%c${level.toLocaleUpperCase()}%c `;
+      const args = [renderBadge("white", levelColors[level]), ""];
+      if (source) {
+        _msg += `%c${source}%c `;
+        args.push(renderBadge(scopeColors[0], scopeColors[1]), "");
+      }
+      _msg += `%c${msg}`;
+      args.push("");
+      console.log(_msg, ...args);
+      if (e instanceof Error) {
+        console.error(e);
+      }
+    }
+    timer(label) {
+      const start = performance.now();
+      return () => console.log(
+        `%c${label}%c ${(performance.now() - start).toFixed(2)}ms`,
+        renderBadge(scopeColors[0], scopeColors[1]),
+        ""
+      );
+    }
+  };
+  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
+  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
+  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   let styleArray = [];
   const sans = "sans-serif";
   const mono = "monospace";
   const monoSetting = "calt";
+  const logger = new WebLogger({
+    logMode: getDebug() ? "debug" : "disable"
+  }).withScope("font changer");
   function loadStyles(style) {
-    document.documentElement.insertAdjacentHTML(
-      "beforeend",
-      `<style>${style || styleArray.join("")}</style>`
-    );
-    styleArray = [];
+    if (styleArray.length || style) {
+      document.documentElement.insertAdjacentHTML(
+        "beforeend",
+        `<style>${style || styleArray.join("")}</style>`
+      );
+      if (!style) {
+        styleArray = [];
+      }
+    }
   }
-  function loadStyleAtHTML(property, value) {
-    document.documentElement.style.setProperty(property, value);
+  function addRootCSS(property, value) {
+    styleArray.push(`:root{${property}:${value}}`);
   }
   function addCSS(selectors, styles) {
     selectors = Array.isArray(selectors) ? selectors : [selectors];
@@ -177,7 +266,7 @@
       `body :not(${sansExcludeSelector.join(",")})`,
       [
         `font-family: ${sans}`,
-        "letter-spacing: 0px !important"
+        "letter-spacing: 0px!important"
       ]
     );
   }
@@ -185,13 +274,21 @@
     addCSS(
       selectors,
       [
-        `font-family: ${sans} !important`,
-        "letter-spacing: 0px !important"
+        `font-family:${sans}!important`,
+        "letter-spacing:0px!important"
       ]
     );
   }
   function isInBlockList(current2, blocklist2) {
     return current2 && blocklist2.some((pattern) => current2.includes(pattern));
+  }
+  function getDebug() {
+    return _GM_getValue("debug", false);
+  }
+  function toggleDebug() {
+    const debug = !getDebug();
+    logger.logMode = debug ? "debug" : "disable";
+    _GM_setValue("debug", debug);
   }
   const __vite_glob_0_0 = ["www.51cto.com", () => {
     addCodeFont(
@@ -264,14 +361,14 @@
     addCSS(":root", "--font-body:sans-serif!important");
   }];
   const __vite_glob_0_13 = ["regex101.com", () => {
-    loadStyleAtHTML("--code-font", "monospace,sans-serif!important");
-    loadStyleAtHTML("--app-font", "sans-serif!important");
+    addRootCSS("--code-font", "monospace,sans-serif!important");
+    addRootCSS("--app-font", "sans-serif!important");
   }];
   const __vite_glob_0_14 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
-  const __vite_glob_0_15 = ["", () => {
-    addCodeFont(".w3-code *");
+  const __vite_glob_0_15 = ["www.w3cschool.com.cn", () => {
+    addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
   const __vite_glob_0_16 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
@@ -288,22 +385,22 @@
       map.set(pattern, callback);
     });
     if (map.has(current2)) {
+      logger.info(`[${current2}] match current!`);
       (_a = map.get(current2)) == null ? void 0 : _a();
     }
     loadStyles();
   }
   const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}\n";
-  const scrollbar = "::-webkit-scrollbar{width:8px!important;height:8px!important}::-webkit-scrollbar-track{background-color:transparent!important;border-radius:8px!important;box-shadow:none!important}::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 10px!important;border-radius:8px!important;border:2px solid transparent!important;background-clip:content-box;background-color:transparent!important;color:#0003}::-webkit-scrollbar-thumb:hover{color:#0006!important}::-webkit-scrollbar-thumb:active{color:#0009!important}\n";
-  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
-  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
-  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
+  const scrollbar = ":root{--scrollbar-width: max(8px, .9vw)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) / 5) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}\n";
   const current = window.location.hostname;
+  logger.info(current);
   function onWindowsAndNotOnEdge() {
     const ua = navigator.userAgent;
     return /Windows/.test(ua) && !/Edg/.test(ua);
   }
   function loadCSS() {
     if (onWindowsAndNotOnEdge()) {
+      logger.info("on Windows and not on edge");
       loadStyles(scrollbar);
     }
     loadSites(current, SITEMAP);
@@ -311,6 +408,7 @@
       return;
     }
     if (isInBlockList(current, _GM_getValue("blocklist", []))) {
+      logger.warn("排除当前域名");
       _GM_registerMenuCommand("恢复当前域名并刷新", () => {
         const stored = _GM_getValue("blocklist", []);
         const index = stored.indexOf(current);
@@ -324,10 +422,10 @@
     }
     addSansFontDefault();
     addCodeFont(...monospaceSelectors);
+    addRootCSS("--d-border-radius", "0.25rem");
+    addRootCSS("--font-mono", "monospace");
+    addRootCSS("--font-monospace", "monospace");
     loadStyles();
-    loadStyleAtHTML("--d-border-radius", "0.25rem");
-    loadStyleAtHTML("--font-mono", "monospace");
-    loadStyleAtHTML("--font-monospace", "monospace");
     _GM_registerMenuCommand("排除当前域名并刷新", () => {
       const stored = _GM_getValue("blocklist", []);
       stored.push(current);
@@ -335,6 +433,10 @@
       location.reload();
     });
   }
+  _GM_registerMenuCommand(`${getDebug() ? "关闭" : "开启"} Debug 模式并刷新`, () => {
+    toggleDebug();
+    location.reload();
+  });
   loadStyles(base);
   loadCSS();
 
