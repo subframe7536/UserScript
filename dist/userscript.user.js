@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.11
+// @version      1.0.12
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -152,11 +152,11 @@
     "twitter",
     "openvim"
   ];
-  function createBaseLogger(option) {
-    let { logMode = "normal", onLog: onLog2, onTimer: onTimer2 } = option;
+  function createLogger(option) {
+    let { logMode = "normal", onLog, onTimer } = option;
     function filter(msg, level, scope, e) {
       if (logMode === "normal" && level !== "debug" || logMode === "debug") {
-        onLog2(msg, level, scope, e);
+        onLog(msg, level, scope, e);
       }
     }
     return {
@@ -172,7 +172,7 @@
       error(msg, e, scope) {
         filter(msg, "error", scope, e);
       },
-      timer: onTimer2,
+      timer: onTimer,
       setLogMode(mode) {
         logMode = mode;
       },
@@ -198,7 +198,7 @@
   function renderBadge(bg, fg) {
     return `font-size:.8rem;padding:.1rem .3rem;border-radius:.25rem;margin-inline-end:.25rem;background-color:${bg};color:${fg}`;
   }
-  function onLog(msg, level, scope, e) {
+  function onWebLog(msg, level, scope, e) {
     let _msg = `%c${level.toLocaleUpperCase()}%c`;
     const args = [renderBadge(levelColors[level], "white"), ""];
     if (scope) {
@@ -213,7 +213,7 @@
       console.error(e);
     }
   }
-  function onTimer(label) {
+  function onWebTimer(label) {
     const start = performance.now();
     return () => console.log(
       `%c${label}%c${(performance.now() - start).toFixed(2)}ms`,
@@ -222,7 +222,7 @@
     );
   }
   function createWebLogger(logMode) {
-    return createBaseLogger({ logMode, onLog, onTimer });
+    return createLogger({ logMode, onLog: onWebLog, onTimer: onWebTimer });
   }
   var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
   var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
