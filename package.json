@@ -1,6 +1,6 @@
 {
   "name": "userscript",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,7 +14,7 @@
     "@types/node": "^20.4.8",
     "bumpp": "^9.1.1",
     "consola": "^3.2.3",
-    "consoloo": "^0.7.0",
+    "consoloo": "^0.7.1",
     "eslint": "^8.46.0",
     "esno": "^0.17.0",
     "typescript": "^5.1.6",

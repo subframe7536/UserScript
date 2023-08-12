@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.12
+// @version      1.0.13
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
 // @icon         https://foruda.gitee.com/avatar/1677064980766394537/5705841_subframe7536_1652618638.png!avatar200
 // @supportURL   https://github.com/subframe7536/userscript
 // @match        *://*/*
+// @grant        GM_deleteValue
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
 // @grant        GM_setValue
@@ -29,7 +30,7 @@
     SANS: "",
     MONO: "",
     MONO_SETTING: "",
-    SCROLLBAR_WIDTH: "max(0.85vw,10px)"
+    SCROLLBAR_WIDTH: ""
   };
   /**
    * @preserve
@@ -54,8 +55,25 @@
    *   }],
    * ]
    * ```
-   */
+  */
   const SITEMAP = [];
+  var _GM_deleteValue = /* @__PURE__ */ (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
+  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
+  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
+  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
+  const moduleName = "script-mono";
+  function getConfig(key, defaultValue) {
+    let ret = _GM_getValue(key, void 0) ?? defaultValue;
+    if (BASE_CONFIG[key]) {
+      ret = BASE_CONFIG[key];
+      _GM_setValue(key, ret);
+    }
+    return ret;
+  }
+  BASE_CONFIG.SANS = getConfig("SANS", "sans-serif");
+  BASE_CONFIG.MONO = getConfig("MONO", "monospace");
+  BASE_CONFIG.MONO_SETTING = getConfig("MONO_SETTING", "calt");
+  BASE_CONFIG.SCROLLBAR_WIDTH = getConfig("SCROLLBAR_WIDTH", "max(0.85vw,10px)");
   const sansExcludeSelector = [
     ".monaco-editor *",
     "v-text",
@@ -150,68 +168,59 @@
     "unicode",
     "math",
     "twitter",
-    "openvim"
+    "openvim",
+    "regexp101"
   ];
   function createLogger(option) {
     let { logMode = "normal", onLog, onTimer } = option;
-    function filter(msg, level, scope, e) {
-      if (logMode === "normal" && level !== "debug" || logMode === "debug") {
-        onLog(msg, level, scope, e);
-      }
-    }
+    const filter = (level) => (msg, e, scope) => (logMode === "normal" && level !== "debug" || logMode === "debug") && onLog(msg, level, scope, e);
     return {
-      info(msg, scope) {
-        filter(msg, "info", scope);
-      },
-      debug(msg, scope) {
-        filter(msg, "debug", scope);
-      },
-      warn(msg, scope) {
-        filter(msg, "warn", scope);
-      },
-      error(msg, e, scope) {
-        filter(msg, "error", scope, e);
-      },
+      info: filter("info"),
+      debug: filter("debug"),
+      warn: filter("warn"),
+      error: filter("error"),
       timer: onTimer,
-      setLogMode(mode) {
-        logMode = mode;
-      },
+      setLogMode: (mode) => logMode = mode,
       withScope(scope) {
-        return {
-          debug: (msg) => this.debug(msg, scope),
-          info: (msg) => this.info(msg, scope),
-          warn: (msg) => this.warn(msg, scope),
-          error: (msg, e) => this.error(msg, e, scope),
-          setLogMode: this.setLogMode,
-          timer: this.timer
-        };
+        return new Proxy(this, {
+          get: (target, prop, receiver) => ["info", "debug", "warn", "error"].includes(prop) ? (msg, e) => filter(prop)(msg, e, scope) : Reflect.get(target, prop, receiver)
+        });
       }
     };
   }
   var scopeColors = ["#3f6894", "#feecd8"];
   var levelColors = {
-    info: "#66ba66",
-    debug: "#129ede",
-    warn: "#e6a053",
-    error: "#ee4f4f"
+    debug: "hsl(205, 50%, 60%)",
+    info: "hsl(114, 35%, 60%)",
+    warn: "hsl(40, 65%, 60%)",
+    error: "hsl(0, 60%, 70%)"
   };
-  function renderBadge(bg, fg) {
-    return `font-size:.8rem;padding:.1rem .3rem;border-radius:.25rem;margin-inline-end:.25rem;background-color:${bg};color:${fg}`;
+  var r = ".3rem";
+  function renderBadge(bg, fg, radius = r) {
+    return `font-size:.8rem;padding:.1rem .3rem;border-radius:${radius};background-color:${bg};color:${fg}`;
   }
   function onWebLog(msg, level, scope, e) {
-    let _msg = `%c${level.toLocaleUpperCase()}%c`;
-    const args = [renderBadge(levelColors[level], "white"), ""];
+    let _msg = `%c${level.toLocaleUpperCase()}`;
+    const args = [];
     if (scope) {
-      _msg += `%c${scope}%c`;
-      args.push(renderBadge(scopeColors[0], scopeColors[1]), "");
+      _msg += `%c${scope}`;
+      args.push(
+        renderBadge(levelColors[level], "white", `${r} 0 0 ${r}`),
+        renderBadge(scopeColors[0], scopeColors[1], `0 ${r} ${r} 0`)
+      );
+    } else {
+      args.push(renderBadge(levelColors[level], "white"));
     }
-    _msg += `%c${msg}`;
+    _msg += "%c ";
     args.push("");
-    console.log(_msg);
-    console.log(_msg, ...args);
-    if (e instanceof Error) {
-      console.error(e);
+    if (typeof msg !== "object") {
+      _msg += msg;
+    } else {
+      _msg += "%o";
+      args.push(msg);
     }
+    console.log(_msg, ...args);
+    e && console.error(e);
   }
   function onWebTimer(label) {
     const start = performance.now();
@@ -224,19 +233,13 @@
   function createWebLogger(logMode) {
     return createLogger({ logMode, onLog: onWebLog, onTimer: onWebTimer });
   }
-  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
-  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
-  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   let styleArray = [];
-  const sans = "sans-serif";
-  const mono = "monospace";
-  const monoSetting = "calt";
   const logger = createWebLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
   function loadStyles(style) {
     if (styleArray.length || style) {
       document.documentElement.insertAdjacentHTML(
         "beforeend",
-        `<style class="script-mono">${style || styleArray.join("")}</style>`
+        `<style class="${moduleName}">${style || styleArray.join("")}</style>`
       );
       if (!style) {
         styleArray = [];
@@ -255,8 +258,8 @@
     addCSS(
       selectors,
       [
-        `font-family: ${mono}, ${sans} !important`,
-        `font-feature-settings: ${monoSetting} !important`,
+        `font-family: ${BASE_CONFIG.MONO}, ${BASE_CONFIG.SANS} !important`,
+        `font-feature-settings: ${BASE_CONFIG.MONO_SETTING} !important`,
         "letter-spacing: 0px !important"
       ]
     );
@@ -265,7 +268,7 @@
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
-        `font-family: ${sans}`,
+        `font-family: ${BASE_CONFIG.SANS}`,
         "letter-spacing: 0px!important"
       ]
     );
@@ -274,7 +277,7 @@
     addCSS(
       selectors,
       [
-        `font-family:${sans}!important`,
+        `font-family:${BASE_CONFIG.SANS}!important`,
         "letter-spacing:0px!important"
       ]
     );
@@ -402,9 +405,7 @@
     if (onWindowsAndNotOnEdge()) {
       logger.info("on Windows and not on edge");
       loadStyles(scrollbar);
-      {
-        document.documentElement.style.setProperty("--scrollbar-width", BASE_CONFIG.SCROLLBAR_WIDTH);
-      }
+      document.documentElement.style.setProperty("--scrollbar-width", BASE_CONFIG.SCROLLBAR_WIDTH);
     }
     loadSites(current, SITEMAP);
     if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
@@ -437,6 +438,12 @@
     });
     loadStyles(base);
   }
+  _GM_registerMenuCommand("重置设置", () => {
+    _GM_deleteValue("SANS");
+    _GM_deleteValue("MONO");
+    _GM_deleteValue("MONO_SETTING");
+    _GM_deleteValue("SCROLLBAR_WIDTH");
+  });
   _GM_registerMenuCommand(`${getDebug() ? "关闭" : "开启"} Debug 模式并刷新`, () => {
     toggleDebug();
     location.reload();
@@ -444,7 +451,7 @@
   loadCSS();
   window.onload = () => {
     setTimeout(() => {
-      if (!document.querySelector(".scripts-mono")) {
+      if (!document.querySelector(`.${moduleName}`)) {
         logger.warn("未找到 userscript-mono 标签，重新加载");
         loadCSS();
       }
