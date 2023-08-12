@@ -12,7 +12,7 @@ export const BASE_CONFIG = {
   SANS: '',
   MONO: '',
   MONO_SETTING: '',
-  SCROLLBAR_WIDTH: 'max(0.85vw,10px)',
+  SCROLLBAR_WIDTH: '',
 }
 
 /**
@@ -39,5 +39,5 @@ export const BLOCKLIST: string[] = []
  *   }],
  * ]
  * ```
- */
+*/
 export const SITEMAP: Site[] = []

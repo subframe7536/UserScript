@@ -1,10 +1,10 @@
 import { BASE_CONFIG, BLOCKLIST, SITEMAP } from './_head'
-import { blocklist, monospaceSelectors } from './constants'
+import { blocklist, moduleName, monospaceSelectors } from './constants'
 import { addCodeFont, addRootCSS, addSansFontDefault, getDebug, isInBlockList, loadStyles, logger, toggleDebug } from './utils'
 import { loadSites } from './sites'
 import base from './styles/base.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
-import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
+import { GM_deleteValue, GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
 const current = window.location.hostname
 
@@ -19,9 +19,7 @@ function loadCSS() {
   if (onWindowsAndNotOnEdge()) {
     logger.info('on Windows and not on edge')
     loadStyles(scrollbar)
-    if (BASE_CONFIG.SCROLLBAR_WIDTH) {
-      document.documentElement.style.setProperty('--scrollbar-width', BASE_CONFIG.SCROLLBAR_WIDTH)
-    }
+    document.documentElement.style.setProperty('--scrollbar-width', BASE_CONFIG.SCROLLBAR_WIDTH)
   }
   loadSites(current, SITEMAP)
   if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
@@ -56,6 +54,13 @@ function loadCSS() {
   loadStyles(base)
 }
 
+GM_registerMenuCommand('重置设置', () => {
+  GM_deleteValue('SANS')
+  GM_deleteValue('MONO')
+  GM_deleteValue('MONO_SETTING')
+  GM_deleteValue('SCROLLBAR_WIDTH')
+})
+
 GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷新`, () => {
   toggleDebug()
   location.reload()
@@ -63,7 +68,7 @@ GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷�
 loadCSS()
 window.onload = () => {
   setTimeout(() => {
-    if (!document.querySelector('.scripts-mono')) {
+    if (!document.querySelector(`.${moduleName}`)) {
       logger.warn('未找到 userscript-mono 标签，重新加载')
       loadCSS()
     }

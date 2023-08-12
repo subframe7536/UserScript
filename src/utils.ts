@@ -1,18 +1,16 @@
 import { createWebLogger } from 'consoloo/web'
+import { moduleName, sansExcludeSelector } from './constants'
 import { BASE_CONFIG } from './_head'
-import { sansExcludeSelector } from './constants'
 import { GM_getValue, GM_setValue } from '$'
 
 let styleArray: string[] = []
-const sans = BASE_CONFIG.SANS || 'sans-serif'
-const mono = BASE_CONFIG.MONO || 'monospace'
-const monoSetting = BASE_CONFIG.MONO_SETTING || 'calt'
+
 export const logger = createWebLogger(getDebug() ? 'debug' : 'disable').withScope('scripts-mono')
 
 export function loadStyles(style?: string) {
   if (styleArray.length || style) {
     document.documentElement.insertAdjacentHTML(
-      'beforeend', `<style class="script-mono">${style || styleArray.join('')}</style>`,
+      'beforeend', `<style class="${moduleName}">${style || styleArray.join('')}</style>`,
     )
     if (!style) {
       styleArray = []
@@ -33,8 +31,8 @@ export function addCodeFont(...selectors: string[]) {
   addCSS(
     selectors,
     [
-      `font-family: ${mono}, ${sans} !important`,
-      `font-feature-settings: ${monoSetting} !important`,
+      `font-family: ${BASE_CONFIG.MONO}, ${BASE_CONFIG.SANS} !important`,
+      `font-feature-settings: ${BASE_CONFIG.MONO_SETTING} !important`,
       'letter-spacing: 0px !important',
     ],
   )
@@ -43,7 +41,7 @@ export function addSansFontDefault() {
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [
-      `font-family: ${sans}`,
+      `font-family: ${BASE_CONFIG.SANS}`,
       'letter-spacing: 0px!important',
     ],
   )
@@ -52,7 +50,7 @@ export function addSansFont(...selectors: string[]) {
   addCSS(
     selectors,
     [
-      `font-family:${sans}!important`,
+      `font-family:${BASE_CONFIG.SANS}!important`,
       'letter-spacing:0px!important',
     ],
   )
