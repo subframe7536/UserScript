@@ -326,8 +326,12 @@
     );
     addCodeFont("body .markdown_views pre code.prism .token.comment");
   }];
-  const __vite_glob_0_6 = ["", () => {
+  const __vite_glob_0_6 = ["discord.com", () => {
     addCodeFont("[class^=codeBlockSyntax]", "[class^=codeLine] *", "[class*=inlineCode]>span");
+    addRootCSS("--font-code", `${BASE_CONFIG.MONO},${BASE_CONFIG.SANS}!important`);
+    addRootCSS("--font-display", `${BASE_CONFIG.SANS}!important`);
+    addRootCSS("--font-primary", `${BASE_CONFIG.SANS}!important`);
+    addRootCSS("--font-headline", `${BASE_CONFIG.SANS}!important`);
   }];
   const __vite_glob_0_7 = ["gitee.com", () => {
     addCodeFont(".commit-id", "input", "textarea");
