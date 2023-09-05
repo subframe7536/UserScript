@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.15
+// @version      1.0.16
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -75,7 +75,8 @@
   BASE_CONFIG.MONO_SETTING = getConfig("MONO_SETTING", ["calt"]);
   BASE_CONFIG.SCROLLBAR_WIDTH = getConfig("SCROLLBAR_WIDTH", "max(0.85vw,10px)");
   const sansExcludeSelector = [
-    ".monaco-editor *",
+    // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
+    'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *',
     "v-text",
     "[data-virgo-text=true]",
     // math
@@ -265,7 +266,6 @@
     );
   }
   function addSansFontDefault() {
-    addCSS("body", `font-family: ${BASE_CONFIG.MONO}`);
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
@@ -438,6 +438,7 @@
     addRootCSS("--d-border-radius", "0.25rem");
     addRootCSS("--font-mono", "monospace");
     addRootCSS("--font-monospace", "monospace");
+    addRootCSS("--code-font", "monospace");
     loadStyles();
     _GM_registerMenuCommand("排除当前域名并刷新", () => {
       const stored = _GM_getValue("blocklist", []);
