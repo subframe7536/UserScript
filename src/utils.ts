@@ -40,6 +40,7 @@ export function addCodeFont(...selectors: string[]) {
 // internal
 export function addSansFontDefault() {
   // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
+  addCSS('body', `font-family: ${BASE_CONFIG.MONO}`)
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [

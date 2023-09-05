@@ -10,15 +10,15 @@
     "release": "bumpp -x \"pnpm build\" --all"
   },
   "devDependencies": {
-    "@subframe7536/eslint-config": "^0.2.3",
-    "@types/node": "^20.4.8",
-    "bumpp": "^9.1.1",
+    "@subframe7536/eslint-config": "^0.2.8",
+    "@types/node": "^20.5.9",
+    "bumpp": "^9.2.0",
     "consola": "^3.2.3",
-    "consoloo": "^0.7.1",
-    "eslint": "^8.46.0",
+    "consoloo": "^0.7.3",
+    "eslint": "^8.48.0",
     "esno": "^0.17.0",
-    "typescript": "^5.1.6",
+    "typescript": "^5.2.2",
     "vite": "^4.4.9",
-    "vite-plugin-monkey": "^3.4.0"
+    "vite-plugin-monkey": "^3.5.0"
   }
 }
