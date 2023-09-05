@@ -43,6 +43,7 @@ function init() {
   addRootCSS('--d-border-radius', '0.25rem') // for discourse
   addRootCSS('--font-mono', 'monospace')
   addRootCSS('--font-monospace', 'monospace')
+  addRootCSS('--code-font', 'monospace')
   loadStyles()
 
   GM_registerMenuCommand('排除当前域名并刷新', () => {

@@ -17,7 +17,8 @@ BASE_CONFIG.MONO = getConfig('MONO', 'monospace')
 BASE_CONFIG.MONO_SETTING = getConfig('MONO_SETTING', ['calt'])
 BASE_CONFIG.SCROLLBAR_WIDTH = getConfig('SCROLLBAR_WIDTH', 'max(0.85vw,10px)')
 export const sansExcludeSelector = [
-  '.monaco-editor *',
+  // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
+  'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *',
   'v-text',
   '[data-virgo-text=true]',
   // math
