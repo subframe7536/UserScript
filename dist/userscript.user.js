@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.13
+// @version      1.0.14
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -23,13 +23,13 @@
    * 基础配置
    * - SANS: 普通字体，默认 'sans-serif'
    * - MONO: 等宽字体，默认 'monospace'
-   * - MONO_SETTING: 等宽字体 font-feature-settings 设置，默认 'calt'
+   * - MONO_SETTING: 等宽字体 font-feature-settings 设置，默认 ['calt']
    * - SCROLLBAR_WIDTH: 滚动条宽度，可以是任何 css 的宽度，默认 'max(0.85vw, 10px)'
    */
   const BASE_CONFIG = {
     SANS: "",
     MONO: "",
-    MONO_SETTING: "",
+    MONO_SETTING: [""],
     SCROLLBAR_WIDTH: ""
   };
   /**
@@ -50,7 +50,7 @@
    *   ['w3cschools.com', () => {
    *     addCodeFont('.w3-code *')
    *   }],
-   *   ['yuque.com', () => {
+   *   [['yuque.com'], () => {
    *     //...
    *   }],
    * ]
@@ -72,7 +72,7 @@
   }
   BASE_CONFIG.SANS = getConfig("SANS", "sans-serif");
   BASE_CONFIG.MONO = getConfig("MONO", "monospace");
-  BASE_CONFIG.MONO_SETTING = getConfig("MONO_SETTING", "calt");
+  BASE_CONFIG.MONO_SETTING = getConfig("MONO_SETTING", ["calt"]);
   BASE_CONFIG.SCROLLBAR_WIDTH = getConfig("SCROLLBAR_WIDTH", "max(0.85vw,10px)");
   const sansExcludeSelector = [
     ".monaco-editor *",
@@ -259,7 +259,7 @@
       selectors,
       [
         `font-family: ${BASE_CONFIG.MONO}, ${BASE_CONFIG.SANS} !important`,
-        `font-feature-settings: ${BASE_CONFIG.MONO_SETTING} !important`,
+        `font-feature-settings: ${BASE_CONFIG.MONO_SETTING.map((s) => `"${s}"`).join(",")} !important`,
         "letter-spacing: 0px !important"
       ]
     );
@@ -309,7 +309,7 @@
   const __vite_glob_0_2 = ["www.baidu.com", () => {
     addSansFont("input");
   }];
-  const __vite_glob_0_3 = ["www.bilibili.com", () => {
+  const __vite_glob_0_3 = [["www.bilibili.com", "t.bilibili.com"], () => {
     addSansFont(
       ".bili-comment.browser-pc *",
       ".video-page-card-small .card-box .info .title"
@@ -385,8 +385,12 @@
     var _a;
     const map = /* @__PURE__ */ new Map();
     const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./regex101.ts": __vite_glob_0_13, "./stackoverflow.ts": __vite_glob_0_14, "./w3cschools.ts": __vite_glob_0_15, "./yuque.ts": __vite_glob_0_16 });
-    Object.values(configs).forEach(([pattern, callback]) => {
-      map.set(pattern, callback);
+    Object.values(configs).forEach(([site, callback]) => {
+      let patterns = site;
+      if (!Array.isArray(site)) {
+        patterns = [site];
+      }
+      patterns.forEach((pattern) => map.set(pattern, callback));
     });
     customs.forEach(([pattern, callback]) => {
       map.set(pattern, callback);
@@ -405,7 +409,7 @@
     const ua = navigator.userAgent;
     return /Windows/.test(ua) && !/Edg/.test(ua);
   }
-  function loadCSS() {
+  function init() {
     if (onWindowsAndNotOnEdge()) {
       logger.info("on Windows and not on edge");
       loadStyles(scrollbar);
@@ -428,7 +432,6 @@
       });
       return;
     }
-    addSansFontDefault();
     addCodeFont(...monospaceSelectors);
     addRootCSS("--d-border-radius", "0.25rem");
     addRootCSS("--font-mono", "monospace");
@@ -452,12 +455,14 @@
     toggleDebug();
     location.reload();
   });
-  loadCSS();
+  init();
   window.onload = () => {
     setTimeout(() => {
+      addSansFontDefault();
+      loadStyles();
       if (!document.querySelector(`.${moduleName}`)) {
         logger.warn("未找到 userscript-mono 标签，重新加载");
-        loadCSS();
+        init();
       }
     }, 100);
   };
