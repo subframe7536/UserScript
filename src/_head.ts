@@ -5,13 +5,13 @@ import type { Site } from './sites'
  * 基础配置
  * - SANS: 普通字体，默认 'sans-serif'
  * - MONO: 等宽字体，默认 'monospace'
- * - MONO_SETTING: 等宽字体 font-feature-settings 设置，默认 'calt'
+ * - MONO_SETTING: 等宽字体 font-feature-settings 设置，默认 ['calt']
  * - SCROLLBAR_WIDTH: 滚动条宽度，可以是任何 css 的宽度，默认 'max(0.85vw, 10px)'
  */
 export const BASE_CONFIG = {
   SANS: '',
   MONO: '',
-  MONO_SETTING: '',
+  MONO_SETTING: [''],
   SCROLLBAR_WIDTH: '',
 }
 
@@ -34,7 +34,7 @@ export const BLOCKLIST: string[] = []
  *   ['w3cschools.com', () => {
  *     addCodeFont('.w3-code *')
  *   }],
- *   ['yuque.com', () => {
+ *   [['yuque.com'], () => {
  *     //...
  *   }],
  * ]

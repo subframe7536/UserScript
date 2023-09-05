@@ -6,7 +6,7 @@
 
 ## 自定义配置
 
-```
+```ts
 /**
  * 基础配置
  * - SANS: 普通字体，默认 'sans-serif'
@@ -25,7 +25,7 @@ export const BASE_CONFIG = {
  *
  * @example ['font']
  */
-const BLOCKLIST = [];
+const BLOCKLIST = []
 /**
  * 字体修改的规则
  * type: [pattern, callback]
@@ -36,18 +36,18 @@ const BLOCKLIST = [];
  *   ['w3cschools.com', () => {
  *     addCodeFont('.w3-code *')
  *   }],
- *   ['yuque.com', () => {
+ *   [['yuque.com'], () => {
  *     //...
  *   }],
  * ]
  * ```
  */
-const SITEMAP = [];
+const SITEMAP = []
 ```
 
 ### 工具
 
-```
+```ts
 function loadStyles(style?: string)
 
 function loadStyleAtHTML(property: string, value: string)

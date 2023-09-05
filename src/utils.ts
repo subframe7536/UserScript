@@ -32,12 +32,14 @@ export function addCodeFont(...selectors: string[]) {
     selectors,
     [
       `font-family: ${BASE_CONFIG.MONO}, ${BASE_CONFIG.SANS} !important`,
-      `font-feature-settings: ${BASE_CONFIG.MONO_SETTING} !important`,
+      `font-feature-settings: ${BASE_CONFIG.MONO_SETTING.map(s => `"${s}"`).join(',')} !important`,
       'letter-spacing: 0px !important',
     ],
   )
 }
+// internal
 export function addSansFontDefault() {
+  // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [

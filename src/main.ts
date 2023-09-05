@@ -15,7 +15,7 @@ function onWindowsAndNotOnEdge(): boolean {
   return /Windows/.test(ua) && !/Edg/.test(ua)
 }
 
-function loadCSS() {
+function init() {
   if (onWindowsAndNotOnEdge()) {
     logger.info('on Windows and not on edge')
     loadStyles(scrollbar)
@@ -38,7 +38,6 @@ function loadCSS() {
     })
     return
   }
-  addSansFontDefault()
   addCodeFont(...monospaceSelectors)
   addRootCSS('--d-border-radius', '0.25rem') // for discourse
   addRootCSS('--font-mono', 'monospace')
@@ -65,12 +64,14 @@ GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷�
   toggleDebug()
   location.reload()
 })
-loadCSS()
+init()
 window.onload = () => {
   setTimeout(() => {
+    addSansFontDefault()
+    loadStyles()
     if (!document.querySelector(`.${moduleName}`)) {
       logger.warn('未找到 userscript-mono 标签，重新加载')
-      loadCSS()
+      init()
     }
   }, 100)
 }
