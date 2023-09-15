@@ -10,14 +10,8 @@ const current = window.location.hostname
 
 logger.info(current)
 
-function onWindowsAndNotOnEdge(): boolean {
-  const ua = navigator.userAgent
-  return /Windows/.test(ua) && !/Edg/.test(ua)
-}
-
 function init() {
-  if (onWindowsAndNotOnEdge()) {
-    logger.info('on Windows and not on edge')
+  if (BASE_CONFIG.SCROLLBAR) {
     loadStyles(scrollbar)
     document.documentElement.style.setProperty('--scrollbar-width', BASE_CONFIG.SCROLLBAR_WIDTH)
   }
@@ -55,10 +49,17 @@ function init() {
   loadStyles(base)
 }
 
+GM_registerMenuCommand(`${BASE_CONFIG.SCROLLBAR ? '关闭' : '开启'}滚动条美化并刷新`, () => {
+  GM_setValue('SCROLLBAR', !BASE_CONFIG.SCROLLBAR)
+  logger.info(!BASE_CONFIG.SCROLLBAR)
+  location.reload()
+})
+
 GM_registerMenuCommand('重置设置', () => {
   GM_deleteValue('SANS')
   GM_deleteValue('MONO')
   GM_deleteValue('MONO_SETTING')
+  GM_deleteValue('SCROLLBAR')
   GM_deleteValue('SCROLLBAR_WIDTH')
 })
 

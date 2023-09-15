@@ -24,12 +24,14 @@
    * - SANS: 普通字体，默认 'sans-serif'
    * - MONO: 等宽字体，默认 'monospace'
    * - MONO_SETTING: 等宽字体 font-feature-settings 设置，默认 ['calt']
+   * - SCROLLBAR: 是否修改滚动条，默认 true
    * - SCROLLBAR_WIDTH: 滚动条宽度，可以是任何 css 的宽度，默认 'max(0.85vw, 10px)'
    */
   const BASE_CONFIG = {
     SANS: "",
     MONO: "",
     MONO_SETTING: [""],
+    SCROLLBAR: void 0,
     SCROLLBAR_WIDTH: ""
   };
   /**
@@ -73,6 +75,7 @@
   BASE_CONFIG.SANS = getConfig("SANS", "sans-serif");
   BASE_CONFIG.MONO = getConfig("MONO", "monospace");
   BASE_CONFIG.MONO_SETTING = getConfig("MONO_SETTING", ["calt"]);
+  BASE_CONFIG.SCROLLBAR = getConfig("SCROLLBAR", true);
   BASE_CONFIG.SCROLLBAR_WIDTH = getConfig("SCROLLBAR_WIDTH", "max(0.85vw,10px)");
   const monacoCharWidthCheckElement = 'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *';
   const sansExcludeSelector = [
@@ -407,13 +410,8 @@
   const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}\n";
   const current = window.location.hostname;
   logger.info(current);
-  function onWindowsAndNotOnEdge() {
-    const ua = navigator.userAgent;
-    return /Windows/.test(ua) && !/Edg/.test(ua);
-  }
   function init() {
-    if (onWindowsAndNotOnEdge()) {
-      logger.info("on Windows and not on edge");
+    if (BASE_CONFIG.SCROLLBAR) {
       loadStyles(scrollbar);
       document.documentElement.style.setProperty("--scrollbar-width", BASE_CONFIG.SCROLLBAR_WIDTH);
     }
@@ -449,10 +447,16 @@
     });
     loadStyles(base);
   }
+  _GM_registerMenuCommand(`${BASE_CONFIG.SCROLLBAR ? "关闭" : "开启"}滚动条美化并刷新`, () => {
+    _GM_setValue("SCROLLBAR", !BASE_CONFIG.SCROLLBAR);
+    logger.info(!BASE_CONFIG.SCROLLBAR);
+    location.reload();
+  });
   _GM_registerMenuCommand("重置设置", () => {
     _GM_deleteValue("SANS");
     _GM_deleteValue("MONO");
     _GM_deleteValue("MONO_SETTING");
+    _GM_deleteValue("SCROLLBAR");
     _GM_deleteValue("SCROLLBAR_WIDTH");
   });
   _GM_registerMenuCommand(`${getDebug() ? "关闭" : "开启"} Debug 模式并刷新`, () => {

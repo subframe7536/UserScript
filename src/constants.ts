@@ -11,10 +11,10 @@ function getConfig(key: keyof typeof BASE_CONFIG, defaultValue: any) {
   }
   return ret
 }
-
 BASE_CONFIG.SANS = getConfig('SANS', 'sans-serif')
 BASE_CONFIG.MONO = getConfig('MONO', 'monospace')
 BASE_CONFIG.MONO_SETTING = getConfig('MONO_SETTING', ['calt'])
+BASE_CONFIG.SCROLLBAR = getConfig('SCROLLBAR', true)
 BASE_CONFIG.SCROLLBAR_WIDTH = getConfig('SCROLLBAR_WIDTH', 'max(0.85vw,10px)')
 
 // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
