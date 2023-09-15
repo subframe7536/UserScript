@@ -466,6 +466,11 @@
   init();
   window.onload = () => {
     setTimeout(() => {
+      const list = document.documentElement.classList;
+      if (list.contains("theme-dark") || list.contains("dark")) {
+        addRootCSS("color-scheme", "dark");
+        loadStyles();
+      }
       if (!document.querySelector(`.${moduleName}`)) {
         logger.warn("未找到 userscript-mono 标签，重新加载");
         init();
