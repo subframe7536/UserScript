@@ -68,13 +68,14 @@ GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷�
   location.reload()
 })
 init()
+window.matchMedia('(prefers-color-scheme: dark)').matches && addRootCSS('color-scheme', 'dark')
 window.onload = () => {
   setTimeout(() => {
     const list = document.documentElement.classList
     if (list.contains('theme-dark') || list.contains('dark')) {
       addRootCSS('color-scheme', 'dark')
-      loadStyles()
     }
+    loadStyles()
     if (!document.querySelector(`.${moduleName}`)) {
       logger.warn('未找到 userscript-mono 标签，重新加载')
       init()
