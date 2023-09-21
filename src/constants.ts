@@ -85,6 +85,7 @@ export const monospaceSelectors = [
   '.codeblock *',
   '.swagger-ui :is(.code, code)',
   '.dp-highlighter *',
+  '.highlighted-code *',
   '.prism-code *',
   '.CodeMirror-code *',
   '.code-editor :is(.token-line, .token)',
