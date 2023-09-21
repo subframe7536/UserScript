@@ -14,7 +14,7 @@
     "@types/node": "^20.6.0",
     "bumpp": "^9.2.0",
     "consola": "^3.2.3",
-    "consoloo": "0.7.3",
+    "consoloo": "^0.7.6",
     "eslint": "^8.49.0",
     "esno": "^0.17.0",
     "typescript": "^5.2.2",

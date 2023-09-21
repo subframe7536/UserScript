@@ -18,8 +18,8 @@ devDependencies:
     specifier: ^3.2.3
     version: 3.2.3
   consoloo:
-    specifier: 0.7.3
-    version: 0.7.3
+    specifier: ^0.7.6
+    version: 0.7.6
   eslint:
     specifier: ^8.49.0
     version: 8.49.0
@@ -1264,8 +1264,8 @@ packages:
     engines: {node: ^14.18.0 || >=16.10.0}
     dev: true
 
-  /consoloo@0.7.3:
-    resolution: {integrity: sha512-KTMPM6jI5plubTz61HIcsjqXknB9PPSovuhk/puABERR9WBOa87yQdkts/V3eK6x6eGaB+GIFH2cHpn7UyFK3Q==}
+  /consoloo@0.7.6:
+    resolution: {integrity: sha512-16+LMLwCOR6TK5cKD3IlyFSBFaUfviw6j5KgUGx1f07XYmYgehdV1HkG7ZLjZANaL0WngEAV+9LG4iKNUXzPwg==}
     dependencies:
       picocolors: 1.0.0
     dev: true

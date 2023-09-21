@@ -1,11 +1,11 @@
-import { createWebLogger } from 'consoloo/web'
+import { createBrowserLogger } from 'consoloo/browser'
 import { moduleName, sansExcludeSelector } from './constants'
 import { BASE_CONFIG } from './_head'
 import { GM_getValue, GM_setValue } from '$'
 
 let styleArray: string[] = []
 
-export const logger = createWebLogger(getDebug() ? 'debug' : 'disable').withScope('scripts-mono')
+export const logger = createBrowserLogger(getDebug() ? 'debug' : 'disable').withScope('scripts-mono')
 
 export function loadStyles(style?: string) {
   if (styleArray.length || style) {

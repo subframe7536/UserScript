@@ -117,5 +117,4 @@ export const blocklist = [
   'math',
   'twitter',
   'openvim',
-  'regexp101',
 ]

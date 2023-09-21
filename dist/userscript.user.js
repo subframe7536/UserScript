@@ -174,28 +174,39 @@
     "unicode",
     "math",
     "twitter",
-    "openvim",
-    "regexp101"
+    "openvim"
   ];
+  var _LEVEL = ["trace", "debug", "info", "warn", "error"];
   function createLogger(option) {
     let { logMode = "normal", onLog, onTimer } = option;
-    const filter = (level) => (msg, e, scope) => (logMode === "normal" && level !== "debug" || logMode === "debug") && onLog(msg, level, scope, e);
+    const filter = (level, s) => (
+      // #hack: e is unknown when level = 'error', else e is scope
+      (msg, e, scope) => (logMode === "normal" && level > 1 || logMode === "debug" && level > 0 || logMode === "detail") && onLog.bind(null, msg, _LEVEL[level])(
+        ...level === 4 ? [s || scope, e] : [s || e]
+      )
+    );
     return {
-      info: filter("info"),
-      debug: filter("debug"),
-      warn: filter("warn"),
-      error: filter("error"),
+      trace: filter(0),
+      info: filter(1),
+      debug: filter(2),
+      warn: filter(3),
+      error: filter(4),
       timer: onTimer,
       setLogMode: (mode) => logMode = mode,
-      withScope(scope) {
-        return new Proxy(this, {
-          get: (target, prop, receiver) => ["info", "debug", "warn", "error"].includes(prop) ? (msg, e) => filter(prop)(msg, e, scope) : Reflect.get(target, prop, receiver)
-        });
-      }
+      withScope: (scope) => ({
+        trace: filter(0, scope),
+        debug: filter(1, scope),
+        info: filter(2, scope),
+        warn: filter(3, scope),
+        error: filter(4, scope),
+        timer: onTimer,
+        setLogMode: (m) => logMode = m
+      })
     };
   }
   var scopeColors = ["#3f6894", "#feecd8"];
   var levelColors = {
+    trace: "hsl(262, 45%, 70%)",
     debug: "hsl(205, 50%, 60%)",
     info: "hsl(114, 35%, 60%)",
     warn: "hsl(40, 65%, 60%)",
@@ -205,7 +216,7 @@
   function renderBadge(bg, fg, radius = r) {
     return `font-size:.8rem;padding:.1rem .3rem;border-radius:${radius};background-color:${bg};color:${fg}`;
   }
-  function onWebLog(msg, level, scope, e) {
+  function onBrowserLog(msg, level, scope, e) {
     let _msg = `%c${level.toLocaleUpperCase()}`;
     const args = [];
     if (scope) {
@@ -228,7 +239,7 @@
     console.log(_msg, ...args);
     e && console.error(e);
   }
-  function onWebTimer(label) {
+  function onBrowserTimer(label) {
     const start = performance.now();
     return () => console.log(
       `%c${label}%c${(performance.now() - start).toFixed(2)}ms`,
@@ -236,11 +247,11 @@
       ""
     );
   }
-  function createWebLogger(logMode) {
-    return createLogger({ logMode, onLog: onWebLog, onTimer: onWebTimer });
+  function createBrowserLogger(logMode) {
+    return createLogger({ logMode, onLog: onBrowserLog, onTimer: onBrowserTimer });
   }
   let styleArray = [];
-  const logger = createWebLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
+  const logger = createBrowserLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
   function loadStyles(style) {
     if (styleArray.length || style) {
       document.documentElement.insertAdjacentHTML(
