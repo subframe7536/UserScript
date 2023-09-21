@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.19
+// @version      1.0.20
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -143,6 +143,7 @@
     ".codeblock *",
     ".swagger-ui :is(.code, code)",
     ".dp-highlighter *",
+    ".highlighted-code *",
     ".prism-code *",
     ".CodeMirror-code *",
     ".code-editor :is(.token-line, .token)",
@@ -244,7 +245,7 @@
     if (styleArray.length || style) {
       document.documentElement.insertAdjacentHTML(
         "beforeend",
-        `<style class="${moduleName}">${style || styleArray.join("")}</style>`
+        `<style class="${moduleName}">${style || [...new Set(styleArray)].join("")}</style>`
       );
       if (!style) {
         styleArray = [];
@@ -464,13 +465,14 @@
     location.reload();
   });
   init();
+  window.matchMedia("(prefers-color-scheme: dark)").matches && addRootCSS("color-scheme", "dark");
   window.onload = () => {
     setTimeout(() => {
       const list = document.documentElement.classList;
       if (list.contains("theme-dark") || list.contains("dark")) {
         addRootCSS("color-scheme", "dark");
-        loadStyles();
       }
+      loadStyles();
       if (!document.querySelector(`.${moduleName}`)) {
         logger.warn("未找到 userscript-mono 标签，重新加载");
         init();
