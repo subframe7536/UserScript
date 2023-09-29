@@ -12,7 +12,7 @@ import type { Site } from './sites'
 export const BASE_CONFIG = {
   SANS: '',
   MONO: '',
-  MONO_SETTING: [''],
+  MONO_SETTING: ['calt'],
   SCROLLBAR: undefined,
   SCROLLBAR_WIDTH: '',
 }

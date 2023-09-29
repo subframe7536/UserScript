@@ -30,7 +30,7 @@
   const BASE_CONFIG = {
     SANS: "",
     MONO: "",
-    MONO_SETTING: [""],
+    MONO_SETTING: ["calt"],
     SCROLLBAR: void 0,
     SCROLLBAR_WIDTH: ""
   };
@@ -177,56 +177,50 @@
     "openvim"
   ];
   var _LEVEL = ["trace", "debug", "info", "warn", "error"];
-  function createLogger(option) {
-    let { logMode = "normal", onLog, onTimer } = option;
+  function createLogger(mode, onLog, onTimer) {
     const filter = (level, s) => (
       // #hack: e is unknown when level = 'error', else e is scope
-      (msg, e, scope) => (logMode === "normal" && level > 1 || logMode === "debug" && level > 0 || logMode === "detail") && onLog.bind(null, msg, _LEVEL[level])(
+      (msg, e, scope) => (mode === "normal" && level > 1 || mode === "debug" && level > 0 || mode === "detail") && onLog.bind(null, msg, _LEVEL[level])(
         ...level === 4 ? [s || scope, e] : [s || e]
       )
     );
-    return {
-      trace: filter(0),
-      info: filter(1),
-      debug: filter(2),
-      warn: filter(3),
-      error: filter(4),
+    const withScope = (scope) => ({
+      trace: filter(0, scope),
+      debug: filter(1, scope),
+      info: filter(2, scope),
+      warn: filter(3, scope),
+      error: filter(4, scope),
       timer: onTimer,
-      setLogMode: (mode) => logMode = mode,
-      withScope: (scope) => ({
-        trace: filter(0, scope),
-        debug: filter(1, scope),
-        info: filter(2, scope),
-        warn: filter(3, scope),
-        error: filter(4, scope),
-        timer: onTimer,
-        setLogMode: (m) => logMode = m
-      })
+      setLogMode: (m) => mode = m
+    });
+    return {
+      ...withScope(),
+      withScope
     };
   }
   var scopeColors = ["#3f6894", "#feecd8"];
   var levelColors = {
-    trace: "hsl(262, 45%, 70%)",
-    debug: "hsl(205, 50%, 60%)",
-    info: "hsl(114, 35%, 60%)",
-    warn: "hsl(40, 65%, 60%)",
-    error: "hsl(0, 60%, 70%)"
+    trace: "#a990d5",
+    debug: "#66a2cc",
+    info: "#7cbd75",
+    warn: "#dbaf57",
+    error: "#e08585"
   };
   var r = ".3rem";
   function renderBadge(bg, fg, radius = r) {
     return `font-size:.8rem;padding:.1rem .3rem;border-radius:${radius};background-color:${bg};color:${fg}`;
   }
   function onBrowserLog(msg, level, scope, e) {
-    let _msg = `%c${level.toLocaleUpperCase()}`;
+    let _msg = `%c${level.toUpperCase()}`;
     const args = [];
     if (scope) {
       _msg += `%c${scope}`;
       args.push(
-        renderBadge(levelColors[level], "white", `${r} 0 0 ${r}`),
+        renderBadge(levelColors[level], "#fff", `${r} 0 0 ${r}`),
         renderBadge(scopeColors[0], scopeColors[1], `0 ${r} ${r} 0`)
       );
     } else {
-      args.push(renderBadge(levelColors[level], "white"));
+      args.push(renderBadge(levelColors[level], "#fff"));
     }
     _msg += "%c ";
     args.push("");
@@ -240,15 +234,15 @@
     e && console.error(e);
   }
   function onBrowserTimer(label) {
-    const start = performance.now();
+    const start = Date.now();
     return () => console.log(
-      `%c${label}%c${(performance.now() - start).toFixed(2)}ms`,
+      `%c${label}%c${(Date.now() - start).toFixed(2)}ms`,
       renderBadge(scopeColors[0], scopeColors[1]),
       ""
     );
   }
   function createBrowserLogger(logMode) {
-    return createLogger({ logMode, onLog: onBrowserLog, onTimer: onBrowserTimer });
+    return createLogger(logMode, onBrowserLog, onBrowserTimer);
   }
   let styleArray = [];
   const logger = createBrowserLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
@@ -384,24 +378,27 @@
   const __vite_glob_0_12 = ["developer.mozilla.org", () => {
     addCSS(":root", "--font-body:sans-serif!important");
   }];
-  const __vite_glob_0_13 = ["regex101.com", () => {
+  const __vite_glob_0_13 = ["ray.so", () => {
+    addCodeFont('textarea[class^="Editor_textarea"]');
+  }];
+  const __vite_glob_0_14 = ["regex101.com", () => {
     addRootCSS("--code-font", "monospace,sans-serif!important");
     addRootCSS("--app-font", "sans-serif!important");
   }];
-  const __vite_glob_0_14 = ["stackoverflow.com", () => {
+  const __vite_glob_0_15 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
-  const __vite_glob_0_15 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_16 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_16 = ["www.yuque.com", () => {
+  const __vite_glob_0_17 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./regex101.ts": __vite_glob_0_13, "./stackoverflow.ts": __vite_glob_0_14, "./w3cschools.ts": __vite_glob_0_15, "./yuque.ts": __vite_glob_0_16 });
+    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./raycast-website.ts": __vite_glob_0_13, "./regex101.ts": __vite_glob_0_14, "./stackoverflow.ts": __vite_glob_0_15, "./w3cschools.ts": __vite_glob_0_16, "./yuque.ts": __vite_glob_0_17 });
     Object.values(configs).forEach(([site, callback]) => {
       let patterns = site;
       if (!Array.isArray(site)) {
