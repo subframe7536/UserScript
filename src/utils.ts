@@ -10,7 +10,8 @@ export const logger = createBrowserLogger(getDebug() ? 'debug' : 'disable').with
 export function loadStyles(style?: string) {
   if (styleArray.length || style) {
     document.documentElement.insertAdjacentHTML(
-      'beforeend', `<style class="${moduleName}">${style || [...new Set(styleArray)].join('')}</style>`,
+      'beforeend',
+`<style class="${moduleName}">${style || [...new Set(styleArray)].join('')}</style>`,
     )
     if (!style) {
       styleArray = []

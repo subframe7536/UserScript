@@ -57,7 +57,7 @@
    *   }],
    * ]
    * ```
-  */
+   */
   const SITEMAP = [];
   var _GM_deleteValue = /* @__PURE__ */ (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
   var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
@@ -376,7 +376,7 @@
     addCSS("copy-code-btn", "top:8px");
   }];
   const __vite_glob_0_12 = ["developer.mozilla.org", () => {
-    addCSS(":root", "--font-body:sans-serif!important");
+    addCSS(":root", `--font-body:${BASE_CONFIG.SANS}!important;`);
   }];
   const __vite_glob_0_13 = ["ray.so", () => {
     addCodeFont('textarea[class^="Editor_textarea"]');
@@ -388,17 +388,20 @@
   const __vite_glob_0_15 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
-  const __vite_glob_0_16 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_16 = [["twitter.com", "x.com"], () => {
+    addCSS("div[lang=ja]", `font-family:${BASE_CONFIG.SANS}!important;`);
+  }];
+  const __vite_glob_0_17 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_17 = ["www.yuque.com", () => {
+  const __vite_glob_0_18 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./raycast-website.ts": __vite_glob_0_13, "./regex101.ts": __vite_glob_0_14, "./stackoverflow.ts": __vite_glob_0_15, "./w3cschools.ts": __vite_glob_0_16, "./yuque.ts": __vite_glob_0_17 });
+    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./raycast-website.ts": __vite_glob_0_13, "./regex101.ts": __vite_glob_0_14, "./stackoverflow.ts": __vite_glob_0_15, "./twitter.ts": __vite_glob_0_16, "./w3cschools.ts": __vite_glob_0_17, "./yuque.ts": __vite_glob_0_18 });
     Object.values(configs).forEach(([site, callback]) => {
       let patterns = site;
       if (!Array.isArray(site)) {

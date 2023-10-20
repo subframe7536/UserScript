@@ -41,5 +41,5 @@ export const BLOCKLIST: string[] = []
  *   }],
  * ]
  * ```
-*/
+ */
 export const SITEMAP: Site[] = []
