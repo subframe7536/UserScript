@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.23
+// @version      1.0.24
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -157,7 +157,8 @@
     "span:has(>.r-crgep1[data-highlighting]) *",
     "kbd",
     "tt",
-    "[class^=code-block]"
+    "[class^=code-block]",
+    ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *"
   ];
   const blocklist = [
     "font",
@@ -389,7 +390,7 @@
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
   const __vite_glob_0_16 = [["twitter.com", "x.com"], () => {
-    addCSS("div[lang=ja]", `font-family:${BASE_CONFIG.SANS}!important;`);
+    addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${BASE_CONFIG.SANS}!important;`);
   }];
   const __vite_glob_0_17 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
