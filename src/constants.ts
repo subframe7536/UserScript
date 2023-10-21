@@ -100,6 +100,7 @@ export const monospaceSelectors = [
   'kbd',
   'tt',
   '[class^=code-block]',
+  '.gitbook-root div[data-rnwi-handle=codeblock-toolbar] *',
 ]
 export const blocklist = [
   'font',
