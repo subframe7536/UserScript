@@ -158,7 +158,8 @@
     "kbd",
     "tt",
     "[class^=code-block]",
-    ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *"
+    ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *",
+    "[class*=code]"
   ];
   const blocklist = [
     "font",
