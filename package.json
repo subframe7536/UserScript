@@ -1,7 +1,7 @@
 {
   "name": "userscript",
   "type": "module",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

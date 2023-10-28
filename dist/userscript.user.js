@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.25
+// @version      1.0.26
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -159,7 +159,7 @@
     "tt",
     "[class^=code-block]",
     ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *",
-    "[class*=code]"
+    "[class*=code] *"
   ];
   const blocklist = [
     "font",
