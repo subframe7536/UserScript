@@ -1,5 +1,5 @@
 import { BASE_CONFIG, BLOCKLIST, SITEMAP } from './_head'
-import { blocklist, moduleName, monospaceSelectors } from './constants'
+import { blocklist, isDark, moduleName, monospaceSelectors } from './constants'
 import { addCodeFont, addRootCSS, addSansFontDefault, getDebug, isInBlockList, loadStyles, logger, toggleDebug } from './utils'
 import { loadSites } from './sites'
 import base from './styles/base.css?inline'
@@ -68,7 +68,7 @@ GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷�
   location.reload()
 })
 init()
-window.matchMedia('(prefers-color-scheme: dark)').matches && addRootCSS('color-scheme', 'dark')
+isDark && addRootCSS('color-scheme', 'dark')
 window.onload = () => {
   setTimeout(() => {
     const list = document.documentElement.classList

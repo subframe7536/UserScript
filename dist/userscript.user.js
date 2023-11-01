@@ -177,6 +177,7 @@
     "twitter",
     "openvim"
   ];
+  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   var _LEVEL = ["trace", "debug", "info", "warn", "error"];
   function createLogger(mode, onLog, onTimer) {
     const filter = (level, s) => (
@@ -366,43 +367,46 @@
     addCSS(".code-navigation-cursor", "display:none");
     addCSS("#read-only-cursor-text-area", "caret-color:var(--color-fg-default)");
   }];
-  const __vite_glob_0_9 = ["www.jb51.net", () => {
+  const __vite_glob_0_9 = ["greasyfork.org", () => {
+    addCSS("body", "color:#fff");
+  }];
+  const __vite_glob_0_10 = ["www.jb51.net", () => {
     addCodeFont("body div .syntaxhighlighter *");
   }];
-  const __vite_glob_0_10 = ["www.jianshu.com", () => {
+  const __vite_glob_0_11 = ["www.jianshu.com", () => {
     addSansFont("a.title");
   }];
-  const __vite_glob_0_11 = ["juejin.cn", () => {
+  const __vite_glob_0_12 = ["juejin.cn", () => {
     addCSS(".markdown-body pre>code.copyable.hljs[lang]:before", "right:90px");
     addCSS("copy-code-btn", "top:8px");
   }];
-  const __vite_glob_0_12 = ["developer.mozilla.org", () => {
+  const __vite_glob_0_13 = ["developer.mozilla.org", () => {
     addCSS(":root", `--font-body:${BASE_CONFIG.SANS}!important;`);
   }];
-  const __vite_glob_0_13 = ["ray.so", () => {
+  const __vite_glob_0_14 = ["ray.so", () => {
     addCodeFont('textarea[class^="Editor_textarea"]');
   }];
-  const __vite_glob_0_14 = ["regex101.com", () => {
+  const __vite_glob_0_15 = ["regex101.com", () => {
     addRootCSS("--code-font", "monospace,sans-serif!important");
     addRootCSS("--app-font", "sans-serif!important");
   }];
-  const __vite_glob_0_15 = ["stackoverflow.com", () => {
+  const __vite_glob_0_16 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
-  const __vite_glob_0_16 = [["twitter.com", "x.com"], () => {
+  const __vite_glob_0_17 = [["twitter.com", "x.com"], () => {
     addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${BASE_CONFIG.SANS}!important;`);
   }];
-  const __vite_glob_0_17 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_18 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_18 = ["www.yuque.com", () => {
+  const __vite_glob_0_19 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./jb51.ts": __vite_glob_0_9, "./jianshu.ts": __vite_glob_0_10, "./juejin.ts": __vite_glob_0_11, "./mdn.ts": __vite_glob_0_12, "./raycast-website.ts": __vite_glob_0_13, "./regex101.ts": __vite_glob_0_14, "./stackoverflow.ts": __vite_glob_0_15, "./twitter.ts": __vite_glob_0_16, "./w3cschools.ts": __vite_glob_0_17, "./yuque.ts": __vite_glob_0_18 });
+    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./raycast-website.ts": __vite_glob_0_14, "./regex101.ts": __vite_glob_0_15, "./stackoverflow.ts": __vite_glob_0_16, "./twitter.ts": __vite_glob_0_17, "./w3cschools.ts": __vite_glob_0_18, "./yuque.ts": __vite_glob_0_19 });
     Object.values(configs).forEach(([site, callback]) => {
       let patterns = site;
       if (!Array.isArray(site)) {
@@ -477,7 +481,7 @@
     location.reload();
   });
   init();
-  window.matchMedia("(prefers-color-scheme: dark)").matches && addRootCSS("color-scheme", "dark");
+  isDark && addRootCSS("color-scheme", "dark");
   window.onload = () => {
     setTimeout(() => {
       const list = document.documentElement.classList;
