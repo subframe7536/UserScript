@@ -11,12 +11,12 @@
     "format": "eslint . --fix"
   },
   "devDependencies": {
-    "@subframe7536/eslint-config": "^0.3.7",
-    "@types/node": "^20.8.7",
+    "@subframe7536/eslint-config": "^0.4.0",
+    "@types/node": "^20.8.10",
     "bumpp": "^9.2.0",
     "consola": "^3.2.3",
-    "consoloo": "^0.7.10",
-    "eslint": "^8.51.0",
+    "consoloo": "^0.8.0",
+    "eslint": "^8.53.0",
     "esno": "^0.17.0",
     "typescript": "^5.2.2",
     "vite": "^4.5.0",

@@ -178,20 +178,17 @@
     "openvim"
   ];
   const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  var _LEVEL = ["trace", "debug", "info", "warn", "error"];
+  var _LEVEL = ["debug", "info", "warn", "error"];
   function createLogger(mode, onLog, onTimer) {
-    const filter = (level, s) => (
+    let filter = (level, s) => (
       // #hack: e is unknown when level = 'error', else e is scope
-      (msg, e, scope) => (mode === "normal" && level > 1 || mode === "debug" && level > 0 || mode === "detail") && onLog.bind(null, msg, _LEVEL[level])(
-        ...level === 4 ? [s || scope, e] : [s || e]
-      )
+      (msg, e, scope) => (mode === _LEVEL[3] && level > 2 || mode === _LEVEL[1] && level > 0 || mode === _LEVEL[0]) && onLog(msg, _LEVEL[level], ...level > 2 ? [s || scope, e] : [s || e])
     );
-    const withScope = (scope) => ({
-      trace: filter(0, scope),
-      debug: filter(1, scope),
-      info: filter(2, scope),
-      warn: filter(3, scope),
-      error: filter(4, scope),
+    let withScope = (scope) => ({
+      debug: filter(0, scope),
+      info: filter(1, scope),
+      warn: filter(2, scope),
+      error: filter(3, scope),
       timer: onTimer,
       setLogMode: (m) => mode = m
     });
@@ -202,7 +199,6 @@
   }
   var scopeColors = ["#3f6894", "#feecd8"];
   var levelColors = {
-    trace: "#a990d5",
     debug: "#66a2cc",
     info: "#7cbd75",
     warn: "#dbaf57",
@@ -238,12 +234,12 @@
   function onBrowserTimer(label) {
     const start = Date.now();
     return () => console.log(
-      `%c${label}%c${(Date.now() - start).toFixed(2)}ms`,
+      `%c${label}%c ${(Date.now() - start).toFixed(2)}ms`,
       renderBadge(scopeColors[0], scopeColors[1]),
       ""
     );
   }
-  function createBrowserLogger(logMode) {
+  function createBrowserLogger(logMode = "info") {
     return createLogger(logMode, onBrowserLog, onBrowserTimer);
   }
   let styleArray = [];
@@ -322,7 +318,7 @@
   const __vite_glob_0_2 = ["www.baidu.com", () => {
     addSansFont("input");
   }];
-  const __vite_glob_0_3 = [["www.bilibili.com", "t.bilibili.com"], () => {
+  const __vite_glob_0_3 = [["www.bilibili.com", "t.bilibili.com", "space.bilibili.com"], () => {
     addSansFont(
       ".bili-comment.browser-pc *",
       ".video-page-card-small .card-box .info .title"
