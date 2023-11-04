@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.29
+// @version      1.0.30
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -364,7 +364,7 @@
     addCSS("#read-only-cursor-text-area", "caret-color:var(--color-fg-default)");
   }];
   const __vite_glob_0_9 = ["greasyfork.org", () => {
-    addCSS("body", "color:#fff");
+    addCSS("body", "color:#000");
   }];
   const __vite_glob_0_10 = ["www.jb51.net", () => {
     addCodeFont("body div .syntaxhighlighter *");
