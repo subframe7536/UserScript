@@ -263,17 +263,23 @@
     styles = Array.isArray(styles) ? styles : [styles];
     styleArray.push(`${selectors.join(",")}{${styles.join(";")}}`);
   }
-  function addCodeFont(...selectors) {
+  let codeFontSelectors = [];
+  function __codeFont() {
     addCSS(
-      selectors,
+      monospaceSelectors.concat(codeFontSelectors),
       [
         `font-family: ${BASE_CONFIG.MONO}, ${BASE_CONFIG.SANS} !important`,
         `font-feature-settings: ${BASE_CONFIG.MONO_SETTING.map((s) => `"${s}"`).join(",")} !important`,
         "letter-spacing: 0px !important"
       ]
     );
+    codeFontSelectors = [];
   }
-  function addSansFontDefault() {
+  function addCodeFont(...selectors) {
+    codeFontSelectors.push(...selectors);
+  }
+  let sansFontSelectors = [];
+  function __sansFont() {
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
@@ -281,15 +287,17 @@
         "letter-spacing: 0px!important"
       ]
     );
-  }
-  function addSansFont(...selectors) {
     addCSS(
-      selectors,
+      sansFontSelectors,
       [
-        `font-family:${BASE_CONFIG.SANS}!important`,
-        "letter-spacing:0px!important"
+        `font-family: ${BASE_CONFIG.SANS}!important`,
+        "letter-spacing: 0px!important"
       ]
     );
+    sansFontSelectors = [];
+  }
+  function addSansFont(...selectors) {
+    sansFontSelectors.push(...selectors);
   }
   function isInBlockList(current2, blocklist2) {
     return current2 && blocklist2.some((pattern) => current2.includes(pattern));
@@ -321,7 +329,8 @@
   const __vite_glob_0_3 = [["www.bilibili.com", "t.bilibili.com", "space.bilibili.com"], () => {
     addSansFont(
       ".bili-comment.browser-pc *",
-      ".video-page-card-small .card-box .info .title"
+      ".video-page-card-small .card-box .info .title",
+      ".h .h-sign"
     );
   }];
   const __vite_glob_0_4 = ["www.cnblogs.com", () => {
@@ -343,7 +352,7 @@
     addRootCSS("--font-headline", `${BASE_CONFIG.SANS}!important`);
   }];
   const __vite_glob_0_7 = ["gitee.com", () => {
-    addCodeFont(".commit-id", "input", "textarea");
+    addCodeFont(".commit-id", "textarea");
     addSansFont("button", ".ui:not(.iconfont)");
     addCSS("#git-header-nav #navbar-search-form", "border-radius:4px");
   }];
@@ -395,14 +404,21 @@
   const __vite_glob_0_18 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_19 = ["www.yuque.com", () => {
+  const __vite_glob_0_19 = ["mp.weixin.qq.com", () => {
+    const list = ["p"];
+    for (let i = 1; i <= 6; i++) {
+      list.push(`h${i}`);
+    }
+    addSansFont(`:is(${list.join(", ")})[style]`);
+  }];
+  const __vite_glob_0_20 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./raycast-website.ts": __vite_glob_0_14, "./regex101.ts": __vite_glob_0_15, "./stackoverflow.ts": __vite_glob_0_16, "./twitter.ts": __vite_glob_0_17, "./w3cschools.ts": __vite_glob_0_18, "./yuque.ts": __vite_glob_0_19 });
+    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./raycast-website.ts": __vite_glob_0_14, "./regex101.ts": __vite_glob_0_15, "./stackoverflow.ts": __vite_glob_0_16, "./twitter.ts": __vite_glob_0_17, "./w3cschools.ts": __vite_glob_0_18, "./wechat.ts": __vite_glob_0_19, "./yuque.ts": __vite_glob_0_20 });
     Object.values(configs).forEach(([site, callback]) => {
       let patterns = site;
       if (!Array.isArray(site)) {
@@ -419,8 +435,8 @@
     }
     loadStyles();
   }
-  const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}\n";
-  const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}\n";
+  const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
+  const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}";
   const current = window.location.hostname;
   logger.info(current);
   function init() {
@@ -445,8 +461,8 @@
       });
       return;
     }
-    addSansFontDefault();
-    addCodeFont(...monospaceSelectors);
+    __sansFont();
+    __codeFont();
     addRootCSS("--d-border-radius", "0.25rem");
     addRootCSS("--font-mono", "monospace");
     addRootCSS("--font-monospace", "monospace");

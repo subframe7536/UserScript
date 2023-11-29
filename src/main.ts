@@ -1,6 +1,15 @@
 import { BASE_CONFIG, BLOCKLIST, SITEMAP } from './_head'
-import { blocklist, isDark, moduleName, monospaceSelectors } from './constants'
-import { addCodeFont, addRootCSS, addSansFontDefault, getDebug, isInBlockList, loadStyles, logger, toggleDebug } from './utils'
+import { blocklist, isDark, moduleName } from './constants'
+import {
+  __codeFont,
+  __sansFont,
+  addRootCSS,
+  getDebug,
+  isInBlockList,
+  loadStyles,
+  logger,
+  toggleDebug,
+} from './utils'
 import { loadSites } from './sites'
 import base from './styles/base.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
@@ -32,8 +41,8 @@ function init() {
     })
     return
   }
-  addSansFontDefault()
-  addCodeFont(...monospaceSelectors)
+  __sansFont()
+  __codeFont()
   addRootCSS('--d-border-radius', '0.25rem') // for discourse
   addRootCSS('--font-mono', 'monospace')
   addRootCSS('--font-monospace', 'monospace')
