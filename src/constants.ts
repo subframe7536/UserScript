@@ -109,6 +109,8 @@ export const monospaceSelectors = [
   '[class*=tsd-signature]',
   '.tsd-kind-parameter',
 ]
+
+// ban default css, no affect to site rules
 export const blocklist = [
   'font',
   'ziti',

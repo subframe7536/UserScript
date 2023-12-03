@@ -70,6 +70,9 @@ export function addSansFont(...selectors: string[]) {
   sansFontSelectors.push(...selectors)
 }
 
+/**
+ * ban default css, no affect to site rules
+ */
 export function isInBlockList(current: string, blocklist: string[]) {
   return current && blocklist.some(pattern => current.includes(pattern))
 }
