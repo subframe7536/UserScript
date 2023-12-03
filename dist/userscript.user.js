@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.31
+// @version      1.0.32
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -104,15 +104,21 @@
     monacoCharWidthCheckElement,
     ".monaco-editor *",
     "html body pre",
-    "pre *",
-    "pre.CodeMirror-line *",
     "code",
     "code *",
     ".code",
     ".code *",
     ".mono",
+    ".font-mono",
+    "[font-mono]",
+    ".font-mono>*",
+    "[font-mono]>*",
     ".text-mono",
-    ".text-mono *",
+    ".text-mono>*",
+    "[text-mono]",
+    "[text-mono]>*",
+    "pre *",
+    "pre.CodeMirror-line *",
     "pre .token",
     "pre code *",
     "pre section *",
@@ -125,10 +131,6 @@
     'pre[class*="language-"] *',
     "body .prism .token",
     ".cm-editor *",
-    ".font-mono",
-    "[font-mono]",
-    ".font-mono>*",
-    "[font-mono]>*",
     ".monaco-mouse-cursor-text",
     "#vscode-editor *",
     ".enlighter *",
@@ -158,7 +160,12 @@
     "kbd",
     "tt",
     "[class^=code-block]",
-    ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *"
+    // gitbook
+    ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *",
+    // tsdoc
+    ".tsd-signature>*",
+    "[class*=tsd-signature]",
+    ".tsd-kind-parameter"
   ];
   const blocklist = [
     "font",
@@ -435,7 +442,7 @@
     }
     loadStyles();
   }
-  const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
+  const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}b,strong{font-weight:bolder}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
   const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}";
   const current = window.location.hostname;
   logger.info(current);
