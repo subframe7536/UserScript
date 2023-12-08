@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.33
+// @version      1.0.34
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -160,6 +160,7 @@
     "kbd",
     "tt",
     "[class^=code-block]",
+    ".job-console :is(span, a)",
     // gitbook
     ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *",
     // tsdoc
@@ -377,7 +378,7 @@
       ".blame-container *"
     );
     addCSS(".code-navigation-cursor", "display:none");
-    addCSS("#read-only-cursor-text-area", "caret-color:var(--color-fg-default)");
+    addCSS("#read-only-cursor-text-area", "caret-color:var(--color-fg-default);margin-top:0!important");
   }];
   const __vite_glob_0_9 = ["greasyfork.org", () => {
     addCSS("body", "color:#000");
