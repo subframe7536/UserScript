@@ -102,6 +102,7 @@ export const monospaceSelectors = [
   'kbd',
   'tt',
   '[class^=code-block]',
+  '.job-console :is(span, a)',
   // gitbook
   '.gitbook-root div[data-rnwi-handle=codeblock-toolbar] *',
   // tsdoc
