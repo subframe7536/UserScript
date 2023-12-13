@@ -22,7 +22,6 @@ strong {
 /*
 1. Change the font styles in all browsers.
 2. Remove the margin in Firefox and Safari.
-3. Remove default padding in all browsers.
 */
 
 button,
@@ -36,8 +35,6 @@ textarea {
   font-weight: inherit;
   line-height: inherit;
   color: inherit;
-  margin: 0;
-  padding: 0;
 }
 
 /*

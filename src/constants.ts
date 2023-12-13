@@ -41,6 +41,7 @@ export const sansExcludeSelector = [
   '.pi, .pi *',
   // elements
   'em, i, svg *, kbd, kdb *, samp, samp *, var, var *, tt',
+  [".font-mono", "[font-mono]", ".text-mono", "[text-mono]"].map(s => `${s} *`)
 ]
 export const monospaceSelectors = [
   monacoCharWidthCheckElement,
@@ -53,12 +54,8 @@ export const monospaceSelectors = [
   '.mono',
   '.font-mono',
   '[font-mono]',
-  '.font-mono>*',
-  '[font-mono]>*',
   '.text-mono',
-  '.text-mono>*',
   '[text-mono]',
-  '[text-mono]>*',
   'pre *',
   'pre.CodeMirror-line *',
   'pre .token',
