@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.0.35
+// @version      1.0.36
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -337,6 +337,7 @@
       ".video-page-card-small .card-box .info .title",
       ".h .h-sign"
     );
+    addCSS(".video-share", "display:none!important");
   }];
   const __vite_glob_0_4 = ["www.cnblogs.com", () => {
     addCodeFont(".cnblogs-markdown code", " .cnblogs_code", " .cnblogs_code *");
@@ -375,7 +376,7 @@
       ".blame-container *"
     );
     addCSS(".code-navigation-cursor", "display:none");
-    addCSS("#read-only-cursor-text-area", "caret-color:var(--color-fg-default);margin-top:0!important");
+    addCSS("#read-only-cursor-text-area", "caret-color:var(--color-fg-default)");
   }];
   const __vite_glob_0_9 = ["greasyfork.org", () => {
     addCSS("body", "color:#000");
