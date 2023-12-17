@@ -17,5 +17,5 @@ export default ['github.com', () => {
 
   // fix cursor position
   addCSS('.code-navigation-cursor', 'display:none')
-  addCSS('#read-only-cursor-text-area', 'caret-color:var(--color-fg-default);margin-top:0!important')
+  addCSS('#read-only-cursor-text-area', 'caret-color:var(--color-fg-default)')
 }] satisfies Site

@@ -1,4 +1,4 @@
-import { addSansFont } from '../utils'
+import { addCSS, addSansFont } from '../utils'
 import type { Site } from '.'
 
 export default [['www.bilibili.com', 't.bilibili.com', 'space.bilibili.com'], () => {
@@ -7,4 +7,5 @@ export default [['www.bilibili.com', 't.bilibili.com', 'space.bilibili.com'], ()
     '.video-page-card-small .card-box .info .title',
     '.h .h-sign',
   )
+  addCSS('.video-share', 'display:none!important')
 }] satisfies Site
