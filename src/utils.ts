@@ -1,12 +1,16 @@
 import { createBrowserLogger } from 'consoloo/browser'
 import { moduleName, monospaceSelectors, sansExcludeSelector } from './constants'
-import { BASE_CONFIG } from './_head'
+import { getMono, getMonoFeature, getSans } from './settings'
 import { GM_getValue, GM_setValue } from '$'
 
 let styleArray: string[] = []
 
 export const logger = createBrowserLogger(getDebug() ? 'debug' : 'disable').withScope('scripts-mono')
 
+/**
+ * load all cached css if absent, else load param
+ * @param style css code
+ */
 export function loadStyles(style?: string) {
   if (styleArray.length || style) {
     document.documentElement.insertAdjacentHTML(
@@ -32,12 +36,13 @@ export function addCSS(selectors: string | string[], styles: string | string[]) 
 let codeFontSelectors: string[] = []
 
 export function __codeFont() {
+  const features = getMonoFeature().map(s => `"${s.trim()}"`).join(',')
   addCSS(
     monospaceSelectors.concat(codeFontSelectors),
     [
-      `font-family: ${BASE_CONFIG.MONO}, ${BASE_CONFIG.SANS} !important`,
-      `font-feature-settings: ${BASE_CONFIG.MONO_SETTING.map(s => `"${s}"`).join(',')} !important`,
-      'letter-spacing: 0px !important',
+      `font-family:${getMono()},${getSans()}!important`,
+      `font-feature-settings:${features}!important`,
+      'letter-spacing:0px!important',
     ],
   )
   codeFontSelectors = []
@@ -53,15 +58,15 @@ export function __sansFont() {
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [
-      `font-family: ${BASE_CONFIG.SANS}`,
-      'letter-spacing: 0px!important',
+      `font-family:${getSans()}`,
+      'letter-spacing:0px!important',
     ],
   )
   addCSS(
     sansFontSelectors,
     [
-      `font-family: ${BASE_CONFIG.SANS}!important`,
-      'letter-spacing: 0px!important',
+      `font-family:${getSans()}!important`,
+      'letter-spacing:0px!important',
     ],
   )
   sansFontSelectors = []

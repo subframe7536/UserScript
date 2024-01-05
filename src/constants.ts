@@ -1,21 +1,4 @@
-import { BASE_CONFIG } from './_head'
-import { GM_getValue, GM_setValue } from '$'
-
 export const moduleName = 'script-mono'
-
-function getConfig(key: keyof typeof BASE_CONFIG, defaultValue: any) {
-  let ret = GM_getValue(key, undefined) ?? defaultValue
-  if (BASE_CONFIG[key]) {
-    ret = BASE_CONFIG[key]
-    GM_setValue(key, ret)
-  }
-  return ret
-}
-BASE_CONFIG.SANS = getConfig('SANS', 'maple ui,sans-serif')
-BASE_CONFIG.MONO = getConfig('MONO', 'maple mono sc nf,maple mono,monospace')
-BASE_CONFIG.MONO_SETTING = getConfig('MONO_SETTING', ['calt'])
-BASE_CONFIG.SCROLLBAR = getConfig('SCROLLBAR', true)
-BASE_CONFIG.SCROLLBAR_WIDTH = getConfig('SCROLLBAR_WIDTH', 'max(0.85vw,10px)')
 
 // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
 const monacoCharWidthCheckElement = 'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *'

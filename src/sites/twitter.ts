@@ -1,7 +1,7 @@
 import { addCSS } from '../utils'
-import { BASE_CONFIG } from '../_head'
+import { getSans } from '../settings'
 import type { Site } from '.'
 
 export default [['twitter.com', 'x.com'], () => {
-  addCSS('div:is([lang=ja],[lang=en],[lang=ko])', `font-family:${BASE_CONFIG.SANS}!important;`)
+  addCSS('div:is([lang=ja],[lang=en],[lang=ko])', `font-family:${getSans()}!important;`)
 }] satisfies Site

@@ -20,29 +20,6 @@
 
   /**
    * @preserve
-   * 基础配置
-   * - SANS: 普通字体，默认 'sans-serif'
-   * - MONO: 等宽字体，默认 'monospace'
-   * - MONO_SETTING: 等宽字体 font-feature-settings 设置，默认 ['calt']
-   * - SCROLLBAR: 是否修改滚动条，默认 true
-   * - SCROLLBAR_WIDTH: 滚动条宽度，可以是任何 css 的宽度，默认 'max(0.85vw, 10px)'
-   */
-  const BASE_CONFIG = {
-    SANS: "",
-    MONO: "",
-    MONO_SETTING: ["calt"],
-    SCROLLBAR: void 0,
-    SCROLLBAR_WIDTH: ""
-  };
-  /**
-   * @preserve
-   * 需要修改字体的域名的黑名单
-   *
-   * @example ['font']
-   */
-  const BLOCKLIST = [];
-  /**
-   * @preserve
    * 字体修改的规则
    * type: [pattern, callback]
    *
@@ -59,24 +36,7 @@
    * ```
    */
   const SITEMAP = [];
-  var _GM_deleteValue = /* @__PURE__ */ (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
-  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
-  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
-  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   const moduleName = "script-mono";
-  function getConfig(key, defaultValue) {
-    let ret = _GM_getValue(key, void 0) ?? defaultValue;
-    if (BASE_CONFIG[key]) {
-      ret = BASE_CONFIG[key];
-      _GM_setValue(key, ret);
-    }
-    return ret;
-  }
-  BASE_CONFIG.SANS = getConfig("SANS", "maple ui,sans-serif");
-  BASE_CONFIG.MONO = getConfig("MONO", "maple mono sc nf,maple mono,monospace");
-  BASE_CONFIG.MONO_SETTING = getConfig("MONO_SETTING", ["calt"]);
-  BASE_CONFIG.SCROLLBAR = getConfig("SCROLLBAR", true);
-  BASE_CONFIG.SCROLLBAR_WIDTH = getConfig("SCROLLBAR_WIDTH", "max(0.85vw,10px)");
   const monacoCharWidthCheckElement = 'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *';
   const sansExcludeSelector = [
     monacoCharWidthCheckElement,
@@ -180,7 +140,8 @@
     "unicode",
     "math",
     "twitter",
-    "openvim"
+    "openvim",
+    "monaspace.githubnext.com"
   ];
   const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   var _LEVEL = ["debug", "info", "warn", "error"];
@@ -247,6 +208,92 @@
   function createBrowserLogger(logMode = "info") {
     return createLogger(logMode, onBrowserLog, onBrowserTimer);
   }
+  var _GM_deleteValue = /* @__PURE__ */ (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
+  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
+  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
+  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
+  function getSettings(key, defaultValue) {
+    return _GM_getValue(key) ?? defaultValue;
+  }
+  function setSettings(key, value) {
+    _GM_setValue(key, value);
+  }
+  function delSettings() {
+    _GM_deleteValue("SANS");
+    _GM_deleteValue("MONO");
+    _GM_deleteValue("MONO_SETTING");
+    _GM_deleteValue("SCROLLBAR");
+    _GM_deleteValue("SCROLLBAR_WIDTH");
+  }
+  function getSans() {
+    return getSettings("SANS", "sans-serif");
+  }
+  function getMono() {
+    return getSettings("MONO", "monospace");
+  }
+  function getMonoFeature() {
+    return getSettings("MONO_SETTING", ["calt"]);
+  }
+  function getScrollbar() {
+    return getSettings("SCROLLBAR", true);
+  }
+  function getScrollbarWidth() {
+    return getSettings("SCROLLBAR_WIDTH", "max(0.85vw,10px)");
+  }
+  function loadSettingMenus() {
+    logger.info(`
+Sans-Serif 字体: ${getSans()}
+Monospace 字体: ${getMono()}
+Monospace 字体特性: ${getMonoFeature()}
+滚动条宽度: ${getScrollbarWidth()}
+  `);
+    _GM_registerMenuCommand(`${getScrollbar() ? "关闭" : "开启"}滚动条美化并刷新`, () => {
+      setSettings("SCROLLBAR", !getScrollbar());
+      logger.info(getScrollbar());
+      location.reload();
+    });
+    _GM_registerMenuCommand(`设置 Sans-Serif 字体`, () => {
+      const sans = prompt("Sans-Serif 字体", getSans());
+      if (sans) {
+        setSettings("SANS", sans);
+        logger.info(`Sans-Serif 字体修改为：${sans}`);
+        location.reload();
+      } else {
+        logger.info(`取消设置 Sans-Serif 字体`);
+      }
+    });
+    _GM_registerMenuCommand(`设置 Monospace 字体`, () => {
+      const mono = prompt("Monospace 字体", getMono());
+      if (mono) {
+        setSettings("MONO", mono);
+        logger.info(`Monospace 字体修改为：${mono}`);
+        location.reload();
+      } else {
+        logger.info(`取消设置 Monospace 字体`);
+      }
+    });
+    _GM_registerMenuCommand(`设置 Monospace 字体特性`, () => {
+      const monoSettings = prompt('Monospace 字体特性，使用 "|" 分隔', getMonoFeature().join("|"));
+      if (monoSettings) {
+        setSettings("MONO_SETTING", monoSettings.split("|").map((s) => s.trim()));
+        logger.info(`Monospace 字体特性修改为：${monoSettings}`);
+        location.reload();
+      } else {
+        logger.info(`取消设置 Monospace 字体特性`);
+      }
+    });
+    getScrollbar() && _GM_registerMenuCommand(`设置滚动条宽度`, () => {
+      const width = prompt("滚动条宽度，可以是任何 CSS 长度", getScrollbarWidth());
+      if (width) {
+        setSettings("SCROLLBAR_WIDTH", width);
+        logger.info(`滚动条宽度修改为：${width}`);
+        location.reload();
+      } else {
+        logger.info(`取消设置滚动条宽度`);
+      }
+    });
+    _GM_registerMenuCommand("重置设置", delSettings);
+  }
   let styleArray = [];
   const logger = createBrowserLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
   function loadStyles(style) {
@@ -270,12 +317,13 @@
   }
   let codeFontSelectors = [];
   function __codeFont() {
+    const features = getMonoFeature().map((s) => `"${s.trim()}"`).join(",");
     addCSS(
       monospaceSelectors.concat(codeFontSelectors),
       [
-        `font-family: ${BASE_CONFIG.MONO}, ${BASE_CONFIG.SANS} !important`,
-        `font-feature-settings: ${BASE_CONFIG.MONO_SETTING.map((s) => `"${s}"`).join(",")} !important`,
-        "letter-spacing: 0px !important"
+        `font-family:${getMono()},${getSans()}!important`,
+        `font-feature-settings:${features}!important`,
+        "letter-spacing:0px!important"
       ]
     );
     codeFontSelectors = [];
@@ -288,15 +336,15 @@
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
-        `font-family: ${BASE_CONFIG.SANS}`,
-        "letter-spacing: 0px!important"
+        `font-family:${getSans()}`,
+        "letter-spacing:0px!important"
       ]
     );
     addCSS(
       sansFontSelectors,
       [
-        `font-family: ${BASE_CONFIG.SANS}!important`,
-        "letter-spacing: 0px!important"
+        `font-family:${getSans()}!important`,
+        "letter-spacing:0px!important"
       ]
     );
     sansFontSelectors = [];
@@ -335,7 +383,8 @@
     addSansFont(
       ".bili-comment.browser-pc *",
       ".video-page-card-small .card-box .info .title",
-      ".h .h-sign"
+      ".h .h-sign",
+      ".video-info-container .video-title"
     );
     addCSS(".video-share", "display:none!important");
   }];
@@ -352,10 +401,10 @@
   }];
   const __vite_glob_0_6 = ["discord.com", () => {
     addCodeFont("[class^=codeBlockSyntax]", "[class^=codeLine] *", "[class*=inlineCode]>span");
-    addRootCSS("--font-code", `${BASE_CONFIG.MONO},${BASE_CONFIG.SANS}!important`);
-    addRootCSS("--font-display", `${BASE_CONFIG.SANS}!important`);
-    addRootCSS("--font-primary", `${BASE_CONFIG.SANS}!important`);
-    addRootCSS("--font-headline", `${BASE_CONFIG.SANS}!important`);
+    addRootCSS("--font-code", `${getMono()},${getSans()}!important`);
+    addRootCSS("--font-display", `${getSans()}!important`);
+    addRootCSS("--font-primary", `${getSans()}!important`);
+    addRootCSS("--font-headline", `${getSans()}!important`);
   }];
   const __vite_glob_0_7 = ["gitee.com", () => {
     addCodeFont(".commit-id", "textarea");
@@ -392,7 +441,7 @@
     addCSS("copy-code-btn", "top:8px");
   }];
   const __vite_glob_0_13 = ["developer.mozilla.org", () => {
-    addCSS(":root", `--font-body:${BASE_CONFIG.SANS}!important;`);
+    addCSS(":root", `--font-body:${getSans()}!important;`);
   }];
   const __vite_glob_0_14 = ["ray.so", () => {
     addCodeFont('textarea[class^="Editor_textarea"]');
@@ -404,27 +453,30 @@
   const __vite_glob_0_16 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
-  const __vite_glob_0_17 = [["twitter.com", "x.com"], () => {
-    addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${BASE_CONFIG.SANS}!important;`);
+  const __vite_glob_0_17 = ["tieba.baidu.com", () => {
+    addSansFont(".core_title_theme_bright .core_title_txt");
   }];
-  const __vite_glob_0_18 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_18 = [["twitter.com", "x.com"], () => {
+    addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${getSans()}!important;`);
+  }];
+  const __vite_glob_0_19 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_19 = ["mp.weixin.qq.com", () => {
+  const __vite_glob_0_20 = ["mp.weixin.qq.com", () => {
     const list = ["p"];
     for (let i = 1; i <= 6; i++) {
       list.push(`h${i}`);
     }
     addSansFont(`:is(${list.join(", ")})[style]`);
   }];
-  const __vite_glob_0_20 = ["www.yuque.com", () => {
+  const __vite_glob_0_21 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./raycast-website.ts": __vite_glob_0_14, "./regex101.ts": __vite_glob_0_15, "./stackoverflow.ts": __vite_glob_0_16, "./twitter.ts": __vite_glob_0_17, "./w3cschools.ts": __vite_glob_0_18, "./wechat.ts": __vite_glob_0_19, "./yuque.ts": __vite_glob_0_20 });
+    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./raycast-website.ts": __vite_glob_0_14, "./regex101.ts": __vite_glob_0_15, "./stackoverflow.ts": __vite_glob_0_16, "./tieba.ts": __vite_glob_0_17, "./twitter.ts": __vite_glob_0_18, "./w3cschools.ts": __vite_glob_0_19, "./wechat.ts": __vite_glob_0_20, "./yuque.ts": __vite_glob_0_21 });
     Object.values(configs).forEach(([site, callback]) => {
       let patterns = site;
       if (!Array.isArray(site)) {
@@ -446,17 +498,17 @@
   const current = window.location.hostname;
   logger.info(current);
   function init() {
-    if (BASE_CONFIG.SCROLLBAR) {
+    if (getScrollbar()) {
       loadStyles(scrollbar);
-      document.documentElement.style.setProperty("--scrollbar-width", BASE_CONFIG.SCROLLBAR_WIDTH);
+      document.documentElement.style.setProperty("--scrollbar-width", getScrollbarWidth());
     }
     loadSites(current, SITEMAP);
-    if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
+    if (isInBlockList(current, blocklist)) {
       return;
     }
     if (isInBlockList(current, _GM_getValue("blocklist", []))) {
-      logger.warn("排除当前域名");
-      _GM_registerMenuCommand("恢复当前域名并刷新", () => {
+      logger.warn("排除当前域名的字体美化");
+      _GM_registerMenuCommand("恢复当前域名的字体美化并刷新", () => {
         const stored = _GM_getValue("blocklist", []);
         const index = stored.indexOf(current);
         if (index !== -1) {
@@ -474,7 +526,7 @@
     addRootCSS("--font-monospace", "monospace");
     addRootCSS("--code-font", "monospace");
     loadStyles();
-    _GM_registerMenuCommand("排除当前域名并刷新", () => {
+    _GM_registerMenuCommand("排除当前域名的字体美化", () => {
       const stored = _GM_getValue("blocklist", []);
       stored.push(current);
       _GM_setValue("blocklist", stored);
@@ -482,23 +534,12 @@
     });
     loadStyles(base);
   }
-  _GM_registerMenuCommand(`${BASE_CONFIG.SCROLLBAR ? "关闭" : "开启"}滚动条美化并刷新`, () => {
-    _GM_setValue("SCROLLBAR", !BASE_CONFIG.SCROLLBAR);
-    logger.info(!BASE_CONFIG.SCROLLBAR);
-    location.reload();
-  });
-  _GM_registerMenuCommand("重置设置", () => {
-    _GM_deleteValue("SANS");
-    _GM_deleteValue("MONO");
-    _GM_deleteValue("MONO_SETTING");
-    _GM_deleteValue("SCROLLBAR");
-    _GM_deleteValue("SCROLLBAR_WIDTH");
-  });
-  _GM_registerMenuCommand(`${getDebug() ? "关闭" : "开启"} Debug 模式并刷新`, () => {
+  init();
+  loadSettingMenus();
+  _GM_registerMenuCommand(`${getDebug() ? "关闭" : "开启"} Debug 模式并刷新页面`, () => {
     toggleDebug();
     location.reload();
   });
-  init();
   isDark && addRootCSS("color-scheme", "dark");
   window.onload = () => {
     setTimeout(() => {

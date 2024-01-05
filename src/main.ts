@@ -1,4 +1,4 @@
-import { BASE_CONFIG, BLOCKLIST, SITEMAP } from './_head'
+import { SITEMAP } from './_head'
 import { blocklist, isDark, moduleName } from './constants'
 import {
   __codeFont,
@@ -13,24 +13,25 @@ import {
 import { loadSites } from './sites'
 import base from './styles/base.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
-import { GM_deleteValue, GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
+import { getScrollbar, getScrollbarWidth, loadSettingMenus } from './settings'
+import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
 const current = window.location.hostname
 
 logger.info(current)
 
 function init() {
-  if (BASE_CONFIG.SCROLLBAR) {
+  if (getScrollbar()) {
     loadStyles(scrollbar)
-    document.documentElement.style.setProperty('--scrollbar-width', BASE_CONFIG.SCROLLBAR_WIDTH)
+    document.documentElement.style.setProperty('--scrollbar-width', getScrollbarWidth())
   }
   loadSites(current, SITEMAP)
-  if (isInBlockList(current, [...blocklist, ...BLOCKLIST])) {
+  if (isInBlockList(current, blocklist)) {
     return
   }
   if (isInBlockList(current, GM_getValue('blocklist', []))) {
-    logger.warn('排除当前域名')
-    GM_registerMenuCommand('恢复当前域名并刷新', () => {
+    logger.warn('排除当前域名的字体美化')
+    GM_registerMenuCommand('恢复当前域名的字体美化并刷新', () => {
       const stored: string[] = GM_getValue('blocklist', [])
       const index = stored.indexOf(current)
       if (index !== -1) {
@@ -49,7 +50,7 @@ function init() {
   addRootCSS('--code-font', 'monospace')
   loadStyles()
 
-  GM_registerMenuCommand('排除当前域名并刷新', () => {
+  GM_registerMenuCommand('排除当前域名的字体美化', () => {
     const stored: string[] = GM_getValue('blocklist', [])
     stored.push(current)
     GM_setValue('blocklist', stored)
@@ -58,26 +59,17 @@ function init() {
   loadStyles(base)
 }
 
-GM_registerMenuCommand(`${BASE_CONFIG.SCROLLBAR ? '关闭' : '开启'}滚动条美化并刷新`, () => {
-  GM_setValue('SCROLLBAR', !BASE_CONFIG.SCROLLBAR)
-  logger.info(!BASE_CONFIG.SCROLLBAR)
-  location.reload()
-})
+init()
 
-GM_registerMenuCommand('重置设置', () => {
-  GM_deleteValue('SANS')
-  GM_deleteValue('MONO')
-  GM_deleteValue('MONO_SETTING')
-  GM_deleteValue('SCROLLBAR')
-  GM_deleteValue('SCROLLBAR_WIDTH')
-})
+loadSettingMenus()
 
-GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷新`, () => {
+GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷新页面`, () => {
   toggleDebug()
   location.reload()
 })
-init()
+
 isDark && addRootCSS('color-scheme', 'dark')
+
 window.onload = () => {
   setTimeout(() => {
     const list = document.documentElement.classList

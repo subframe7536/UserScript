@@ -1,7 +1,7 @@
 import { addCSS } from '../utils'
-import { BASE_CONFIG } from '../_head'
+import { getSans } from '../settings'
 import type { Site } from '.'
 
 export default ['developer.mozilla.org', () => {
-  addCSS(':root', `--font-body:${BASE_CONFIG.SANS}!important;`)
+  addCSS(':root', `--font-body:${getSans()}!important;`)
 }] satisfies Site
