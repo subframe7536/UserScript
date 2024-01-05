@@ -41,7 +41,7 @@ export const sansExcludeSelector = [
   '.pi, .pi *',
   // elements
   'em, i, svg *, kbd, kdb *, samp, samp *, var, var *, tt',
-  [".font-mono", "[font-mono]", ".text-mono", "[text-mono]"].map(s => `${s} *`)
+  ['.font-mono', '[font-mono]', '.text-mono', '[text-mono]'].map(s => `${s} *`),
 ]
 export const monospaceSelectors = [
   monacoCharWidthCheckElement,
@@ -125,5 +125,6 @@ export const blocklist = [
   'math',
   'twitter',
   'openvim',
+  'monaspace.githubnext.com',
 ]
 export const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
