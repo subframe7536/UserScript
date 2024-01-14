@@ -25,6 +25,7 @@ export const sansExcludeSelector = [
   // elements
   'em, i, svg *, kbd, kdb *, samp, samp *, var, var *, tt',
   ['.font-mono', '[font-mono]', '.text-mono', '[text-mono]'].map(s => `${s} *`),
+  '#formattedJson *',
 ]
 export const monospaceSelectors = [
   monacoCharWidthCheckElement,

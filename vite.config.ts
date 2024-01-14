@@ -1,6 +1,9 @@
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import monkey from 'vite-plugin-monkey'
 
+const __dirname = dirname(fileURLToPath(import.meta.url))
 // https://vitejs.dev/config/
 export default defineConfig({
   esbuild: {
@@ -13,7 +16,7 @@ export default defineConfig({
   },
   plugins: [
     monkey({
-      entry: 'src/main.ts',
+      entry: join(__dirname, 'src/main.ts'),
       build: {
         autoGrant: true,
       },
