@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.1.1
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -59,7 +59,8 @@
     ".pi, .pi *",
     // elements
     "em, i, svg *, kbd, kdb *, samp, samp *, var, var *, tt",
-    [".font-mono", "[font-mono]", ".text-mono", "[text-mono]"].map((s) => `${s} *`)
+    [".font-mono", "[font-mono]", ".text-mono", "[text-mono]"].map((s) => `${s} *`),
+    "#formattedJson *"
   ];
   const monospaceSelectors = [
     monacoCharWidthCheckElement,
@@ -384,7 +385,8 @@ Monospace 字体特性: ${getMonoFeature()}
       ".bili-comment.browser-pc *",
       ".video-page-card-small .card-box .info .title",
       ".h .h-sign",
-      ".video-info-container .video-title"
+      ".video-info-container .video-title",
+      ".bili-video-card *"
     );
     addCSS(".video-share", "display:none!important");
   }];
@@ -425,7 +427,10 @@ Monospace 字体特性: ${getMonoFeature()}
       ".blame-container *"
     );
     addCSS(".code-navigation-cursor", "display:none");
-    addCSS("#read-only-cursor-text-area", "caret-color:var(--color-fg-default)");
+    addCSS("#read-only-cursor-text-area", [
+      "caret-color:var(--color-fg-default)",
+      "overflow:hidden!important"
+    ]);
   }];
   const __vite_glob_0_9 = ["greasyfork.org", () => {
     addCSS("body", "color:#000");
