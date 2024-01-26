@@ -23,6 +23,16 @@ export function loadStyles(style?: string) {
   }
 }
 
+/**
+ * set css variable on root
+ * @param name variable name, can absent prefix `--`
+ * @param value variable value
+ */
+export function setCssVariable(name: string, value: string) {
+  const variableName = name.startsWith('--') ? name : `--${name}`
+  document.documentElement.style.setProperty(variableName, value)
+}
+
 export function addRootCSS(property: string, value: string) {
   styleArray.push(`:root{${property}:${value}}`)
 }
@@ -36,15 +46,18 @@ export function addCSS(selectors: string | string[], styles: string | string[]) 
 let codeFontSelectors: string[] = []
 
 export function __codeFont() {
-  const features = getMonoFeature().map(s => `"${s.trim()}"`).join(',')
+  const featureName = 'userscript-mono-feature'
+  const fontName = 'userscript-mono'
   addCSS(
     monospaceSelectors.concat(codeFontSelectors),
     [
-      `font-family:${getMono()},${getSans()}!important`,
-      `font-feature-settings:${features}!important`,
+      `font-family:var(--${fontName})!important`,
+      `font-feature-settings:var(--${featureName})!important`,
       'letter-spacing:0px!important',
     ],
   )
+  setCssVariable(fontName, `${getMono()},${getSans()}`)
+  setCssVariable(featureName, getMonoFeature())
   codeFontSelectors = []
 }
 
@@ -55,20 +68,22 @@ export function addCodeFont(...selectors: string[]) {
 let sansFontSelectors: string[] = []
 
 export function __sansFont() {
+  const name = 'userscript-sans'
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [
-      `font-family:${getSans()}`,
+      `font-family:var(--${name})`,
       'letter-spacing:0px!important',
     ],
   )
   addCSS(
     sansFontSelectors,
     [
-      `font-family:${getSans()}!important`,
+      `font-family:var(--${name})!important`,
       'letter-spacing:0px!important',
     ],
   )
+  setCssVariable(name, getSans())
   sansFontSelectors = []
 }
 export function addSansFont(...selectors: string[]) {

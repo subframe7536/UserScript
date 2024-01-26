@@ -8,6 +8,7 @@ import {
   isInBlockList,
   loadStyles,
   logger,
+  setCssVariable,
   toggleDebug,
 } from './utils'
 import { loadSites } from './sites'
@@ -23,7 +24,7 @@ logger.info(current)
 function init() {
   if (getScrollbar()) {
     loadStyles(scrollbar)
-    document.documentElement.style.setProperty('--scrollbar-width', getScrollbarWidth())
+    setCssVariable('scrollbar-width', getScrollbarWidth())
   }
   loadSites(current, SITEMAP)
   if (isInBlockList(current, blocklist)) {
@@ -44,10 +45,10 @@ function init() {
   }
   __sansFont()
   __codeFont()
-  addRootCSS('--d-border-radius', '0.25rem') // for discourse
-  addRootCSS('--font-mono', 'monospace')
-  addRootCSS('--font-monospace', 'monospace')
-  addRootCSS('--code-font', 'monospace')
+  const monospaceVariableValue = 'var(--script-mono)'
+  addRootCSS('--font-mono', monospaceVariableValue)
+  addRootCSS('--font-monospace', monospaceVariableValue)
+  addRootCSS('--code-font', monospaceVariableValue)
   loadStyles()
 
   GM_registerMenuCommand('排除当前域名的字体美化', () => {

@@ -1,11 +1,11 @@
 /* eslint-disable no-alert */
-import { logger } from './utils'
+import { logger, setCssVariable } from './utils'
 import { GM_deleteValue, GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
 type Settings = {
   SANS: string
   MONO: string
-  MONO_SETTING: string[]
+  MONO_SETTING: string
   SCROLLBAR: boolean
   SCROLLBAR_WIDTH: string
 }
@@ -24,6 +24,7 @@ export function delSettings() {
   GM_deleteValue('MONO_SETTING')
   GM_deleteValue('SCROLLBAR')
   GM_deleteValue('SCROLLBAR_WIDTH')
+  window.location.reload()
 }
 
 export function getSans() {
@@ -35,7 +36,7 @@ export function getMono() {
 }
 
 export function getMonoFeature() {
-  return getSettings('MONO_SETTING', ['calt'])
+  return getSettings('MONO_SETTING', '"calt"')
 }
 
 export function getScrollbar() {
@@ -64,8 +65,8 @@ Monospace 字体特性: ${getMonoFeature()}
     const sans = prompt('Sans-Serif 字体', getSans())
     if (sans) {
       setSettings('SANS', sans)
+      setCssVariable('userscript-sans', sans)
       logger.info(`Sans-Serif 字体修改为：${sans}`)
-      location.reload()
     } else {
       logger.info(`取消设置 Sans-Serif 字体`)
     }
@@ -75,19 +76,20 @@ Monospace 字体特性: ${getMonoFeature()}
     const mono = prompt('Monospace 字体', getMono())
     if (mono) {
       setSettings('MONO', mono)
+      setCssVariable('userscript-mono', mono)
       logger.info(`Monospace 字体修改为：${mono}`)
-      location.reload()
     } else {
       logger.info(`取消设置 Monospace 字体`)
     }
   })
 
   GM_registerMenuCommand(`设置 Monospace 字体特性`, () => {
-    const monoSettings = prompt('Monospace 字体特性，使用 "|" 分隔', getMonoFeature().join('|'))
+    const monoSettings = prompt('Monospace 字体特性，https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings', getMonoFeature())
     if (monoSettings) {
-      setSettings('MONO_SETTING', monoSettings.split('|').map(s => s.trim()))
+      const features = monoSettings
+      setSettings('MONO_SETTING', features)
+      setCssVariable('userscript-mono-feature', features)
       logger.info(`Monospace 字体特性修改为：${monoSettings}`)
-      location.reload()
     } else {
       logger.info(`取消设置 Monospace 字体特性`)
     }
@@ -97,13 +99,13 @@ Monospace 字体特性: ${getMonoFeature()}
     const width = prompt('滚动条宽度，可以是任何 CSS 长度', getScrollbarWidth())
     if (width) {
       setSettings('SCROLLBAR_WIDTH', width)
+      setCssVariable('scrollbar-width', width)
       logger.info(`滚动条宽度修改为：${width}`)
-      location.reload()
     } else {
       logger.info(`取消设置滚动条宽度`)
     }
   })
 
-  GM_registerMenuCommand('重置设置', delSettings)
+  GM_registerMenuCommand('重置设置并刷新', delSettings)
 }
 // #endregion
