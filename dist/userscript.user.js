@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.2
+// @version      1.1.3
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -230,13 +230,13 @@
     window.location.reload();
   }
   function getSans() {
-    return getSettings("SANS", "sans-serif");
+    return getSettings("SANS", "");
   }
   function getMono() {
-    return getSettings("MONO", "monospace");
+    return getSettings("MONO", "");
   }
   function getMonoFeature() {
-    return getSettings("MONO_SETTING", '"calt"');
+    return getSettings("MONO_SETTING", "");
   }
   function getScrollbar() {
     return getSettings("SCROLLBAR", true);
@@ -277,7 +277,7 @@ Monospace 字体特性: ${getMonoFeature()}
       }
     });
     _GM_registerMenuCommand(`设置 Monospace 字体特性`, () => {
-      const monoSettings = prompt("Monospace 字体特性，https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings", getMonoFeature());
+      const monoSettings = prompt("Monospace 字体特性 (https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings)", getMonoFeature());
       if (monoSettings) {
         const features = monoSettings;
         setSettings("MONO_SETTING", features);
@@ -331,8 +331,8 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(
       monospaceSelectors.concat(codeFontSelectors),
       [
-        `font-family:var(--${fontName})!important`,
-        `font-feature-settings:var(--${featureName})!important`,
+        `font-family:var(--${fontName}),monospace,sans-serif!important`,
+        `font-feature-settings:var(--${featureName}),"calt"!important`,
         "letter-spacing:0px!important"
       ]
     );
@@ -349,14 +349,14 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
-        `font-family:var(--${name})`,
+        `font-family:var(--${name}),sans-serif`,
         "letter-spacing:0px!important"
       ]
     );
     addCSS(
       sansFontSelectors,
       [
-        `font-family:var(--${name})!important`,
+        `font-family:var(--${name}),sans-serif!important`,
         "letter-spacing:0px!important"
       ]
     );
