@@ -30,7 +30,7 @@ export function loadStyles(style?: string) {
  */
 export function setCssVariable(name: string, value: string) {
   const variableName = name.startsWith('--') ? name : `--${name}`
-  document.documentElement.style.setProperty(variableName, value)
+  document.body.style.setProperty(variableName, value)
 }
 
 export function addRootCSS(property: string, value: string) {
@@ -51,8 +51,8 @@ export function __codeFont() {
   addCSS(
     monospaceSelectors.concat(codeFontSelectors),
     [
-      `font-family:var(--${fontName}),monospace,sans-serif!important`,
-      `font-feature-settings:var(--${featureName}),"calt"!important`,
+      `font-family:var(--${fontName},monospace)!important`,
+      `font-feature-settings:var(--${featureName},"calt")!important`,
       'letter-spacing:0px!important',
     ],
   )
@@ -72,14 +72,14 @@ export function __sansFont() {
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [
-      `font-family:var(--${name}),sans-serif`,
+      `font-family:var(--${name},sans-serif)`,
       'letter-spacing:0px!important',
     ],
   )
   addCSS(
     sansFontSelectors,
     [
-      `font-family:var(--${name}),sans-serif!important`,
+      `font-family:var(--${name},sans-serif)!important`,
       'letter-spacing:0px!important',
     ],
   )
