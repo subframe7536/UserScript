@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.1.2
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -60,7 +60,9 @@
     // elements
     "em, i, svg *, kbd, kdb *, samp, samp *, var, var *, tt",
     [".font-mono", "[font-mono]", ".text-mono", "[text-mono]"].map((s) => `${s} *`),
-    "#formattedJson *"
+    "#formattedJson *",
+    ":is(.katex, .katex *)",
+    ":is(mjx-container, .MathJax) *"
   ];
   const monospaceSelectors = [
     monacoCharWidthCheckElement,
@@ -225,6 +227,7 @@
     _GM_deleteValue("MONO_SETTING");
     _GM_deleteValue("SCROLLBAR");
     _GM_deleteValue("SCROLLBAR_WIDTH");
+    window.location.reload();
   }
   function getSans() {
     return getSettings("SANS", "sans-serif");
@@ -233,7 +236,7 @@
     return getSettings("MONO", "monospace");
   }
   function getMonoFeature() {
-    return getSettings("MONO_SETTING", ["calt"]);
+    return getSettings("MONO_SETTING", '"calt"');
   }
   function getScrollbar() {
     return getSettings("SCROLLBAR", true);
@@ -257,8 +260,8 @@ Monospace 字体特性: ${getMonoFeature()}
       const sans = prompt("Sans-Serif 字体", getSans());
       if (sans) {
         setSettings("SANS", sans);
+        setCssVariable("userscript-sans", sans);
         logger.info(`Sans-Serif 字体修改为：${sans}`);
-        location.reload();
       } else {
         logger.info(`取消设置 Sans-Serif 字体`);
       }
@@ -267,18 +270,19 @@ Monospace 字体特性: ${getMonoFeature()}
       const mono = prompt("Monospace 字体", getMono());
       if (mono) {
         setSettings("MONO", mono);
+        setCssVariable("userscript-mono", mono);
         logger.info(`Monospace 字体修改为：${mono}`);
-        location.reload();
       } else {
         logger.info(`取消设置 Monospace 字体`);
       }
     });
     _GM_registerMenuCommand(`设置 Monospace 字体特性`, () => {
-      const monoSettings = prompt('Monospace 字体特性，使用 "|" 分隔', getMonoFeature().join("|"));
+      const monoSettings = prompt("Monospace 字体特性，https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings", getMonoFeature());
       if (monoSettings) {
-        setSettings("MONO_SETTING", monoSettings.split("|").map((s) => s.trim()));
+        const features = monoSettings;
+        setSettings("MONO_SETTING", features);
+        setCssVariable("userscript-mono-feature", features);
         logger.info(`Monospace 字体特性修改为：${monoSettings}`);
-        location.reload();
       } else {
         logger.info(`取消设置 Monospace 字体特性`);
       }
@@ -287,13 +291,13 @@ Monospace 字体特性: ${getMonoFeature()}
       const width = prompt("滚动条宽度，可以是任何 CSS 长度", getScrollbarWidth());
       if (width) {
         setSettings("SCROLLBAR_WIDTH", width);
+        setCssVariable("scrollbar-width", width);
         logger.info(`滚动条宽度修改为：${width}`);
-        location.reload();
       } else {
         logger.info(`取消设置滚动条宽度`);
       }
     });
-    _GM_registerMenuCommand("重置设置", delSettings);
+    _GM_registerMenuCommand("重置设置并刷新", delSettings);
   }
   let styleArray = [];
   const logger = createBrowserLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
@@ -308,6 +312,10 @@ Monospace 字体特性: ${getMonoFeature()}
       }
     }
   }
+  function setCssVariable(name, value) {
+    const variableName = name.startsWith("--") ? name : `--${name}`;
+    document.documentElement.style.setProperty(variableName, value);
+  }
   function addRootCSS(property, value) {
     styleArray.push(`:root{${property}:${value}}`);
   }
@@ -318,15 +326,18 @@ Monospace 字体特性: ${getMonoFeature()}
   }
   let codeFontSelectors = [];
   function __codeFont() {
-    const features = getMonoFeature().map((s) => `"${s.trim()}"`).join(",");
+    const featureName = "userscript-mono-feature";
+    const fontName = "userscript-mono";
     addCSS(
       monospaceSelectors.concat(codeFontSelectors),
       [
-        `font-family:${getMono()},${getSans()}!important`,
-        `font-feature-settings:${features}!important`,
+        `font-family:var(--${fontName})!important`,
+        `font-feature-settings:var(--${featureName})!important`,
         "letter-spacing:0px!important"
       ]
     );
+    setCssVariable(fontName, `${getMono()},${getSans()}`);
+    setCssVariable(featureName, getMonoFeature());
     codeFontSelectors = [];
   }
   function addCodeFont(...selectors) {
@@ -334,20 +345,22 @@ Monospace 字体特性: ${getMonoFeature()}
   }
   let sansFontSelectors = [];
   function __sansFont() {
+    const name = "userscript-sans";
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
-        `font-family:${getSans()}`,
+        `font-family:var(--${name})`,
         "letter-spacing:0px!important"
       ]
     );
     addCSS(
       sansFontSelectors,
       [
-        `font-family:${getSans()}!important`,
+        `font-family:var(--${name})!important`,
         "letter-spacing:0px!important"
       ]
     );
+    setCssVariable(name, getSans());
     sansFontSelectors = [];
   }
   function addSansFont(...selectors) {
@@ -412,6 +425,7 @@ Monospace 字体特性: ${getMonoFeature()}
     addCodeFont(".commit-id", "textarea");
     addSansFont("button", ".ui:not(.iconfont)");
     addCSS("#git-header-nav #navbar-search-form", "border-radius:4px");
+    addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
   const __vite_glob_0_8 = ["github.com", () => {
     addCodeFont(
@@ -505,7 +519,7 @@ Monospace 字体特性: ${getMonoFeature()}
   function init() {
     if (getScrollbar()) {
       loadStyles(scrollbar);
-      document.documentElement.style.setProperty("--scrollbar-width", getScrollbarWidth());
+      setCssVariable("scrollbar-width", getScrollbarWidth());
     }
     loadSites(current, SITEMAP);
     if (isInBlockList(current, blocklist)) {
@@ -526,10 +540,10 @@ Monospace 字体特性: ${getMonoFeature()}
     }
     __sansFont();
     __codeFont();
-    addRootCSS("--d-border-radius", "0.25rem");
-    addRootCSS("--font-mono", "monospace");
-    addRootCSS("--font-monospace", "monospace");
-    addRootCSS("--code-font", "monospace");
+    const monospaceVariableValue = "var(--script-mono)";
+    addRootCSS("--font-mono", monospaceVariableValue);
+    addRootCSS("--font-monospace", monospaceVariableValue);
+    addRootCSS("--code-font", monospaceVariableValue);
     loadStyles();
     _GM_registerMenuCommand("排除当前域名的字体美化", () => {
       const stored = _GM_getValue("blocklist", []);
