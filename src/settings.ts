@@ -28,15 +28,15 @@ export function delSettings() {
 }
 
 export function getSans() {
-  return getSettings('SANS', '')
+  return getSettings('SANS', 'sans-serif')
 }
 
 export function getMono() {
-  return getSettings('MONO', '')
+  return getSettings('MONO', 'monospace')
 }
 
 export function getMonoFeature() {
-  return getSettings('MONO_SETTING', '')
+  return getSettings('MONO_SETTING', '"calt"')
 }
 
 export function getScrollbar() {
