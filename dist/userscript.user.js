@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.4
+// @version      1.1.5
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -314,7 +314,7 @@ Monospace 字体特性: ${getMonoFeature()}
   }
   function setCssVariable(name, value) {
     const variableName = name.startsWith("--") ? name : `--${name}`;
-    document.documentElement.style.setProperty(variableName, value);
+    document.body.style.setProperty(variableName, value);
   }
   function addRootCSS(property, value) {
     styleArray.push(`:root{${property}:${value}}`);
@@ -331,8 +331,8 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(
       monospaceSelectors.concat(codeFontSelectors),
       [
-        `font-family:var(--${fontName}),monospace,sans-serif!important`,
-        `font-feature-settings:var(--${featureName}),"calt"!important`,
+        `font-family:var(--${fontName},monospace)!important`,
+        `font-feature-settings:var(--${featureName},"calt")!important`,
         "letter-spacing:0px!important"
       ]
     );
@@ -349,14 +349,14 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
-        `font-family:var(--${name}),sans-serif`,
+        `font-family:var(--${name},sans-serif)`,
         "letter-spacing:0px!important"
       ]
     );
     addCSS(
       sansFontSelectors,
       [
-        `font-family:var(--${name}),sans-serif!important`,
+        `font-family:var(--${name},sans-serif)!important`,
         "letter-spacing:0px!important"
       ]
     );
