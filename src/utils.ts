@@ -1,6 +1,6 @@
 import { createBrowserLogger } from 'consoloo/browser'
 import { moduleName, monospaceSelectors, sansExcludeSelector } from './constants'
-import { getMono, getMonoFeature, getSans } from './settings'
+import { getMono, getMonoFeature, getSans, getSettingsVariable } from './settings'
 import { GM_getValue, GM_setValue } from '$'
 
 let styleArray: string[] = []
@@ -51,8 +51,8 @@ export function __codeFont() {
   addCSS(
     monospaceSelectors.concat(codeFontSelectors),
     [
-      `font-family:var(--${fontName},monospace)!important`,
-      `font-feature-settings:var(--${featureName},"calt")!important`,
+      `font-family:${getSettingsVariable('MONO')}!important`,
+      `font-feature-settings:${getSettingsVariable('MONO_SETTING')}!important`,
       'letter-spacing:0px!important',
     ],
   )
@@ -72,14 +72,14 @@ export function __sansFont() {
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [
-      `font-family:var(--${name},sans-serif)`,
+      `font-family:${getSettingsVariable('SANS')}`,
       'letter-spacing:0px!important',
     ],
   )
   addCSS(
     sansFontSelectors,
     [
-      `font-family:var(--${name},sans-serif)!important`,
+      `font-family:${getSettingsVariable('SANS')}!important`,
       'letter-spacing:0px!important',
     ],
   )

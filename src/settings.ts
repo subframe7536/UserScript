@@ -14,6 +14,21 @@ function getSettings<K extends keyof Settings>(key: K, defaultValue: any): Setti
   return GM_getValue(key) ?? defaultValue
 }
 
+export function getSettingsVariable<K extends keyof Settings>(key: K): string {
+  switch (key) {
+    case 'MONO':
+      return `var(--userscript-mono,sans))`
+    case 'MONO_SETTING':
+      return `var(--userscript-mono-feature,"calt"))`
+    case 'SANS':
+      return `var(--userscript-sans,sans-serif))`
+    case 'SCROLLBAR_WIDTH':
+      return `var(--scrollbar-width,max(0.85vw,10px)))`
+    default:
+      return ''
+  }
+}
+
 export function setSettings<K extends keyof Settings>(key: K, value: Settings[K]) {
   GM_setValue(key, value)
 }
