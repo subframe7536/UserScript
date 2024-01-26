@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.5
+// @version      1.1.6
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -218,6 +218,20 @@
   function getSettings(key, defaultValue) {
     return _GM_getValue(key) ?? defaultValue;
   }
+  function getSettingsVariable(key) {
+    switch (key) {
+      case "MONO":
+        return `var(--userscript-mono,sans))`;
+      case "MONO_SETTING":
+        return `var(--userscript-mono-feature,"calt"))`;
+      case "SANS":
+        return `var(--userscript-sans,sans-serif))`;
+      case "SCROLLBAR_WIDTH":
+        return `var(--scrollbar-width,max(0.85vw,10px)))`;
+      default:
+        return "";
+    }
+  }
   function setSettings(key, value) {
     _GM_setValue(key, value);
   }
@@ -331,8 +345,8 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(
       monospaceSelectors.concat(codeFontSelectors),
       [
-        `font-family:var(--${fontName},monospace)!important`,
-        `font-feature-settings:var(--${featureName},"calt")!important`,
+        `font-family:${getSettingsVariable("MONO")}!important`,
+        `font-feature-settings:${getSettingsVariable("MONO_SETTING")}!important`,
         "letter-spacing:0px!important"
       ]
     );
@@ -349,14 +363,14 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
-        `font-family:var(--${name},sans-serif)`,
+        `font-family:${getSettingsVariable("SANS")}`,
         "letter-spacing:0px!important"
       ]
     );
     addCSS(
       sansFontSelectors,
       [
-        `font-family:var(--${name},sans-serif)!important`,
+        `font-family:${getSettingsVariable("SANS")}!important`,
         "letter-spacing:0px!important"
       ]
     );
@@ -416,10 +430,10 @@ Monospace 字体特性: ${getMonoFeature()}
   }];
   const __vite_glob_0_6 = ["discord.com", () => {
     addCodeFont("[class^=codeBlockSyntax]", "[class^=codeLine] *", "[class*=inlineCode]>span");
-    addRootCSS("--font-code", `${getMono()},${getSans()}!important`);
-    addRootCSS("--font-display", `${getSans()}!important`);
-    addRootCSS("--font-primary", `${getSans()}!important`);
-    addRootCSS("--font-headline", `${getSans()}!important`);
+    addRootCSS("--font-code", `${getSettingsVariable("MONO")}!important`);
+    addRootCSS("--font-display", `${getSettingsVariable("SANS")}!important`);
+    addRootCSS("--font-primary", `${getSettingsVariable("SANS")}!important`);
+    addRootCSS("--font-headline", `${getSettingsVariable("SANS")}!important`);
   }];
   const __vite_glob_0_7 = ["gitee.com", () => {
     addCodeFont(".commit-id", "textarea");
@@ -460,7 +474,7 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS("copy-code-btn", "top:8px");
   }];
   const __vite_glob_0_13 = ["developer.mozilla.org", () => {
-    addCSS(":root", `--font-body:${getSans()}!important;`);
+    addCSS(":root", `--font-body:${getSettingsVariable("SANS")}!important;`);
   }];
   const __vite_glob_0_14 = ["ray.so", () => {
     addCodeFont('textarea[class^="Editor_textarea"]');
@@ -476,7 +490,7 @@ Monospace 字体特性: ${getMonoFeature()}
     addSansFont(".core_title_theme_bright .core_title_txt");
   }];
   const __vite_glob_0_18 = [["twitter.com", "x.com"], () => {
-    addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${getSans()}!important;`);
+    addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${getSettingsVariable("SANS")}!important;`);
   }];
   const __vite_glob_0_19 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
