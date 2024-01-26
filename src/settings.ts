@@ -28,15 +28,15 @@ export function delSettings() {
 }
 
 export function getSans() {
-  return getSettings('SANS', 'sans-serif')
+  return getSettings('SANS', '')
 }
 
 export function getMono() {
-  return getSettings('MONO', 'monospace')
+  return getSettings('MONO', '')
 }
 
 export function getMonoFeature() {
-  return getSettings('MONO_SETTING', '"calt"')
+  return getSettings('MONO_SETTING', '')
 }
 
 export function getScrollbar() {
@@ -84,7 +84,7 @@ Monospace 字体特性: ${getMonoFeature()}
   })
 
   GM_registerMenuCommand(`设置 Monospace 字体特性`, () => {
-    const monoSettings = prompt('Monospace 字体特性，https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings', getMonoFeature())
+    const monoSettings = prompt('Monospace 字体特性 (https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings)', getMonoFeature())
     if (monoSettings) {
       const features = monoSettings
       setSettings('MONO_SETTING', features)

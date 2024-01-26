@@ -51,8 +51,8 @@ export function __codeFont() {
   addCSS(
     monospaceSelectors.concat(codeFontSelectors),
     [
-      `font-family:var(--${fontName})!important`,
-      `font-feature-settings:var(--${featureName})!important`,
+      `font-family:var(--${fontName}),monospace,sans-serif!important`,
+      `font-feature-settings:var(--${featureName}),"calt"!important`,
       'letter-spacing:0px!important',
     ],
   )
@@ -72,14 +72,14 @@ export function __sansFont() {
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [
-      `font-family:var(--${name})`,
+      `font-family:var(--${name}),sans-serif`,
       'letter-spacing:0px!important',
     ],
   )
   addCSS(
     sansFontSelectors,
     [
-      `font-family:var(--${name})!important`,
+      `font-family:var(--${name}),sans-serif!important`,
       'letter-spacing:0px!important',
     ],
   )
