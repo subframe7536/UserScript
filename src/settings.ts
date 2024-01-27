@@ -17,13 +17,13 @@ function getSettings<K extends keyof Settings>(key: K, defaultValue: any): Setti
 export function getSettingsVariable<K extends keyof Settings>(key: K): string {
   switch (key) {
     case 'MONO':
-      return `var(--userscript-mono,sans))`
+      return `var(--userscript-mono,sans)`
     case 'MONO_SETTING':
-      return `var(--userscript-mono-feature,"calt"))`
+      return `var(--userscript-mono-feature,"calt")`
     case 'SANS':
-      return `var(--userscript-sans,sans-serif))`
+      return `var(--userscript-sans,sans-serif)`
     case 'SCROLLBAR_WIDTH':
-      return `var(--scrollbar-width,max(0.85vw,10px)))`
+      return `var(--scrollbar-width,max(0.85vw,10px))`
     default:
       return ''
   }
