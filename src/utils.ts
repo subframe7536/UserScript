@@ -1,6 +1,6 @@
 import { createBrowserLogger } from 'consoloo/browser'
 import { moduleName, monospaceSelectors, sansExcludeSelector } from './constants'
-import { getMono, getMonoFeature, getSans, getSettingsVariable } from './settings'
+import { getMono, getMonoFeature, getSans, getSettingsVariable, monoFeatureVariableName, monoVariableName, sansVariableName } from './settings'
 import { GM_getValue, GM_setValue } from '$'
 
 let styleArray: string[] = []
@@ -30,7 +30,7 @@ export function loadStyles(style?: string) {
  */
 export function setCssVariable(name: string, value: string) {
   const variableName = name.startsWith('--') ? name : `--${name}`
-  document.body.style.setProperty(variableName, value)
+  document.body?.style.setProperty(variableName, value)
 }
 
 export function addRootCSS(property: string, value: string) {
@@ -45,9 +45,13 @@ export function addCSS(selectors: string | string[], styles: string | string[]) 
 
 let codeFontSelectors: string[] = []
 
+export function __fontVariable() {
+  setCssVariable(monoVariableName, `${getMono()},${getSans()}`)
+  setCssVariable(monoFeatureVariableName, getMonoFeature())
+  setCssVariable(sansVariableName, getSans())
+}
+
 export function __codeFont() {
-  const featureName = 'userscript-mono-feature'
-  const fontName = 'userscript-mono'
   addCSS(
     monospaceSelectors.concat(codeFontSelectors),
     [
@@ -56,8 +60,6 @@ export function __codeFont() {
       'letter-spacing:0px!important',
     ],
   )
-  setCssVariable(fontName, `${getMono()},${getSans()}`)
-  setCssVariable(featureName, getMonoFeature())
   codeFontSelectors = []
 }
 
@@ -68,7 +70,6 @@ export function addCodeFont(...selectors: string[]) {
 let sansFontSelectors: string[] = []
 
 export function __sansFont() {
-  const name = 'userscript-sans'
   addCSS(
     `body :not(${sansExcludeSelector.join(',')})`,
     [
@@ -83,7 +84,6 @@ export function __sansFont() {
       'letter-spacing:0px!important',
     ],
   )
-  setCssVariable(name, getSans())
   sansFontSelectors = []
 }
 export function addSansFont(...selectors: string[]) {

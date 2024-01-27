@@ -14,16 +14,21 @@ function getSettings<K extends keyof Settings>(key: K, defaultValue: any): Setti
   return GM_getValue(key) ?? defaultValue
 }
 
+export const sansVariableName = 'userscript-sans'
+export const monoVariableName = 'userscript-mono'
+export const monoFeatureVariableName = 'userscript-mono-feature'
+export const scrollbarWidthVariableName = 'scrollbar-width'
+
 export function getSettingsVariable<K extends keyof Settings>(key: K): string {
   switch (key) {
     case 'MONO':
-      return `var(--userscript-mono,sans)`
+      return `var(--${monoVariableName},sans)`
     case 'MONO_SETTING':
-      return `var(--userscript-mono-feature,"calt")`
+      return `var(--${monoFeatureVariableName},"calt")`
     case 'SANS':
-      return `var(--userscript-sans,sans-serif)`
+      return `var(--${sansVariableName},sans-serif)`
     case 'SCROLLBAR_WIDTH':
-      return `var(--scrollbar-width,max(0.85vw,10px))`
+      return `var(--${scrollbarWidthVariableName},max(0.85vw,10px))`
     default:
       return ''
   }

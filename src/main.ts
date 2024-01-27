@@ -2,6 +2,7 @@ import { SITEMAP } from './_head'
 import { blocklist, isDark, moduleName } from './constants'
 import {
   __codeFont,
+  __fontVariable,
   __sansFont,
   addRootCSS,
   getDebug,
@@ -14,7 +15,7 @@ import {
 import { loadSites } from './sites'
 import base from './styles/base.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
-import { getScrollbar, getScrollbarWidth, loadSettingMenus } from './settings'
+import { getScrollbar, getScrollbarWidth, loadSettingMenus, monoVariableName, scrollbarWidthVariableName } from './settings'
 import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
 const current = window.location.hostname
@@ -24,7 +25,7 @@ logger.info(current)
 function init() {
   if (getScrollbar()) {
     loadStyles(scrollbar)
-    setCssVariable('scrollbar-width', getScrollbarWidth())
+    setCssVariable(scrollbarWidthVariableName, getScrollbarWidth())
   }
   loadSites(current, SITEMAP)
   if (isInBlockList(current, blocklist)) {
@@ -61,7 +62,7 @@ function init() {
 }
 
 init()
-
+__fontVariable()
 loadSettingMenus()
 
 GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷新页面`, () => {
@@ -81,6 +82,10 @@ window.onload = () => {
     if (!document.querySelector(`.${moduleName}`)) {
       logger.warn('未找到 userscript-mono 标签，重新加载')
       init()
+    }
+    if (!document.body.style.getPropertyValue(`--${monoVariableName}`)) {
+      logger.warn('未找到 CSS 变量属性，重新加载')
+      __fontVariable()
     }
   }, 100)
 }
