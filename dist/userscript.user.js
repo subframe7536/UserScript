@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.6
+// @version      1.1.7
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -221,13 +221,13 @@
   function getSettingsVariable(key) {
     switch (key) {
       case "MONO":
-        return `var(--userscript-mono,sans))`;
+        return `var(--userscript-mono,sans)`;
       case "MONO_SETTING":
-        return `var(--userscript-mono-feature,"calt"))`;
+        return `var(--userscript-mono-feature,"calt")`;
       case "SANS":
-        return `var(--userscript-sans,sans-serif))`;
+        return `var(--userscript-sans,sans-serif)`;
       case "SCROLLBAR_WIDTH":
-        return `var(--scrollbar-width,max(0.85vw,10px)))`;
+        return `var(--scrollbar-width,max(0.85vw,10px))`;
       default:
         return "";
     }
