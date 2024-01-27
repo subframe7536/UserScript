@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.7
+// @version      1.1.8
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -218,16 +218,20 @@
   function getSettings(key, defaultValue) {
     return _GM_getValue(key) ?? defaultValue;
   }
+  const sansVariableName = "userscript-sans";
+  const monoVariableName = "userscript-mono";
+  const monoFeatureVariableName = "userscript-mono-feature";
+  const scrollbarWidthVariableName = "scrollbar-width";
   function getSettingsVariable(key) {
     switch (key) {
       case "MONO":
-        return `var(--userscript-mono,sans)`;
+        return `var(--${monoVariableName},sans)`;
       case "MONO_SETTING":
-        return `var(--userscript-mono-feature,"calt")`;
+        return `var(--${monoFeatureVariableName},"calt")`;
       case "SANS":
-        return `var(--userscript-sans,sans-serif)`;
+        return `var(--${sansVariableName},sans-serif)`;
       case "SCROLLBAR_WIDTH":
-        return `var(--scrollbar-width,max(0.85vw,10px))`;
+        return `var(--${scrollbarWidthVariableName},max(0.85vw,10px))`;
       default:
         return "";
     }
@@ -327,8 +331,9 @@ Monospace 字体特性: ${getMonoFeature()}
     }
   }
   function setCssVariable(name, value) {
+    var _a;
     const variableName = name.startsWith("--") ? name : `--${name}`;
-    document.body.style.setProperty(variableName, value);
+    (_a = document.body) == null ? void 0 : _a.style.setProperty(variableName, value);
   }
   function addRootCSS(property, value) {
     styleArray.push(`:root{${property}:${value}}`);
@@ -339,9 +344,12 @@ Monospace 字体特性: ${getMonoFeature()}
     styleArray.push(`${selectors.join(",")}{${styles.join(";")}}`);
   }
   let codeFontSelectors = [];
+  function __fontVariable() {
+    setCssVariable(monoVariableName, `${getMono()},${getSans()}`);
+    setCssVariable(monoFeatureVariableName, getMonoFeature());
+    setCssVariable(sansVariableName, getSans());
+  }
   function __codeFont() {
-    const featureName = "userscript-mono-feature";
-    const fontName = "userscript-mono";
     addCSS(
       monospaceSelectors.concat(codeFontSelectors),
       [
@@ -350,8 +358,6 @@ Monospace 字体特性: ${getMonoFeature()}
         "letter-spacing:0px!important"
       ]
     );
-    setCssVariable(fontName, `${getMono()},${getSans()}`);
-    setCssVariable(featureName, getMonoFeature());
     codeFontSelectors = [];
   }
   function addCodeFont(...selectors) {
@@ -359,7 +365,6 @@ Monospace 字体特性: ${getMonoFeature()}
   }
   let sansFontSelectors = [];
   function __sansFont() {
-    const name = "userscript-sans";
     addCSS(
       `body :not(${sansExcludeSelector.join(",")})`,
       [
@@ -374,7 +379,6 @@ Monospace 字体特性: ${getMonoFeature()}
         "letter-spacing:0px!important"
       ]
     );
-    setCssVariable(name, getSans());
     sansFontSelectors = [];
   }
   function addSansFont(...selectors) {
@@ -533,7 +537,7 @@ Monospace 字体特性: ${getMonoFeature()}
   function init() {
     if (getScrollbar()) {
       loadStyles(scrollbar);
-      setCssVariable("scrollbar-width", getScrollbarWidth());
+      setCssVariable(scrollbarWidthVariableName, getScrollbarWidth());
     }
     loadSites(current, SITEMAP);
     if (isInBlockList(current, blocklist)) {
@@ -568,6 +572,7 @@ Monospace 字体特性: ${getMonoFeature()}
     loadStyles(base);
   }
   init();
+  __fontVariable();
   loadSettingMenus();
   _GM_registerMenuCommand(`${getDebug() ? "关闭" : "开启"} Debug 模式并刷新页面`, () => {
     toggleDebug();
@@ -584,6 +589,10 @@ Monospace 字体特性: ${getMonoFeature()}
       if (!document.querySelector(`.${moduleName}`)) {
         logger.warn("未找到 userscript-mono 标签，重新加载");
         init();
+      }
+      if (!document.body.style.getPropertyValue(`--${monoVariableName}`)) {
+        logger.warn("未找到 CSS 变量属性，重新加载");
+        __fontVariable();
       }
     }, 100);
   };
