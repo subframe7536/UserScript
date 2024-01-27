@@ -22,7 +22,7 @@ export const scrollbarWidthVariableName = 'scrollbar-width'
 export function getSettingsVariable<K extends keyof Settings>(key: K): string {
   switch (key) {
     case 'MONO':
-      return `var(--${monoVariableName},sans)`
+      return `var(--${monoVariableName},monospace)`
     case 'MONO_SETTING':
       return `var(--${monoFeatureVariableName},"calt")`
     case 'SANS':

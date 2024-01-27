@@ -87,5 +87,5 @@ window.onload = () => {
       logger.warn('未找到 CSS 变量属性，重新加载')
       __fontVariable()
     }
-  }, 100)
+  }, 500)
 }
