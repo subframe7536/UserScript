@@ -41,3 +41,10 @@
 *::-webkit-scrollbar-thumb:active {
   color: rgba(var(--scrollbar-color-rgb), 60%) !important;
 }
+
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-color: rgb(var(--scrollbar-color-rgb));
+    scrollbar-width: thin;
+  }
+}
