@@ -27,8 +27,10 @@ function init() {
     loadStyles(scrollbar)
     setCssVariable(scrollbarWidthVariableName, getScrollbarWidth())
   }
+  __fontVariable()
   loadSites(current, SITEMAP)
   if (isInBlockList(current, blocklist)) {
+    logger.warn('在黑名单中，排除优化字体')
     return
   }
   if (isInBlockList(current, GM_getValue('blocklist', []))) {
@@ -46,7 +48,7 @@ function init() {
   }
   __sansFont()
   __codeFont()
-  __fontVariable()
+
   const monospaceVariableValue = 'var(--script-mono)'
   addRootCSS('--font-mono', monospaceVariableValue)
   addRootCSS('--font-monospace', monospaceVariableValue)
