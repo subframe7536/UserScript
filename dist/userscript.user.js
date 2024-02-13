@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.10
+// @version      1.1.11
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -542,8 +542,10 @@ Monospace 字体特性: ${getMonoFeature()}
       loadStyles(scrollbar);
       setCssVariable(scrollbarWidthVariableName, getScrollbarWidth());
     }
+    __fontVariable();
     loadSites(current, SITEMAP);
     if (isInBlockList(current, blocklist)) {
+      logger.warn("在黑名单中，排除优化字体");
       return;
     }
     if (isInBlockList(current, _GM_getValue("blocklist", []))) {
@@ -561,7 +563,6 @@ Monospace 字体特性: ${getMonoFeature()}
     }
     __sansFont();
     __codeFont();
-    __fontVariable();
     const monospaceVariableValue = "var(--script-mono)";
     addRootCSS("--font-mono", monospaceVariableValue);
     addRootCSS("--font-monospace", monospaceVariableValue);
