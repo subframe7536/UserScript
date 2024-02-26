@@ -19,6 +19,5 @@ export default ['github.com', () => {
   addCSS('.code-navigation-cursor', 'display:none')
   addCSS('#read-only-cursor-text-area', [
     'caret-color:var(--color-fg-default)',
-    'overflow:hidden!important',
   ])
 }] satisfies Site

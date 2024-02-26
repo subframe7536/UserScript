@@ -8,9 +8,9 @@
 
 在 `<html lang="ja">` 的环境中，浏览器可能会错误的显示 `sans-serif` 和 `monospace` 字体，可以通过 指定字体名称 解决
 
-## 滚动条美化 Chrome 121+ 失效
+## ~~滚动条美化疑似 Chrome 121+ 失效~~
 
-在 Chrome 121+ 中，`-webkit-scrollbar-*` 不再支持，无法生效
+在 Chrome 121+ 中，`-webkit-scrollbar-*` 疑似不再支持，无法生效
 
 ## 自定义配置
 
