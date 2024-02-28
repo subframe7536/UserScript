@@ -31,7 +31,7 @@ export const sansExcludeSelector = [
 ]
 export const monospaceSelectors = [
   monacoCharWidthCheckElement,
-  '.monaco-editor *',
+  '.monaco-editor :not(.codicon)',
   'html body pre',
   'code',
   'code *',
