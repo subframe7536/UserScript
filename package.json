@@ -11,15 +11,15 @@
     "format": "eslint . --fix"
   },
   "devDependencies": {
-    "@subframe7536/eslint-config": "^0.5.10",
-    "@types/node": "^20.11.21",
-    "bumpp": "^9.3.0",
+    "@subframe7536/eslint-config": "^0.5.13",
+    "@types/node": "^20.11.30",
+    "bumpp": "^9.4.0",
     "consola": "^3.2.3",
     "consoloo": "^0.8.2",
     "eslint": "^8.57.0",
-    "esno": "^4.0.0",
-    "typescript": "^5.3.3",
-    "vite": "^5.1.4",
+    "esno": "^4.7.0",
+    "typescript": "^5.4.3",
+    "vite": "^5.2.4",
     "vite-plugin-monkey": "^3.5.1"
   }
 }
