@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.13
+// @version      1.1.14
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -498,24 +498,27 @@ Monospace 字体特性: ${getMonoFeature()}
   const __vite_glob_0_18 = [["twitter.com", "x.com"], () => {
     addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${getSettingsVariable("SANS")}!important;`);
   }];
-  const __vite_glob_0_19 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_19 = ["v2ex.com", () => {
+    addSansFont("#search-container #search");
+  }];
+  const __vite_glob_0_20 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_20 = ["mp.weixin.qq.com", () => {
+  const __vite_glob_0_21 = ["mp.weixin.qq.com", () => {
     const list = ["p"];
     for (let i = 1; i <= 6; i++) {
       list.push(`h${i}`);
     }
     addSansFont(`:is(${list.join(", ")})[style]`);
   }];
-  const __vite_glob_0_21 = ["www.yuque.com", () => {
+  const __vite_glob_0_22 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./raycast-website.ts": __vite_glob_0_14, "./regex101.ts": __vite_glob_0_15, "./stackoverflow.ts": __vite_glob_0_16, "./tieba.ts": __vite_glob_0_17, "./twitter.ts": __vite_glob_0_18, "./w3cschools.ts": __vite_glob_0_19, "./wechat.ts": __vite_glob_0_20, "./yuque.ts": __vite_glob_0_21 });
+    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./raycast-website.ts": __vite_glob_0_14, "./regex101.ts": __vite_glob_0_15, "./stackoverflow.ts": __vite_glob_0_16, "./tieba.ts": __vite_glob_0_17, "./twitter.ts": __vite_glob_0_18, "./v2ex.ts": __vite_glob_0_19, "./w3cschools.ts": __vite_glob_0_20, "./wechat.ts": __vite_glob_0_21, "./yuque.ts": __vite_glob_0_22 });
     Object.values(configs).forEach(([site, callback]) => {
       let patterns = site;
       if (!Array.isArray(site)) {
