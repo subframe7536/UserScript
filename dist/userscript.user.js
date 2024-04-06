@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.15
+// @version      1.1.16
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -144,7 +144,8 @@
     "math",
     "twitter",
     "openvim",
-    "monaspace.githubnext.com"
+    "monaspace.githubnext.com",
+    "github"
   ];
   const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   var _LEVEL = ["debug", "info", "warn", "error"];
@@ -449,22 +450,9 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
   const __vite_glob_0_8 = ["github.com", () => {
-    addCodeFont(
-      'table:not(.d-block):not([aria-labelledby="folders-and-files"]) *',
-      "textarea",
-      "#read-only-cursor-text-area",
-      ".react-code-lines *",
-      ".react-line-number",
-      ".blob-code-inner span",
-      ".commit .sha-block",
-      ".commit .sha",
-      ".branch-name",
-      ".blame-container *"
-    );
-    addCSS(".code-navigation-cursor", "display:none");
-    addCSS("#read-only-cursor-text-area", [
-      "caret-color:var(--color-fg-default)"
-    ]);
+    addRootCSS("--fontStack-monospace", getSettingsVariable("MONO"));
+    addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS"));
+    addRootCSS("--fontStack-system", getSettingsVariable("SANS"));
   }];
   const __vite_glob_0_9 = ["greasyfork.org", () => {
     addCSS("body", "color:#000");
