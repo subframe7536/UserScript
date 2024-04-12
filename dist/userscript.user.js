@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.19
+// @version      1.1.20
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -103,6 +103,7 @@
     '[data-rnw-int-class*="codeblock"] *',
     ".codecolorer-container *",
     ".codeblock *",
+    ".CodeMirror-lines",
     ".swagger-ui :is(.code, code)",
     ".dp-highlighter *",
     ".highlighted-code *",
@@ -450,14 +451,15 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
   const __vite_glob_0_8 = ["github.com", () => {
-    addCSS("#read-only-cursor-text-area", `font-family:${getSettingsVariable("MONO")}!important`);
-    addCSS(".markdown-body", `font-family:${getSettingsVariable("SANS")}!important`);
-    addCSS("body", `font-family:${getSettingsVariable("SANS")}!important`);
-    addCSS(".code-navigation-cursor", "display:none");
-    addCSS("#read-only-cursor-text-area", "caret-color:var(--fgColor-default, var(--color-fg-default));");
     addRootCSS("--fontStack-monospace", getSettingsVariable("MONO"));
     addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS"));
     addRootCSS("--fontStack-system", getSettingsVariable("SANS"));
+    addCodeFont("#read-only-cursor-text-area");
+    addCodeFont(".CodeMirror-lines");
+    addSansFont(".markdown-body");
+    addSansFont("body");
+    addCSS(".code-navigation-cursor", "display:none");
+    addCSS("#read-only-cursor-text-area", "caret-color:var(--fgColor-default, var(--color-fg-default));");
   }];
   const __vite_glob_0_9 = ["greasyfork.org", () => {
     addCSS("body", "color:#000");
@@ -541,6 +543,7 @@ Monospace 字体特性: ${getMonoFeature()}
       setCssVariable(scrollbarWidthVariableName, getScrollbarWidth());
     }
     __fontVariable();
+    loadStyles();
     loadSites(current, SITEMAP);
     if (isInBlockList(current, blocklist)) {
       logger.warn("在黑名单中，排除优化字体");
