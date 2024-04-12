@@ -13,10 +13,12 @@ export const logger = createBrowserLogger(getDebug() ? 'debug' : 'disable').with
  */
 export function loadStyles(style?: string) {
   if (styleArray.length || style) {
+    const targetStyle = style || [...new Set(styleArray)].join('')
     document.documentElement.insertAdjacentHTML(
       'beforeend',
-      `<style class="${moduleName}">${style || [...new Set(styleArray)].join('')}</style>`,
+      `<style class="${moduleName}">${targetStyle}</style>`,
     )
+    logger.debug(targetStyle)
     if (!style) {
       styleArray = []
     }
@@ -55,15 +57,14 @@ export function __fontVariable() {
   addBodyVariable(sansVariableName, getSans())
 }
 
+export const codeStyles = [
+  `font-family:${getSettingsVariable('MONO')}!important`,
+  `font-feature-settings:${getSettingsVariable('MONO_SETTING')}!important`,
+  'letter-spacing:0px!important',
+]
+
 export function __codeFont() {
-  addCSS(
-    monospaceSelectors.concat(codeFontSelectors),
-    [
-      `font-family:${getSettingsVariable('MONO')}!important`,
-      `font-feature-settings:${getSettingsVariable('MONO_SETTING')}!important`,
-      'letter-spacing:0px!important',
-    ],
-  )
+  addCSS(monospaceSelectors.concat(codeFontSelectors), codeStyles)
   codeFontSelectors = []
 }
 
@@ -73,23 +74,22 @@ export function addCodeFont(...selectors: string[]) {
 
 let sansFontSelectors: string[] = []
 
+export const sansStyles = [
+  `font-family:${getSettingsVariable('SANS')}`,
+  'letter-spacing:0px!important',
+]
+
+export const sansStylesImportant = [
+  `font-family:${getSettingsVariable('SANS')}!important`,
+  'letter-spacing:0px!important',
+]
+
 export function __sansFont() {
-  addCSS(
-    `body :not(${sansExcludeSelector.join(',')})`,
-    [
-      `font-family:${getSettingsVariable('SANS')}`,
-      'letter-spacing:0px!important',
-    ],
-  )
-  addCSS(
-    sansFontSelectors,
-    [
-      `font-family:${getSettingsVariable('SANS')}!important`,
-      'letter-spacing:0px!important',
-    ],
-  )
+  addCSS(`body :not(${sansExcludeSelector.join(',')})`, sansStyles)
+  addCSS(sansFontSelectors, sansStylesImportant)
   sansFontSelectors = []
 }
+
 export function addSansFont(...selectors: string[]) {
   sansFontSelectors.push(...selectors)
 }
