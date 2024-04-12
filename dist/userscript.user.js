@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.20
+// @version      1.1.21
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -323,10 +323,12 @@ Monospace 字体特性: ${getMonoFeature()}
   const logger = createBrowserLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
   function loadStyles(style) {
     if (styleArray.length || style) {
+      const targetStyle = style || [...new Set(styleArray)].join("");
       document.documentElement.insertAdjacentHTML(
         "beforeend",
-        `<style class="${moduleName}">${style || [...new Set(styleArray)].join("")}</style>`
+        `<style class="${moduleName}">${targetStyle}</style>`
       );
+      logger.debug(targetStyle);
       if (!style) {
         styleArray = [];
       }
@@ -354,36 +356,30 @@ Monospace 字体特性: ${getMonoFeature()}
     addBodyVariable(monoFeatureVariableName, getMonoFeature());
     addBodyVariable(sansVariableName, getSans());
   }
+  const codeStyles = [
+    `font-family:${getSettingsVariable("MONO")}!important`,
+    `font-feature-settings:${getSettingsVariable("MONO_SETTING")}!important`,
+    "letter-spacing:0px!important"
+  ];
   function __codeFont() {
-    addCSS(
-      monospaceSelectors.concat(codeFontSelectors),
-      [
-        `font-family:${getSettingsVariable("MONO")}!important`,
-        `font-feature-settings:${getSettingsVariable("MONO_SETTING")}!important`,
-        "letter-spacing:0px!important"
-      ]
-    );
+    addCSS(monospaceSelectors.concat(codeFontSelectors), codeStyles);
     codeFontSelectors = [];
   }
   function addCodeFont(...selectors) {
     codeFontSelectors.push(...selectors);
   }
   let sansFontSelectors = [];
+  const sansStyles = [
+    `font-family:${getSettingsVariable("SANS")}`,
+    "letter-spacing:0px!important"
+  ];
+  const sansStylesImportant = [
+    `font-family:${getSettingsVariable("SANS")}!important`,
+    "letter-spacing:0px!important"
+  ];
   function __sansFont() {
-    addCSS(
-      `body :not(${sansExcludeSelector.join(",")})`,
-      [
-        `font-family:${getSettingsVariable("SANS")}`,
-        "letter-spacing:0px!important"
-      ]
-    );
-    addCSS(
-      sansFontSelectors,
-      [
-        `font-family:${getSettingsVariable("SANS")}!important`,
-        "letter-spacing:0px!important"
-      ]
-    );
+    addCSS(`body :not(${sansExcludeSelector.join(",")})`, sansStyles);
+    addCSS(sansFontSelectors, sansStylesImportant);
     sansFontSelectors = [];
   }
   function addSansFont(...selectors) {
@@ -450,14 +446,14 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS("#git-header-nav #navbar-search-form", "border-radius:4px");
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
-  const __vite_glob_0_8 = ["github.com", () => {
+  const __vite_glob_0_8 = [["github.com", "gist.github.com"], () => {
     addRootCSS("--fontStack-monospace", getSettingsVariable("MONO"));
     addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS"));
     addRootCSS("--fontStack-system", getSettingsVariable("SANS"));
-    addCodeFont("#read-only-cursor-text-area");
-    addCodeFont(".CodeMirror-lines");
-    addSansFont(".markdown-body");
-    addSansFont("body");
+    addCSS("#read-only-cursor-text-area", codeStyles);
+    addCSS(".CodeMirror-lines", codeStyles);
+    addCSS(".markdown-body", sansStylesImportant);
+    addCSS("body", sansStylesImportant);
     addCSS(".code-navigation-cursor", "display:none");
     addCSS("#read-only-cursor-text-area", "caret-color:var(--fgColor-default, var(--color-fg-default));");
   }];
@@ -543,10 +539,10 @@ Monospace 字体特性: ${getMonoFeature()}
       setCssVariable(scrollbarWidthVariableName, getScrollbarWidth());
     }
     __fontVariable();
-    loadStyles();
     loadSites(current, SITEMAP);
+    loadStyles();
     if (isInBlockList(current, blocklist)) {
-      logger.warn("在黑名单中，排除优化字体");
+      logger.warn("在黑名单中，排除全局优化字体");
       return;
     }
     if (isInBlockList(current, _GM_getValue("blocklist", []))) {
