@@ -28,6 +28,7 @@ function init() {
     setCssVariable(scrollbarWidthVariableName, getScrollbarWidth())
   }
   __fontVariable()
+  loadStyles()
   loadSites(current, SITEMAP)
   if (isInBlockList(current, blocklist)) {
     logger.warn('在黑名单中，排除优化字体')

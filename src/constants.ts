@@ -68,6 +68,7 @@ export const monospaceSelectors = [
   '[data-rnw-int-class*="codeblock"] *',
   '.codecolorer-container *',
   '.codeblock *',
+  '.CodeMirror-lines',
   '.swagger-ui :is(.code, code)',
   '.dp-highlighter *',
   '.highlighted-code *',

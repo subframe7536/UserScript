@@ -104,6 +104,7 @@ export function isInBlockList(current: string, blocklist: string[]) {
 export function getDebug() {
   return GM_getValue('debug', false)
 }
+
 export function toggleDebug() {
   const debug = !getDebug()
   logger.setLogMode(debug ? 'debug' : 'disable')
