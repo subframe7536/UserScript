@@ -113,6 +113,6 @@ export const blocklist = [
   'twitter',
   'openvim',
   'monaspace.githubnext.com',
-  'github',
+  'github.com',
 ]
 export const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
