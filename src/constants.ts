@@ -93,6 +93,7 @@ export const monospaceSelectors = [
   '.tsd-signature>*',
   '[class*=tsd-signature]',
   '.tsd-kind-parameter',
+  '.urvanov-syntax-highlighter-font-monaco *',
 ]
 
 // ban default css, no affect to site rules
