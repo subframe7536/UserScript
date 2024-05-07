@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.22
+// @version      1.1.23
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -127,7 +127,8 @@
     // tsdoc
     ".tsd-signature>*",
     "[class*=tsd-signature]",
-    ".tsd-kind-parameter"
+    ".tsd-kind-parameter",
+    ".urvanov-syntax-highlighter-font-monaco *"
   ];
   const blocklist = [
     "font",
@@ -446,7 +447,7 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS("#git-header-nav #navbar-search-form", "border-radius:4px");
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
-  const __vite_glob_0_8 = [["github.com", "gist.github.com"], () => {
+  const __vite_glob_0_8 = [["github.com", "gist.github.com", "docs.github.com"], () => {
     addRootCSS("--fontStack-monospace", getSettingsVariable("MONO"));
     addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS"));
     addRootCSS("--fontStack-system", getSettingsVariable("SANS"));
