@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.23
+// @version      1.1.24
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -77,6 +77,9 @@
     "[font-mono]",
     ".text-mono",
     "[text-mono]",
+    ".!font-mono",
+    ".important:font-mono",
+    '[important:font-mono=""]',
     "pre *",
     "pre.CodeMirror-line *",
     "pre .token",
