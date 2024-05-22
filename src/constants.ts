@@ -28,6 +28,7 @@ export const sansExcludeSelector = [
   '#formattedJson *',
   ':is(.katex, .katex *)',
   ':is(mjx-container, .MathJax) *',
+  '.video-js *',
 ]
 export const monospaceSelectors = [
   monacoCharWidthCheckElement,
