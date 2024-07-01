@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.27
+// @version      1.1.28
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -278,7 +278,7 @@ Monospace 字体特性: ${getMonoFeature()}
   `);
     _GM_registerMenuCommand(`${getScrollbar() ? "关闭" : "开启"}滚动条美化并刷新`, () => {
       setSettings("SCROLLBAR", !getScrollbar());
-      logger.info(getScrollbar());
+      logger.info(`scrollbar: ${getScrollbar()}`);
       location.reload();
     });
     _GM_registerMenuCommand(`设置 Sans-Serif 字体`, () => {
@@ -478,46 +478,49 @@ Monospace 字体特性: ${getMonoFeature()}
   const __vite_glob_0_13 = ["developer.mozilla.org", () => {
     addCSS(":root", `--font-body:${getSettingsVariable("SANS")}!important;`);
   }];
-  const __vite_glob_0_14 = ["ray.so", () => {
+  const __vite_glob_0_14 = ["wx.mail.qq.com", () => {
+    addSansFont("body");
+  }];
+  const __vite_glob_0_15 = ["ray.so", () => {
     addCodeFont('textarea[class^="Editor_textarea"]');
   }];
-  const __vite_glob_0_15 = ["regex101.com", () => {
+  const __vite_glob_0_16 = ["regex101.com", () => {
     addRootCSS("--code-font", "monospace,sans-serif!important");
     addRootCSS("--app-font", "sans-serif!important");
   }];
-  const __vite_glob_0_16 = ["sourcegraph.com", () => {
+  const __vite_glob_0_17 = ["sourcegraph.com", () => {
     addCodeFont(".FileDiffHunks-module__body *");
   }];
-  const __vite_glob_0_17 = ["stackoverflow.com", () => {
+  const __vite_glob_0_18 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
-  const __vite_glob_0_18 = ["tieba.baidu.com", () => {
+  const __vite_glob_0_19 = ["tieba.baidu.com", () => {
     addSansFont(".core_title_theme_bright .core_title_txt");
   }];
-  const __vite_glob_0_19 = [["twitter.com", "x.com"], () => {
+  const __vite_glob_0_20 = [["twitter.com", "x.com"], () => {
     addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${getSettingsVariable("SANS")}!important;`);
   }];
-  const __vite_glob_0_20 = ["v2ex.com", () => {
+  const __vite_glob_0_21 = ["v2ex.com", () => {
     addSansFont("#search-container #search");
   }];
-  const __vite_glob_0_21 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_22 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_22 = ["mp.weixin.qq.com", () => {
+  const __vite_glob_0_23 = ["mp.weixin.qq.com", () => {
     const list = ["p"];
     for (let i = 1; i <= 6; i++) {
       list.push(`h${i}`);
     }
     addSansFont(`:is(${list.join(", ")})[style]`);
   }];
-  const __vite_glob_0_23 = ["www.yuque.com", () => {
+  const __vite_glob_0_24 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
     var _a;
     const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./raycast-website.ts": __vite_glob_0_14, "./regex101.ts": __vite_glob_0_15, "./sourcegraph.ts": __vite_glob_0_16, "./stackoverflow.ts": __vite_glob_0_17, "./tieba.ts": __vite_glob_0_18, "./twitter.ts": __vite_glob_0_19, "./v2ex.ts": __vite_glob_0_20, "./w3cschools.ts": __vite_glob_0_21, "./wechat.ts": __vite_glob_0_22, "./yuque.ts": __vite_glob_0_23 });
+    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./qqmail.ts": __vite_glob_0_14, "./raycast-website.ts": __vite_glob_0_15, "./regex101.ts": __vite_glob_0_16, "./sourcegraph.ts": __vite_glob_0_17, "./stackoverflow.ts": __vite_glob_0_18, "./tieba.ts": __vite_glob_0_19, "./twitter.ts": __vite_glob_0_20, "./v2ex.ts": __vite_glob_0_21, "./w3cschools.ts": __vite_glob_0_22, "./wechat.ts": __vite_glob_0_23, "./yuque.ts": __vite_glob_0_24 });
     Object.values(configs).forEach(([site, callback]) => {
       let patterns = site;
       if (!Array.isArray(site)) {
@@ -535,6 +538,7 @@ Monospace 字体特性: ${getMonoFeature()}
     loadStyles();
   }
   const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif}b,strong{font-weight:bolder}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-weight:inherit;line-height:inherit;color:inherit}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
+  const fontfamily = '@font-face{font-family:Microsoft YaHei Light;src:local("sans-serif")}@font-face{font-family:Consolas;src:local("monospace")}@font-face{font-family:microsoft yahei;src:local("sans-serif")}@font-face{font-family:consolas;src:local("monospace")}';
   const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}@supports not selector(::-webkit-scrollbar){html{scrollbar-color:rgb(var(--scrollbar-color-rgb));scrollbar-width:thin}}";
   const current = window.location.hostname;
   logger.info(current);
@@ -565,6 +569,18 @@ Monospace 字体特性: ${getMonoFeature()}
     }
     __sansFont();
     __codeFont();
+    if (getSettings("FONT_FAMILY_REPLACE", true)) {
+      loadStyles(fontfamily);
+      _GM_registerMenuCommand("[Beta] 不替换系统字体", () => {
+        setSettings("FONT_FAMILY_REPLACE", false);
+        location.reload();
+      });
+    } else {
+      _GM_registerMenuCommand("[Beta] 替换系统字体", () => {
+        setSettings("FONT_FAMILY_REPLACE", true);
+        location.reload();
+      });
+    }
     const monospaceVariableValue = "var(--script-mono)";
     addRootCSS("--font-mono", monospaceVariableValue);
     addRootCSS("--font-monospace", monospaceVariableValue);
