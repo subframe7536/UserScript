@@ -78,7 +78,7 @@ Monospace 字体特性: ${getMonoFeature()}
 
   GM_registerMenuCommand(`${getScrollbar() ? '关闭' : '开启'}滚动条美化并刷新`, () => {
     setSettings('SCROLLBAR', !getScrollbar())
-    logger.info(getScrollbar())
+    logger.info(`scrollbar: ${getScrollbar()}`)
     location.reload()
   })
 
