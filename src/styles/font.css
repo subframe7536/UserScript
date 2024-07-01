@@ -1,0 +1,19 @@
+@font-face {
+  font-family: 'Microsoft YaHei Light';
+  src: local('sans-serif');
+}
+
+@font-face {
+  font-family: Consolas;
+  src: local('monospace');
+}
+
+@font-face {
+  font-family: microsoft yahei;
+  src: local('sans-serif');
+}
+
+@font-face {
+  font-family: consolas;
+  src: local('monospace');
+}

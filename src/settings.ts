@@ -8,9 +8,10 @@ type Settings = {
   MONO_SETTING: string
   SCROLLBAR: boolean
   SCROLLBAR_WIDTH: string
+  FONT_FAMILY_REPLACE: boolean
 }
 
-function getSettings<K extends keyof Settings>(key: K, defaultValue: any): Settings[K] {
+export function getSettings<K extends keyof Settings>(key: K, defaultValue: any): Settings[K] {
   return GM_getValue(key) ?? defaultValue
 }
 

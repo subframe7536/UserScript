@@ -14,8 +14,9 @@ import {
 } from './utils'
 import { loadSites } from './sites'
 import base from './styles/base.css?inline'
+import fontfamily from './styles/font.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
-import { getScrollbar, getScrollbarWidth, loadSettingMenus, scrollbarWidthVariableName } from './settings'
+import { getScrollbar, getScrollbarWidth, getSettings, loadSettingMenus, scrollbarWidthVariableName, setSettings } from './settings'
 import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
 const current = window.location.hostname
@@ -49,6 +50,19 @@ function init() {
   }
   __sansFont()
   __codeFont()
+
+  if (getSettings('FONT_FAMILY_REPLACE', true)) {
+    loadStyles(fontfamily)
+    GM_registerMenuCommand('[Beta] 不替换系统字体', () => {
+      setSettings('FONT_FAMILY_REPLACE', false)
+      location.reload()
+    })
+  } else {
+    GM_registerMenuCommand('[Beta] 替换系统字体', () => {
+      setSettings('FONT_FAMILY_REPLACE', true)
+      location.reload()
+    })
+  }
 
   const monospaceVariableValue = 'var(--script-mono)'
   addRootCSS('--font-mono', monospaceVariableValue)
