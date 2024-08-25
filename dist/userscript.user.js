@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.2.1
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -420,7 +420,7 @@ Monospace 字体特性: ${getMonoFeature()}
   const __vite_glob_0_2 = ["www.baidu.com", () => {
     addSansFont("input");
   }];
-  const __vite_glob_0_3 = [(current2) => current2.endsWith(".bilibili.com"), () => {
+  const __vite_glob_0_3 = [(current2) => current2.endsWith("bilibili.com"), () => {
     addSansFont(
       ".bili-comment.browser-pc *",
       ".video-page-card-small .card-box .info .title",
@@ -456,7 +456,7 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS("#git-header-nav #navbar-search-form", "border-radius:4px");
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
-  const __vite_glob_0_8 = [(current2) => current2.endsWith(".github.com"), () => {
+  const __vite_glob_0_8 = [(current2) => current2.endsWith("github.com"), () => {
     addRootCSS("--fontStack-monospace", getSettingsVariable("MONO"));
     addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS"));
     addRootCSS("--fontStack-system", getSettingsVariable("SANS"));
