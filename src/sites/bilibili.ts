@@ -1,7 +1,7 @@
 import { addCSS, addSansFont } from '../utils'
 import type { Site } from '../load'
 
-export default [current => current.endsWith('.bilibili.com'), () => {
+export default [current => current.endsWith('bilibili.com'), () => {
   addSansFont(
     '.bili-comment.browser-pc *',
     '.video-page-card-small .card-box .info .title',

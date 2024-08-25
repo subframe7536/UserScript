@@ -2,7 +2,7 @@ import { addCSS, addRootCSS, codeStyles, sansStylesImportant } from '../utils'
 import { getSettingsVariable } from '../settings'
 import type { Site } from '../load'
 
-export default [current => current.endsWith('.github.com'), () => {
+export default [current => current.endsWith('github.com'), () => {
   // manully setup font
   addRootCSS('--fontStack-monospace', getSettingsVariable('MONO'))
   addRootCSS('--fontStack-sansSerif', getSettingsVariable('SANS'))
