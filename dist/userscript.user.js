@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.1.28
+// @version      1.2.0
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -114,6 +114,7 @@
     ".prism-code *",
     ".CodeMirror-code *",
     ".code-editor :is(.token-line, .token)",
+    ".crayon-table *",
     '[class*="monospace"]',
     '[class*="monospace"] *',
     '[class*="terminal"] *',
@@ -312,16 +313,18 @@ Monospace 字体特性: ${getMonoFeature()}
         logger.info(`取消设置 Monospace 字体特性`);
       }
     });
-    getScrollbar() && _GM_registerMenuCommand(`设置滚动条宽度`, () => {
-      const width = prompt("滚动条宽度，可以是任何 CSS 长度", getScrollbarWidth());
-      if (width) {
-        setSettings("SCROLLBAR_WIDTH", width);
-        setCssVariable("scrollbar-width", width);
-        logger.info(`滚动条宽度修改为：${width}`);
-      } else {
-        logger.info(`取消设置滚动条宽度`);
-      }
-    });
+    if (getScrollbar()) {
+      _GM_registerMenuCommand(`设置滚动条宽度`, () => {
+        const width = prompt("滚动条宽度，可以是任何 CSS 长度", getScrollbarWidth());
+        if (width) {
+          setSettings("SCROLLBAR_WIDTH", width);
+          setCssVariable("scrollbar-width", width);
+          logger.info(`滚动条宽度修改为：${width}`);
+        } else {
+          logger.info(`取消设置滚动条宽度`);
+        }
+      });
+    }
     _GM_registerMenuCommand("重置设置并刷新", delSettings);
   }
   let styleArray = [];
@@ -417,13 +420,15 @@ Monospace 字体特性: ${getMonoFeature()}
   const __vite_glob_0_2 = ["www.baidu.com", () => {
     addSansFont("input");
   }];
-  const __vite_glob_0_3 = [["www.bilibili.com", "t.bilibili.com", "space.bilibili.com"], () => {
+  const __vite_glob_0_3 = [(current2) => current2.endsWith(".bilibili.com"), () => {
     addSansFont(
       ".bili-comment.browser-pc *",
       ".video-page-card-small .card-box .info .title",
       ".h .h-sign",
       ".video-info-container .video-title",
-      ".bili-video-card *"
+      ".bili-video-card *",
+      ".room-info-ctnr *",
+      ".player-and-aside-area *"
     );
     addCSS(".video-share", "display:none!important");
   }];
@@ -451,7 +456,7 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS("#git-header-nav #navbar-search-form", "border-radius:4px");
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
-  const __vite_glob_0_8 = [["github.com", "gist.github.com", "docs.github.com"], () => {
+  const __vite_glob_0_8 = [(current2) => current2.endsWith(".github.com"), () => {
     addRootCSS("--fontStack-monospace", getSettingsVariable("MONO"));
     addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS"));
     addRootCSS("--fontStack-system", getSettingsVariable("SANS"));
@@ -518,22 +523,17 @@ Monospace 字体特性: ${getMonoFeature()}
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
-    var _a;
-    const map = /* @__PURE__ */ new Map();
-    const configs = /* @__PURE__ */ Object.assign({ "./51cto.ts": __vite_glob_0_0, "./affine.ts": __vite_glob_0_1, "./baidu.ts": __vite_glob_0_2, "./bilibili.ts": __vite_glob_0_3, "./cnblog.ts": __vite_glob_0_4, "./csdn.ts": __vite_glob_0_5, "./discord.ts": __vite_glob_0_6, "./gitee.ts": __vite_glob_0_7, "./github.ts": __vite_glob_0_8, "./greasyfork.ts": __vite_glob_0_9, "./jb51.ts": __vite_glob_0_10, "./jianshu.ts": __vite_glob_0_11, "./juejin.ts": __vite_glob_0_12, "./mdn.ts": __vite_glob_0_13, "./qqmail.ts": __vite_glob_0_14, "./raycast-website.ts": __vite_glob_0_15, "./regex101.ts": __vite_glob_0_16, "./sourcegraph.ts": __vite_glob_0_17, "./stackoverflow.ts": __vite_glob_0_18, "./tieba.ts": __vite_glob_0_19, "./twitter.ts": __vite_glob_0_20, "./v2ex.ts": __vite_glob_0_21, "./w3cschools.ts": __vite_glob_0_22, "./wechat.ts": __vite_glob_0_23, "./yuque.ts": __vite_glob_0_24 });
-    Object.values(configs).forEach(([site, callback]) => {
-      let patterns = site;
-      if (!Array.isArray(site)) {
-        patterns = [site];
+    const globs = /* @__PURE__ */ Object.assign({ "./sites/51cto.ts": __vite_glob_0_0, "./sites/affine.ts": __vite_glob_0_1, "./sites/baidu.ts": __vite_glob_0_2, "./sites/bilibili.ts": __vite_glob_0_3, "./sites/cnblog.ts": __vite_glob_0_4, "./sites/csdn.ts": __vite_glob_0_5, "./sites/discord.ts": __vite_glob_0_6, "./sites/gitee.ts": __vite_glob_0_7, "./sites/github.ts": __vite_glob_0_8, "./sites/greasyfork.ts": __vite_glob_0_9, "./sites/jb51.ts": __vite_glob_0_10, "./sites/jianshu.ts": __vite_glob_0_11, "./sites/juejin.ts": __vite_glob_0_12, "./sites/mdn.ts": __vite_glob_0_13, "./sites/qqmail.ts": __vite_glob_0_14, "./sites/raycast-website.ts": __vite_glob_0_15, "./sites/regex101.ts": __vite_glob_0_16, "./sites/sourcegraph.ts": __vite_glob_0_17, "./sites/stackoverflow.ts": __vite_glob_0_18, "./sites/tieba.ts": __vite_glob_0_19, "./sites/twitter.ts": __vite_glob_0_20, "./sites/v2ex.ts": __vite_glob_0_21, "./sites/w3cschools.ts": __vite_glob_0_22, "./sites/wechat.ts": __vite_glob_0_23, "./sites/yuque.ts": __vite_glob_0_24 });
+    for (let [pattern, callback] of Object.values(globs).concat(customs)) {
+      if (typeof pattern === "string") {
+        pattern = [pattern];
       }
-      patterns.forEach((pattern) => map.set(pattern, callback));
-    });
-    customs.forEach(([pattern, callback]) => {
-      map.set(pattern, callback);
-    });
-    if (map.has(current2)) {
-      logger.info(`[${current2}] match current!`);
-      (_a = map.get(current2)) == null ? void 0 : _a();
+      const checkString = Array.isArray(pattern) && pattern.includes(current2);
+      const checkFn = typeof pattern === "function" && pattern(current2);
+      if (checkString || checkFn) {
+        logger.info(`match current (${current2})!`);
+        callback(current2);
+      }
     }
     loadStyles();
   }
@@ -600,7 +600,9 @@ Monospace 字体特性: ${getMonoFeature()}
     toggleDebug();
     location.reload();
   });
-  isDark && addRootCSS("color-scheme", "dark");
+  if (isDark) {
+    addRootCSS("color-scheme", "dark");
+  }
   window.onload = () => {
     setTimeout(() => {
       const list = document.documentElement.classList;
