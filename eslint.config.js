@@ -1,5 +1,6 @@
 import { defineEslintConfig } from '@subframe7536/eslint-config'
 
 export default defineEslintConfig({
-  ignores: ['dist'],
+  ignoreAll: ['dist'],
+  type: 'app',
 })
