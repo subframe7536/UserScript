@@ -90,6 +90,9 @@ export function __sansFont() {
   sansFontSelectors = []
 }
 
+/**
+ * add important sans font style to selector
+ */
 export function addSansFont(...selectors: string[]) {
   sansFontSelectors.push(...selectors)
 }

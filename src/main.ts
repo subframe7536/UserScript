@@ -12,7 +12,7 @@ import {
   setCssVariable,
   toggleDebug,
 } from './utils'
-import { loadSites } from './sites'
+import { loadSites } from './load'
 import base from './styles/base.css?inline'
 import fontfamily from './styles/font.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
@@ -87,7 +87,9 @@ GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷�
   location.reload()
 })
 
-isDark && addRootCSS('color-scheme', 'dark')
+if (isDark) {
+  addRootCSS('color-scheme', 'dark')
+}
 
 window.onload = () => {
   setTimeout(() => {

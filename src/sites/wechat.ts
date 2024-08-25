@@ -1,5 +1,5 @@
 import { addSansFont } from '../utils'
-import type { Site } from '.'
+import type { Site } from '../load'
 
 export default ['mp.weixin.qq.com', () => {
   const list: string[] = ['p']

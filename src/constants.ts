@@ -79,6 +79,7 @@ export const monospaceSelectors = [
   '.prism-code *',
   '.CodeMirror-code *',
   '.code-editor :is(.token-line, .token)',
+  '.crayon-table *',
   '[class*="monospace"]',
   '[class*="monospace"] *',
   '[class*="terminal"] *',

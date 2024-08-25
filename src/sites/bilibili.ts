@@ -1,13 +1,15 @@
 import { addCSS, addSansFont } from '../utils'
-import type { Site } from '.'
+import type { Site } from '../load'
 
-export default [['www.bilibili.com', 't.bilibili.com', 'space.bilibili.com'], () => {
+export default [current => current.endsWith('.bilibili.com'), () => {
   addSansFont(
     '.bili-comment.browser-pc *',
     '.video-page-card-small .card-box .info .title',
     '.h .h-sign',
     '.video-info-container .video-title',
     '.bili-video-card *',
+    '.room-info-ctnr *',
+    '.player-and-aside-area *',
   )
   addCSS('.video-share', 'display:none!important')
 }] satisfies Site

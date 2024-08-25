@@ -116,16 +116,18 @@ Monospace 字体特性: ${getMonoFeature()}
     }
   })
 
-  getScrollbar() && GM_registerMenuCommand(`设置滚动条宽度`, () => {
-    const width = prompt('滚动条宽度，可以是任何 CSS 长度', getScrollbarWidth())
-    if (width) {
-      setSettings('SCROLLBAR_WIDTH', width)
-      setCssVariable('scrollbar-width', width)
-      logger.info(`滚动条宽度修改为：${width}`)
-    } else {
-      logger.info(`取消设置滚动条宽度`)
-    }
-  })
+  if (getScrollbar()) {
+    GM_registerMenuCommand(`设置滚动条宽度`, () => {
+      const width = prompt('滚动条宽度，可以是任何 CSS 长度', getScrollbarWidth())
+      if (width) {
+        setSettings('SCROLLBAR_WIDTH', width)
+        setCssVariable('scrollbar-width', width)
+        logger.info(`滚动条宽度修改为：${width}`)
+      } else {
+        logger.info(`取消设置滚动条宽度`)
+      }
+    })
+  }
 
   GM_registerMenuCommand('重置设置并刷新', delSettings)
 }

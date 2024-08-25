@@ -1,4 +1,4 @@
-import type { Site } from './sites'
+import type { Site } from './load'
 
 /**
  * @preserve

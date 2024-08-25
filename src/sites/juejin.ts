@@ -1,5 +1,5 @@
 import { addCSS } from '../utils'
-import type { Site } from '.'
+import type { Site } from '../load'
 
 export default ['juejin.cn', () => {
   addCSS('.markdown-body pre>code.copyable.hljs[lang]:before', 'right:90px')

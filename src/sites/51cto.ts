@@ -1,5 +1,5 @@
 import { addCodeFont } from '../utils'
-import type { Site } from '.'
+import type { Site } from '../load'
 
 export default ['www.51cto.com', () => {
   addCodeFont(

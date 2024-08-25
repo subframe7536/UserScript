@@ -1,5 +1,5 @@
 import { addRootCSS } from '../utils'
-import type { Site } from '.'
+import type { Site } from '../load'
 
 export default ['regex101.com', () => {
   addRootCSS('--code-font', 'monospace,sans-serif!important')
