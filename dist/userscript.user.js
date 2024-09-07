@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.1
+// @version      1.2.2
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -350,8 +350,8 @@ Monospace 字体特性: ${getMonoFeature()}
   function addRootCSS(property, value) {
     styleArray.push(`:root{${property}:${value}}`);
   }
-  function addBodyVariable(property, value) {
-    styleArray.push(`body{--${property}:${value}}`);
+  function addBodyAndRootVariable(property, value) {
+    styleArray.push(`:is(:root,body){--${property}:${value}}`);
   }
   function addCSS(selectors, styles) {
     selectors = Array.isArray(selectors) ? selectors : [selectors];
@@ -360,9 +360,9 @@ Monospace 字体特性: ${getMonoFeature()}
   }
   let codeFontSelectors = [];
   function __fontVariable() {
-    addBodyVariable(monoVariableName, `${getMono()},${getSans()}`);
-    addBodyVariable(monoFeatureVariableName, getMonoFeature());
-    addBodyVariable(sansVariableName, getSans());
+    addBodyAndRootVariable(monoVariableName, `${getMono()},${getSans()}`);
+    addBodyAndRootVariable(monoFeatureVariableName, getMonoFeature());
+    addBodyAndRootVariable(sansVariableName, getSans());
   }
   const codeStyles = [
     `font-family:${getSettingsVariable("MONO")}!important`,
