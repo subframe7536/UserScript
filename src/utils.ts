@@ -39,8 +39,8 @@ export function addRootCSS(property: string, value: string) {
   styleArray.push(`:root{${property}:${value}}`)
 }
 
-export function addBodyVariable(property: string, value: string) {
-  styleArray.push(`body{--${property}:${value}}`)
+export function addBodyAndRootVariable(property: string, value: string) {
+  styleArray.push(`:is(:root,body){--${property}:${value}}`)
 }
 
 export function addCSS(selectors: string | string[], styles: string | string[]) {
@@ -52,9 +52,9 @@ export function addCSS(selectors: string | string[], styles: string | string[]) 
 let codeFontSelectors: string[] = []
 
 export function __fontVariable() {
-  addBodyVariable(monoVariableName, `${getMono()},${getSans()}`)
-  addBodyVariable(monoFeatureVariableName, getMonoFeature())
-  addBodyVariable(sansVariableName, getSans())
+  addBodyAndRootVariable(monoVariableName, `${getMono()},${getSans()}`)
+  addBodyAndRootVariable(monoFeatureVariableName, getMonoFeature())
+  addBodyAndRootVariable(sansVariableName, getSans())
 }
 
 export const codeStyles = [
