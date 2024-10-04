@@ -1,5 +1,11 @@
+import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 import { SITEMAP } from './_head'
 import { blocklist, isDark, moduleName } from './constants'
+import { loadSites } from './load'
+import { getScrollbar, getScrollbarWidth, getSettings, loadSettingMenus, scrollbarWidthVariableName, setSettings } from './settings'
+import base from './styles/base.css?inline'
+import fontfamily from './styles/font.css?inline'
+import scrollbar from './styles/scrollbar.css?inline'
 import {
   __codeFont,
   __fontVariable,
@@ -12,12 +18,6 @@ import {
   setCssVariable,
   toggleDebug,
 } from './utils'
-import { loadSites } from './load'
-import base from './styles/base.css?inline'
-import fontfamily from './styles/font.css?inline'
-import scrollbar from './styles/scrollbar.css?inline'
-import { getScrollbar, getScrollbarWidth, getSettings, loadSettingMenus, scrollbarWidthVariableName, setSettings } from './settings'
-import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
 const current = window.location.hostname
 

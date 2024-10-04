@@ -1,6 +1,6 @@
+import { GM_deleteValue, GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 /* eslint-disable no-alert */
 import { logger, setCssVariable } from './utils'
-import { GM_deleteValue, GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
 type Settings = {
   SANS: string

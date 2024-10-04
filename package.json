@@ -11,16 +11,16 @@
     "format": "eslint . --fix"
   },
   "devDependencies": {
-    "@subframe7536/eslint-config": "^0.7.6",
+    "@subframe7536/eslint-config": "^0.9.4",
     "@subframe7536/type-utils": "^0.1.6",
-    "@types/node": "^20.16.1",
-    "bumpp": "^9.5.2",
+    "@types/node": "^20.16.10",
+    "bumpp": "^9.6.1",
     "consola": "^3.2.3",
-    "consoloo": "^1.0.1",
-    "eslint": "^9.9.1",
-    "esno": "^4.7.0",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.2",
+    "consoloo": "^1.1.0",
+    "eslint": "^9.11.1",
+    "esno": "^4.8.0",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8",
     "vite-plugin-monkey": "^4.0.6"
   }
 }

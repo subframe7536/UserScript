@@ -1,7 +1,7 @@
+import { GM_getValue, GM_setValue } from '$'
 import { createBrowserLogger } from 'consoloo/browser'
 import { moduleName, monospaceSelectors, sansExcludeSelector } from './constants'
 import { getMono, getMonoFeature, getSans, getSettingsVariable, monoFeatureVariableName, monoVariableName, sansVariableName } from './settings'
-import { GM_getValue, GM_setValue } from '$'
 
 let styleArray: string[] = []
 

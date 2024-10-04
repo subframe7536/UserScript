@@ -1,6 +1,6 @@
-import { addCSS, addRootCSS, codeStyles, sansStylesImportant } from '../utils'
-import { getSettingsVariable } from '../settings'
 import type { Site } from '../load'
+import { getSettingsVariable } from '../settings'
+import { addCSS, addRootCSS, codeStyles, sansStylesImportant } from '../utils'
 
 export default [current => current.endsWith('github.com'), () => {
   // manully setup font

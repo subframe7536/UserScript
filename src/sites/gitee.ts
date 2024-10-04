@@ -1,5 +1,5 @@
-import { addCSS, addCodeFont, addSansFont } from '../utils'
 import type { Site } from '../load'
+import { addCodeFont, addCSS, addSansFont } from '../utils'
 
 export default ['gitee.com', () => {
   addCodeFont('.commit-id', 'textarea')

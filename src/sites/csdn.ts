@@ -1,5 +1,5 @@
-import { addCodeFont, addSansFont } from '../utils'
 import type { Site } from '../load'
+import { addCodeFont, addSansFont } from '../utils'
 
 export default ['blog.csdn.net', () => {
   addSansFont(

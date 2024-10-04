@@ -1,5 +1,5 @@
-import { addCSS, addSansFont } from '../utils'
 import type { Site } from '../load'
+import { addCSS, addSansFont } from '../utils'
 
 export default [current => current.endsWith('bilibili.com'), () => {
   addSansFont(

@@ -1,6 +1,6 @@
-import { addCodeFont, addRootCSS } from '../utils'
-import { getSettingsVariable } from '../settings'
 import type { Site } from '../load'
+import { getSettingsVariable } from '../settings'
+import { addCodeFont, addRootCSS } from '../utils'
 
 export default ['discord.com', () => {
   addCodeFont('[class^=codeBlockSyntax]', '[class^=codeLine] *', '[class*=inlineCode]>span')
