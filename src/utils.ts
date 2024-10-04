@@ -5,7 +5,7 @@ import { getMono, getMonoFeature, getSans, getSettingsVariable, monoFeatureVaria
 
 let styleArray: string[] = []
 
-export const logger = createBrowserLogger(getDebug() ? 'debug' : 'disable').withScope('scripts-mono')
+export const logger = createBrowserLogger({ logMode: getDebug() ? 'debug' : 'disable' }).withScope('scripts-mono')
 
 /**
  * load all cached css if absent, else load param

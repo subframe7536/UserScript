@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.2
+// @version      1.2.3
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -18,6 +18,10 @@
 (function () {
   'use strict';
 
+  var _GM_deleteValue = /* @__PURE__ */ (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
+  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
+  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
+  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   /**
    * @preserve
    * 字体修改的规则
@@ -36,6 +40,263 @@
    * ```
    */
   const SITEMAP = [];
+  var _LEVEL = ["debug", "info", "warn", "error"];
+  function createLogger(mode, onLog, onTimer) {
+    let filter = (level, s) => (
+      // #hack: e is unknown when level = 'error', else e is scope
+      (msg, e, scope) => (mode === _LEVEL[3] && level > 2 || mode === _LEVEL[1] && level > 0 || mode === _LEVEL[0]) && onLog(msg, _LEVEL[level], ...level > 2 ? [s || scope, e] : [s || e])
+    );
+    let withScope = (scope) => ({
+      debug: filter(0, scope),
+      info: filter(1, scope),
+      warn: filter(2, scope),
+      error: filter(3, scope),
+      timer: onTimer,
+      setLogMode: (m) => mode = m
+    });
+    return {
+      ...withScope(),
+      withScope
+    };
+  }
+  var scopeColors = ["#3f6894", "#feecd8"];
+  var timeColor = "#918abc";
+  var levelColors = {
+    debug: "#66a2cc",
+    info: "#7cbd75",
+    warn: "#dbaf57",
+    error: "#e08585"
+  };
+  var r = ".3rem";
+  function renderBadge(bg, fg, radius = r) {
+    return `font-size:.8rem;padding:.1rem .3rem;border-radius:${radius};background-color:${bg};color:${fg}`;
+  }
+  function createBrowserLoggerConfig(timeFormat = (date) => date.toLocaleString()) {
+    function onBrowserLog(msg, level, scope, e) {
+      let _msg = `%c${timeFormat(/* @__PURE__ */ new Date())} %c${level.toUpperCase()}`;
+      const args = ["color:" + timeColor];
+      if (scope) {
+        _msg += `%c${scope}`;
+        args.push(
+          renderBadge(levelColors[level], "#fff", `${r} 0 0 ${r}`),
+          renderBadge(scopeColors[0], scopeColors[1], `0 ${r} ${r} 0`)
+        );
+      } else {
+        args.push(renderBadge(levelColors[level], "#fff"));
+      }
+      _msg += "%c ";
+      args.push("");
+      if (typeof msg !== "object") {
+        _msg += msg;
+      } else {
+        _msg += "%o";
+        args.push(msg);
+      }
+      console.log(_msg, ...args);
+      e && console.error(e);
+    }
+    function onBrowserTimer(label) {
+      const start = Date.now();
+      return () => console.log(
+        `%c${timeFormat(/* @__PURE__ */ new Date())} %c${label}%c ${(Date.now() - start).toFixed(2)}ms`,
+        "color:" + timeColor,
+        renderBadge(scopeColors[0], scopeColors[1]),
+        ""
+      );
+    }
+    return [onBrowserLog, onBrowserTimer];
+  }
+  function createBrowserLogger(options = {}) {
+    const { logMode = "info", timeFormat } = options;
+    return createLogger(logMode, ...createBrowserLoggerConfig(timeFormat));
+  }
+  let styleArray = [];
+  const logger = createBrowserLogger({ logMode: getDebug() ? "debug" : "disable" }).withScope("scripts-mono");
+  function loadStyles(style) {
+    if (styleArray.length || style) {
+      const targetStyle = style || [...new Set(styleArray)].join("");
+      document.documentElement.insertAdjacentHTML(
+        "beforeend",
+        `<style class="${moduleName}">${targetStyle}</style>`
+      );
+      logger.debug(targetStyle);
+      if (!style) {
+        styleArray = [];
+      }
+    }
+  }
+  function setCssVariable(name, value) {
+    var _a;
+    const variableName = name.startsWith("--") ? name : `--${name}`;
+    (_a = document.body) == null ? void 0 : _a.style.setProperty(variableName, value);
+  }
+  function addRootCSS(property, value) {
+    styleArray.push(`:root{${property}:${value}}`);
+  }
+  function addBodyAndRootVariable(property, value) {
+    styleArray.push(`:is(:root,body){--${property}:${value}}`);
+  }
+  function addCSS(selectors, styles) {
+    selectors = Array.isArray(selectors) ? selectors : [selectors];
+    styles = Array.isArray(styles) ? styles : [styles];
+    styleArray.push(`${selectors.join(",")}{${styles.join(";")}}`);
+  }
+  let codeFontSelectors = [];
+  function __fontVariable() {
+    addBodyAndRootVariable(monoVariableName, `${getMono()},${getSans()}`);
+    addBodyAndRootVariable(monoFeatureVariableName, getMonoFeature());
+    addBodyAndRootVariable(sansVariableName, getSans());
+  }
+  const codeStyles = [
+    `font-family:${getSettingsVariable("MONO")}!important`,
+    `font-feature-settings:${getSettingsVariable("MONO_SETTING")}!important`,
+    "letter-spacing:0px!important"
+  ];
+  function __codeFont() {
+    addCSS(monospaceSelectors.concat(codeFontSelectors), codeStyles);
+    codeFontSelectors = [];
+  }
+  function addCodeFont(...selectors) {
+    codeFontSelectors.push(...selectors);
+  }
+  let sansFontSelectors = [];
+  const sansStyles = [
+    `font-family:${getSettingsVariable("SANS")}`,
+    "letter-spacing:0px!important"
+  ];
+  const sansStylesImportant = [
+    `font-family:${getSettingsVariable("SANS")}!important`,
+    "letter-spacing:0px!important"
+  ];
+  function __sansFont() {
+    addCSS(`body :not(${sansExcludeSelector.join(",")})`, sansStyles);
+    addCSS(sansFontSelectors, sansStylesImportant);
+    sansFontSelectors = [];
+  }
+  function addSansFont(...selectors) {
+    sansFontSelectors.push(...selectors);
+  }
+  function isInBlockList(current2, blocklist2) {
+    return current2 && blocklist2.some((pattern) => current2.includes(pattern));
+  }
+  function getDebug() {
+    return _GM_getValue("debug", false);
+  }
+  function toggleDebug() {
+    const debug = !getDebug();
+    logger.setLogMode(debug ? "debug" : "disable");
+    _GM_setValue("debug", debug);
+  }
+  function getSettings(key, defaultValue) {
+    return _GM_getValue(key) ?? defaultValue;
+  }
+  const sansVariableName = "userscript-sans";
+  const monoVariableName = "userscript-mono";
+  const monoFeatureVariableName = "userscript-mono-feature";
+  const scrollbarWidthVariableName = "scrollbar-width";
+  function getSettingsVariable(key) {
+    switch (key) {
+      case "MONO":
+        return `var(--${monoVariableName},monospace)`;
+      case "MONO_SETTING":
+        return `var(--${monoFeatureVariableName},"calt")`;
+      case "SANS":
+        return `var(--${sansVariableName},sans-serif)`;
+      case "SCROLLBAR_WIDTH":
+        return `var(--${scrollbarWidthVariableName},max(0.85vw,10px))`;
+      default:
+        return "";
+    }
+  }
+  function setSettings(key, value) {
+    _GM_setValue(key, value);
+  }
+  function delSettings() {
+    _GM_deleteValue("SANS");
+    _GM_deleteValue("MONO");
+    _GM_deleteValue("MONO_SETTING");
+    _GM_deleteValue("SCROLLBAR");
+    _GM_deleteValue("SCROLLBAR_WIDTH");
+    window.location.reload();
+  }
+  function getSans() {
+    return getSettings("SANS", "sans-serif");
+  }
+  function getMono() {
+    return getSettings("MONO", "monospace");
+  }
+  function getMonoFeature() {
+    return getSettings("MONO_SETTING", '"calt"');
+  }
+  function getScrollbar() {
+    return getSettings("SCROLLBAR", true);
+  }
+  function getScrollbarWidth() {
+    return getSettings("SCROLLBAR_WIDTH", "max(0.85vw,10px)");
+  }
+  function loadSettingMenus() {
+    logger.info(`
+Sans-Serif 字体: ${getSans()}
+Monospace 字体: ${getMono()}
+Monospace 字体特性: ${getMonoFeature()}
+滚动条宽度: ${getScrollbarWidth()}
+  `);
+    _GM_registerMenuCommand(`${getScrollbar() ? "关闭" : "开启"}滚动条美化并刷新`, () => {
+      setSettings("SCROLLBAR", !getScrollbar());
+      logger.info(`scrollbar: ${getScrollbar()}`);
+      location.reload();
+    });
+    _GM_registerMenuCommand(`设置 Sans-Serif 字体`, () => {
+      const sans = prompt("Sans-Serif 字体", getSans());
+      if (sans) {
+        setSettings("SANS", sans);
+        setCssVariable("userscript-sans", sans);
+        logger.info(`Sans-Serif 字体修改为：${sans}`);
+      } else {
+        logger.info(`取消设置 Sans-Serif 字体`);
+      }
+    });
+    _GM_registerMenuCommand(`设置 Monospace 字体`, () => {
+      const mono = prompt("Monospace 字体", getMono());
+      if (mono) {
+        setSettings("MONO", mono);
+        setCssVariable("userscript-mono", mono);
+        logger.info(`Monospace 字体修改为：${mono}`);
+      } else {
+        logger.info(`取消设置 Monospace 字体`);
+      }
+    });
+    _GM_registerMenuCommand(`设置 Monospace 字体特性`, () => {
+      const monoSettings = prompt("Monospace 字体特性 (https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings)", getMonoFeature());
+      if (monoSettings) {
+        const features = monoSettings;
+        setSettings("MONO_SETTING", features);
+        setCssVariable("userscript-mono-feature", features);
+        logger.info(`Monospace 字体特性修改为：${monoSettings}`);
+      } else {
+        logger.info(`取消设置 Monospace 字体特性`);
+      }
+    });
+    const enableDark = getSettings("DARK", false);
+    _GM_registerMenuCommand(enableDark ? "适配黑暗模式（已启用）" : "适配黑暗模式（已关闭）", () => {
+      setSettings("DARK", !enableDark);
+      logger.info(`黑暗模式: ${enableDark ? "已启用" : "已关闭"}`);
+      location.reload();
+    });
+    if (getScrollbar()) {
+      _GM_registerMenuCommand(`设置滚动条宽度`, () => {
+        const width = prompt("滚动条宽度，可以是任何 CSS 长度", getScrollbarWidth());
+        if (width) {
+          setSettings("SCROLLBAR_WIDTH", width);
+          setCssVariable("scrollbar-width", width);
+          logger.info(`滚动条宽度修改为：${width}`);
+        } else {
+          logger.info(`取消设置滚动条宽度`);
+        }
+      });
+    }
+    _GM_registerMenuCommand("重置设置并刷新", delSettings);
+  }
   const moduleName = "script-mono";
   const monacoCharWidthCheckElement = 'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *';
   const sansExcludeSelector = [
@@ -154,256 +415,7 @@
     "monaspace.githubnext.com",
     "github.com"
   ];
-  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  var _LEVEL = ["debug", "info", "warn", "error"];
-  function createLogger(mode, onLog, onTimer) {
-    let filter = (level, s) => (
-      // #hack: e is unknown when level = 'error', else e is scope
-      (msg, e, scope) => (mode === _LEVEL[3] && level > 2 || mode === _LEVEL[1] && level > 0 || mode === _LEVEL[0]) && onLog(msg, _LEVEL[level], ...level > 2 ? [s || scope, e] : [s || e])
-    );
-    let withScope = (scope) => ({
-      debug: filter(0, scope),
-      info: filter(1, scope),
-      warn: filter(2, scope),
-      error: filter(3, scope),
-      timer: onTimer,
-      setLogMode: (m) => mode = m
-    });
-    return {
-      ...withScope(),
-      withScope
-    };
-  }
-  var scopeColors = ["#3f6894", "#feecd8"];
-  var levelColors = {
-    debug: "#66a2cc",
-    info: "#7cbd75",
-    warn: "#dbaf57",
-    error: "#e08585"
-  };
-  var r = ".3rem";
-  function renderBadge(bg, fg, radius = r) {
-    return `font-size:.8rem;padding:.1rem .3rem;border-radius:${radius};background-color:${bg};color:${fg}`;
-  }
-  function onBrowserLog(msg, level, scope, e) {
-    let _msg = `%c${level.toUpperCase()}`;
-    const args = [];
-    if (scope) {
-      _msg += `%c${scope}`;
-      args.push(
-        renderBadge(levelColors[level], "#fff", `${r} 0 0 ${r}`),
-        renderBadge(scopeColors[0], scopeColors[1], `0 ${r} ${r} 0`)
-      );
-    } else {
-      args.push(renderBadge(levelColors[level], "#fff"));
-    }
-    _msg += "%c ";
-    args.push("");
-    if (typeof msg !== "object") {
-      _msg += msg;
-    } else {
-      _msg += "%o";
-      args.push(msg);
-    }
-    console.log(_msg, ...args);
-    e && console.error(e);
-  }
-  function onBrowserTimer(label) {
-    const start = Date.now();
-    return () => console.log(
-      `%c${label}%c ${(Date.now() - start).toFixed(2)}ms`,
-      renderBadge(scopeColors[0], scopeColors[1]),
-      ""
-    );
-  }
-  function createBrowserLogger(logMode = "info") {
-    return createLogger(logMode, onBrowserLog, onBrowserTimer);
-  }
-  var _GM_deleteValue = /* @__PURE__ */ (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
-  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
-  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
-  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
-  function getSettings(key, defaultValue) {
-    return _GM_getValue(key) ?? defaultValue;
-  }
-  const sansVariableName = "userscript-sans";
-  const monoVariableName = "userscript-mono";
-  const monoFeatureVariableName = "userscript-mono-feature";
-  const scrollbarWidthVariableName = "scrollbar-width";
-  function getSettingsVariable(key) {
-    switch (key) {
-      case "MONO":
-        return `var(--${monoVariableName},monospace)`;
-      case "MONO_SETTING":
-        return `var(--${monoFeatureVariableName},"calt")`;
-      case "SANS":
-        return `var(--${sansVariableName},sans-serif)`;
-      case "SCROLLBAR_WIDTH":
-        return `var(--${scrollbarWidthVariableName},max(0.85vw,10px))`;
-      default:
-        return "";
-    }
-  }
-  function setSettings(key, value) {
-    _GM_setValue(key, value);
-  }
-  function delSettings() {
-    _GM_deleteValue("SANS");
-    _GM_deleteValue("MONO");
-    _GM_deleteValue("MONO_SETTING");
-    _GM_deleteValue("SCROLLBAR");
-    _GM_deleteValue("SCROLLBAR_WIDTH");
-    window.location.reload();
-  }
-  function getSans() {
-    return getSettings("SANS", "sans-serif");
-  }
-  function getMono() {
-    return getSettings("MONO", "monospace");
-  }
-  function getMonoFeature() {
-    return getSettings("MONO_SETTING", '"calt"');
-  }
-  function getScrollbar() {
-    return getSettings("SCROLLBAR", true);
-  }
-  function getScrollbarWidth() {
-    return getSettings("SCROLLBAR_WIDTH", "max(0.85vw,10px)");
-  }
-  function loadSettingMenus() {
-    logger.info(`
-Sans-Serif 字体: ${getSans()}
-Monospace 字体: ${getMono()}
-Monospace 字体特性: ${getMonoFeature()}
-滚动条宽度: ${getScrollbarWidth()}
-  `);
-    _GM_registerMenuCommand(`${getScrollbar() ? "关闭" : "开启"}滚动条美化并刷新`, () => {
-      setSettings("SCROLLBAR", !getScrollbar());
-      logger.info(`scrollbar: ${getScrollbar()}`);
-      location.reload();
-    });
-    _GM_registerMenuCommand(`设置 Sans-Serif 字体`, () => {
-      const sans = prompt("Sans-Serif 字体", getSans());
-      if (sans) {
-        setSettings("SANS", sans);
-        setCssVariable("userscript-sans", sans);
-        logger.info(`Sans-Serif 字体修改为：${sans}`);
-      } else {
-        logger.info(`取消设置 Sans-Serif 字体`);
-      }
-    });
-    _GM_registerMenuCommand(`设置 Monospace 字体`, () => {
-      const mono = prompt("Monospace 字体", getMono());
-      if (mono) {
-        setSettings("MONO", mono);
-        setCssVariable("userscript-mono", mono);
-        logger.info(`Monospace 字体修改为：${mono}`);
-      } else {
-        logger.info(`取消设置 Monospace 字体`);
-      }
-    });
-    _GM_registerMenuCommand(`设置 Monospace 字体特性`, () => {
-      const monoSettings = prompt("Monospace 字体特性 (https://developer.mozilla.org/zh-CN/docs/Web/CSS/font-feature-settings)", getMonoFeature());
-      if (monoSettings) {
-        const features = monoSettings;
-        setSettings("MONO_SETTING", features);
-        setCssVariable("userscript-mono-feature", features);
-        logger.info(`Monospace 字体特性修改为：${monoSettings}`);
-      } else {
-        logger.info(`取消设置 Monospace 字体特性`);
-      }
-    });
-    if (getScrollbar()) {
-      _GM_registerMenuCommand(`设置滚动条宽度`, () => {
-        const width = prompt("滚动条宽度，可以是任何 CSS 长度", getScrollbarWidth());
-        if (width) {
-          setSettings("SCROLLBAR_WIDTH", width);
-          setCssVariable("scrollbar-width", width);
-          logger.info(`滚动条宽度修改为：${width}`);
-        } else {
-          logger.info(`取消设置滚动条宽度`);
-        }
-      });
-    }
-    _GM_registerMenuCommand("重置设置并刷新", delSettings);
-  }
-  let styleArray = [];
-  const logger = createBrowserLogger(getDebug() ? "debug" : "disable").withScope("scripts-mono");
-  function loadStyles(style) {
-    if (styleArray.length || style) {
-      const targetStyle = style || [...new Set(styleArray)].join("");
-      document.documentElement.insertAdjacentHTML(
-        "beforeend",
-        `<style class="${moduleName}">${targetStyle}</style>`
-      );
-      logger.debug(targetStyle);
-      if (!style) {
-        styleArray = [];
-      }
-    }
-  }
-  function setCssVariable(name, value) {
-    var _a;
-    const variableName = name.startsWith("--") ? name : `--${name}`;
-    (_a = document.body) == null ? void 0 : _a.style.setProperty(variableName, value);
-  }
-  function addRootCSS(property, value) {
-    styleArray.push(`:root{${property}:${value}}`);
-  }
-  function addBodyAndRootVariable(property, value) {
-    styleArray.push(`:is(:root,body){--${property}:${value}}`);
-  }
-  function addCSS(selectors, styles) {
-    selectors = Array.isArray(selectors) ? selectors : [selectors];
-    styles = Array.isArray(styles) ? styles : [styles];
-    styleArray.push(`${selectors.join(",")}{${styles.join(";")}}`);
-  }
-  let codeFontSelectors = [];
-  function __fontVariable() {
-    addBodyAndRootVariable(monoVariableName, `${getMono()},${getSans()}`);
-    addBodyAndRootVariable(monoFeatureVariableName, getMonoFeature());
-    addBodyAndRootVariable(sansVariableName, getSans());
-  }
-  const codeStyles = [
-    `font-family:${getSettingsVariable("MONO")}!important`,
-    `font-feature-settings:${getSettingsVariable("MONO_SETTING")}!important`,
-    "letter-spacing:0px!important"
-  ];
-  function __codeFont() {
-    addCSS(monospaceSelectors.concat(codeFontSelectors), codeStyles);
-    codeFontSelectors = [];
-  }
-  function addCodeFont(...selectors) {
-    codeFontSelectors.push(...selectors);
-  }
-  let sansFontSelectors = [];
-  const sansStyles = [
-    `font-family:${getSettingsVariable("SANS")}`,
-    "letter-spacing:0px!important"
-  ];
-  const sansStylesImportant = [
-    `font-family:${getSettingsVariable("SANS")}!important`,
-    "letter-spacing:0px!important"
-  ];
-  function __sansFont() {
-    addCSS(`body :not(${sansExcludeSelector.join(",")})`, sansStyles);
-    addCSS(sansFontSelectors, sansStylesImportant);
-    sansFontSelectors = [];
-  }
-  function addSansFont(...selectors) {
-    sansFontSelectors.push(...selectors);
-  }
-  function isInBlockList(current2, blocklist2) {
-    return current2 && blocklist2.some((pattern) => current2.includes(pattern));
-  }
-  function getDebug() {
-    return _GM_getValue("debug", false);
-  }
-  function toggleDebug() {
-    const debug = !getDebug();
-    logger.setLogMode(debug ? "debug" : "disable");
-    _GM_setValue("debug", debug);
-  }
+  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches && getSettings("DARK", false);
   const __vite_glob_0_0 = ["www.51cto.com", () => {
     addCodeFont(
       "#result [class*=language-]",
