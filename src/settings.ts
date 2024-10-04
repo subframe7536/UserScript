@@ -9,6 +9,7 @@ type Settings = {
   SCROLLBAR: boolean
   SCROLLBAR_WIDTH: string
   FONT_FAMILY_REPLACE: boolean
+  DARK: boolean
 }
 
 export function getSettings<K extends keyof Settings>(key: K, defaultValue: any): Settings[K] {
@@ -114,6 +115,13 @@ Monospace 字体特性: ${getMonoFeature()}
     } else {
       logger.info(`取消设置 Monospace 字体特性`)
     }
+  })
+
+  const enableDark = getSettings('DARK', false)
+  GM_registerMenuCommand(enableDark ? '适配黑暗模式（已启用）' : '适配黑暗模式（已关闭）', () => {
+    setSettings('DARK', !enableDark)
+    logger.info(`黑暗模式: ${enableDark ? '已启用' : '已关闭'}`)
+    location.reload()
   })
 
   if (getScrollbar()) {

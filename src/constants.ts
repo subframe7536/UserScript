@@ -1,3 +1,5 @@
+import { getSettings } from './settings'
+
 export const moduleName = 'script-mono'
 
 // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
@@ -121,4 +123,4 @@ export const blocklist = [
   'monaspace.githubnext.com',
   'github.com',
 ]
-export const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+export const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches && getSettings('DARK', false)
