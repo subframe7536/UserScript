@@ -15,7 +15,7 @@ type Settings = {
 export function getSettings<K extends keyof Settings>(key: K, defaultValue: any): Settings[K] {
   return GM_getValue(key) ?? defaultValue
 }
-
+export const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches && getSettings('DARK', false)
 export const sansVariableName = 'userscript-sans'
 export const monoVariableName = 'userscript-mono'
 export const monoFeatureVariableName = 'userscript-mono-feature'
