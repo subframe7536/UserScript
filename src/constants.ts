@@ -99,6 +99,9 @@ export const monospaceSelectors = [
   '[class*=tsd-signature]',
   '.tsd-kind-parameter',
   '.urvanov-syntax-highlighter-font-monaco *',
+  // bing
+  ".rd_inl_code",
+  ".rd_code *",
 ]
 
 // ban default css, no affect to site rules
