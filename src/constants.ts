@@ -92,6 +92,7 @@ export const monospaceSelectors = [
   'tt',
   '[class^=code-block]',
   '.job-console :is(span, a)',
+  '[class*="monospace"] *',
   // gitbook
   '.gitbook-root div[data-rnwi-handle=codeblock-toolbar] *',
   // tsdoc
@@ -100,8 +101,8 @@ export const monospaceSelectors = [
   '.tsd-kind-parameter',
   '.urvanov-syntax-highlighter-font-monaco *',
   // bing
-  ".rd_inl_code",
-  ".rd_code *",
+  '.rd_inl_code',
+  '.rd_code *',
 ]
 
 // ban default css, no affect to site rules
