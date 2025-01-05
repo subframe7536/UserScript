@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.4
+// @version      1.2.5
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -131,13 +131,17 @@
     "tt",
     "[class^=code-block]",
     ".job-console :is(span, a)",
+    '[class*="monospace"] *',
     // gitbook
     ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *",
     // tsdoc
     ".tsd-signature>*",
     "[class*=tsd-signature]",
     ".tsd-kind-parameter",
-    ".urvanov-syntax-highlighter-font-monaco *"
+    ".urvanov-syntax-highlighter-font-monaco *",
+    // bing
+    ".rd_inl_code",
+    ".rd_code *"
   ];
   const blocklist = [
     "font",
