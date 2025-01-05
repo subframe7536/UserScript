@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.5
+// @version      1.2.6
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -131,7 +131,7 @@
     "tt",
     "[class^=code-block]",
     ".job-console :is(span, a)",
-    '[class*="monospace"] *',
+    ".codeflask *",
     // gitbook
     ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *",
     // tsdoc

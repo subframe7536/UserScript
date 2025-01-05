@@ -92,7 +92,7 @@ export const monospaceSelectors = [
   'tt',
   '[class^=code-block]',
   '.job-console :is(span, a)',
-  '[class*="monospace"] *',
+  '.codeflask *',
   // gitbook
   '.gitbook-root div[data-rnwi-handle=codeblock-toolbar] *',
   // tsdoc
