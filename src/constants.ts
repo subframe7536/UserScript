@@ -124,4 +124,5 @@ export const blocklist = [
   'openvim',
   'monaspace.githubnext.com',
   'github.com',
+  '192.168',
 ]
