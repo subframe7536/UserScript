@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.8
+// @version      1.2.9
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -119,8 +119,8 @@
     ".CodeMirror-code *",
     ".code-editor :is(.token-line, .token)",
     ".crayon-table *",
-    '[class*="monospace"]',
-    '[class*="monospace"] *',
+    '[class*="monospace"]:not([class*=":font-monospace"])',
+    '[class*="monospace"]:not([class*=":font-monospace"]) *',
     '[class*="terminal"] *',
     ".whitespace-pre",
     "[class^=console]>*",
@@ -498,7 +498,10 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS("copy-code-btn", "top:8px");
   }];
   const __vite_glob_0_13 = ["developer.mozilla.org", () => {
-    addCSS(":root", `--font-body:${getSettingsVariable("SANS")}!important;`);
+    addCSS(":root", [
+      `--font-body:${getSettingsVariable("SANS")}!important;`,
+      `--font-code:${getSettingsVariable("MONO")}!important;`
+    ]);
   }];
   const __vite_glob_0_14 = ["wx.mail.qq.com", () => {
     addSansFont("body");
