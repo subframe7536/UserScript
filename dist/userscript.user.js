@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.9
+// @version      1.2.10
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -18,6 +18,9 @@
 (function () {
   'use strict';
 
+  var __defProp = Object.defineProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   var _GM_deleteValue = /* @__PURE__ */ (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
   var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
   var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
@@ -163,18 +166,131 @@
     "github.com",
     "192.168"
   ];
-  var _LEVEL = ["debug", "info", "warn", "error"];
-  function createLogger(mode, onLog, onTimer) {
-    let filter = (level, s) => (
-      // #hack: e is unknown when level = 'error', else e is scope
-      (msg, e, scope) => (mode === _LEVEL[3] && level > 2 || mode === _LEVEL[1] && level > 0 || mode === _LEVEL[0]) && onLog(msg, _LEVEL[level], ...level > 2 ? [s || scope, e] : [s || e])
-    );
-    let withScope = (scope) => ({
+  var NON_SERIALIZABLE_VALUE = "non-serializable value";
+  var NormalizedError = class _NormalizedError extends Error {
+    /**
+     * normalize unknown error in try-catch
+     *
+     * if input is not Error, `data` will be set
+     */
+    constructor(e) {
+      var __super = (...args) => {
+        super(...args);
+        __publicField(this, "data");
+        __publicField(this, "stack", "");
+        return this;
+      };
+      if (isError(e)) {
+        __super(e.message);
+        e.stack && (this.stack = e.stack);
+      } else {
+        let msg;
+        try {
+          msg = typeof e === "string" ? e : JSON.stringify(e);
+        } catch {
+          msg = NON_SERIALIZABLE_VALUE;
+        }
+        __super(msg);
+        this.data = e;
+      }
+      !this.stack && ("captureStackTrace" in Error && typeof Error.captureStackTrace === "function" ? Error.captureStackTrace(this, _NormalizedError) : this.stack = new RangeError("ERROR").stack);
+    }
+  };
+  function toNormalizedError(e) {
+    return new NormalizedError(e);
+  }
+  var ERROR_TAGS = /* @__PURE__ */ new Set([
+    // Cross-realm errors
+    "[object Error]",
+    // Browsers
+    "[object DOMException]",
+    // Sentry
+    "[object Exception]"
+  ]);
+  function isError(value) {
+    try {
+      return value instanceof Error && ERROR_TAGS.has(Object.prototype.toString.call(value));
+    } catch {
+      return false;
+    }
+  }
+  function isPromise(value) {
+    return value instanceof Promise || typeof value === "object" && typeof (value == null ? void 0 : value.then) === "function";
+  }
+  function isNormalizedError(e) {
+    return e !== null && e instanceof NormalizedError;
+  }
+  function to(fn) {
+    try {
+      const result = typeof fn === "function" ? fn() : fn;
+      return isPromise(result) ? result.catch(toNormalizedError) : result;
+    } catch (e) {
+      return toNormalizedError(e);
+    }
+  }
+  function tryCatch(fn) {
+    try {
+      const result = typeof fn === "function" ? fn() : fn;
+      return isPromise(result) ? result.then((v) => [v, void 0]).catch((e) => [void 0, toNormalizedError(e)]) : [result, void 0];
+    } catch (e) {
+      return [void 0, toNormalizedError(e)];
+    }
+  }
+  const import_normal_error = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    NON_SERIALIZABLE_VALUE,
+    NormalizedError,
+    isError,
+    isNormalizedError,
+    isPromise,
+    to,
+    toNormalizedError,
+    tryCatch
+  }, Symbol.toStringTag, { value: "Module" }));
+  var __defProp2 = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all) __defProp2(target, name, {
+      get: all[name],
+      enumerable: true
+    });
+  };
+  var __copyProps = (to2, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
+      key = keys[i];
+      if (!__hasOwnProp.call(to2, key) && key !== except) __defProp2(to2, key, {
+        get: ((k) => from[k]).bind(null, key),
+        enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
+      });
+    }
+    return to2;
+  };
+  var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget);
+  const _LEVEL = [
+    "debug",
+    "info",
+    "warn",
+    "error"
+  ];
+  var core_exports = {};
+  __export(core_exports, {
+    _LEVEL: () => _LEVEL,
+    createBaseLogger: () => createBaseLogger,
+    createLogger: () => createLogger
+  });
+  __reExport(core_exports, import_normal_error);
+  function createLogger(mode, report) {
+    let rep = (...args) => report.forEach((r2) => r2(...args)), filter = (level, s) => (msg, e, scope) => (mode === _LEVEL[3] && level > 2 || mode === _LEVEL[1] && level > 0 || mode === _LEVEL[0]) && rep(/* @__PURE__ */ new Date(), msg, _LEVEL[level], ...level > 2 ? [s || scope, e] : [s || e]), withScope = (scope) => ({
       debug: filter(0, scope),
       info: filter(1, scope),
       warn: filter(2, scope),
       error: filter(3, scope),
-      timer: onTimer,
+      timer: (label) => {
+        let start = Date.now(), d;
+        return () => (d = /* @__PURE__ */ new Date(), rep(d, `${(d.getTime() - start).toFixed(2)}ms`, "timer", label));
+      },
       setLogMode: (m) => mode = m
     });
     return {
@@ -182,56 +298,50 @@
       withScope
     };
   }
-  var scopeColors = ["#3f6894", "#feecd8"];
-  var timeColor = "#918abc";
-  var levelColors = {
+  function createBaseLogger(logMode = "info") {
+    return createLogger(logMode, [(date, level, msg, scope, e) => console.log(`[${date.toISOString()}]`, `${level.toUpperCase()}${scope ? `(${scope})` : ""}:`, msg, e || "")]);
+  }
+  const scopeColors = ["#3f6894", "#feecd8"];
+  const timeColor = "#918abc";
+  const levelColors = {
     debug: "#66a2cc",
     info: "#7cbd75",
     warn: "#dbaf57",
     error: "#e08585"
   };
-  var r = ".3rem";
+  const r = ".3rem";
   function renderBadge(bg, fg, radius = r) {
     return `font-size:.8rem;padding:.1rem .3rem;border-radius:${radius};background-color:${bg};color:${fg}`;
   }
-  function createBrowserLoggerConfig(timeFormat = (date) => date.toLocaleString()) {
-    function onBrowserLog(msg, level, scope, e) {
-      let _msg = `%c${timeFormat(/* @__PURE__ */ new Date())} %c${level.toUpperCase()}`;
-      const args = ["color:" + timeColor];
-      if (scope) {
-        _msg += `%c${scope}`;
-        args.push(
-          renderBadge(levelColors[level], "#fff", `${r} 0 0 ${r}`),
-          renderBadge(scopeColors[0], scopeColors[1], `0 ${r} ${r} 0`)
-        );
-      } else {
-        args.push(renderBadge(levelColors[level], "#fff"));
-      }
-      _msg += "%c ";
-      args.push("");
-      if (typeof msg !== "object") {
-        _msg += msg;
-      } else {
-        _msg += "%o";
-        args.push(msg);
-      }
-      console.log(_msg, ...args);
-      e && console.error(e);
+  function onBrowserLog(date, msg, level, scope, e) {
+    let _msg = `%c${date} %c${level.toUpperCase()}`;
+    const args = ["color:" + timeColor];
+    if (scope) {
+      _msg += `%c${scope}`;
+      args.push(renderBadge(levelColors[level], "#fff", `${r} 0 0 ${r}`), renderBadge(scopeColors[0], scopeColors[1], `0 ${r} ${r} 0`));
+    } else args.push(renderBadge(levelColors[level], "#fff"));
+    _msg += "%c ";
+    args.push("");
+    if (typeof msg !== "object") _msg += msg;
+    else {
+      _msg += "%o";
+      args.push(msg);
     }
-    function onBrowserTimer(label) {
-      const start = Date.now();
-      return () => console.log(
-        `%c${timeFormat(/* @__PURE__ */ new Date())} %c${label}%c ${(Date.now() - start).toFixed(2)}ms`,
-        "color:" + timeColor,
-        renderBadge(scopeColors[0], scopeColors[1]),
-        ""
-      );
-    }
-    return [onBrowserLog, onBrowserTimer];
+    console.log(_msg, ...args);
+    e && console.error(e);
+  }
+  function onBrowserTimer(date, msg, label) {
+    console.log(`%c${date} %c${label}%c ${msg}`, "color:" + timeColor, renderBadge(scopeColors[0], scopeColors[1]), "");
+  }
+  function createBrowserReporter(timeFormat) {
+    return (date, msg, level, scope, e) => {
+      const d = timeFormat(date);
+      level === "timer" ? onBrowserTimer(d, msg, scope) : onBrowserLog(d, msg, level, scope, e);
+    };
   }
   function createBrowserLogger(options = {}) {
-    const { logMode = "info", timeFormat } = options;
-    return createLogger(logMode, ...createBrowserLoggerConfig(timeFormat));
+    const { logMode = "info", timeFormat = (date) => date.toLocaleString() } = options;
+    return createLogger(logMode, [createBrowserReporter(timeFormat)]);
   }
   function getSettings(key, defaultValue) {
     return _GM_getValue(key) ?? defaultValue;
@@ -557,7 +667,7 @@ Monospace 字体特性: ${getMonoFeature()}
     }
     loadStyles();
   }
-  const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif}b,strong{font-weight:bolder}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-weight:inherit;line-height:inherit;color:inherit}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
+  const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif}b,strong{font-weight:bolder}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-weight:inherit;line-height:inherit}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
   const fontfamily = '@font-face{font-family:Microsoft YaHei Light;src:local("sans-serif")}@font-face{font-family:Consolas;src:local("monospace")}@font-face{font-family:microsoft yahei;src:local("sans-serif")}@font-face{font-family:consolas;src:local("monospace")}';
   const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}@supports not selector(::-webkit-scrollbar){html{scrollbar-color:rgb(var(--scrollbar-color-rgb));scrollbar-width:thin}}";
   const current = window.location.hostname;
