@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.10
+// @version      1.2.11
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -594,66 +594,63 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(".code-navigation-cursor", "display:none");
     addCSS("#read-only-cursor-text-area", "caret-color:var(--fgColor-default, var(--color-fg-default));");
   }];
-  const __vite_glob_0_9 = ["greasyfork.org", () => {
-    addCSS("body", "color:#000");
-  }];
-  const __vite_glob_0_10 = ["www.jb51.net", () => {
+  const __vite_glob_0_9 = ["www.jb51.net", () => {
     addCodeFont("body div .syntaxhighlighter *");
   }];
-  const __vite_glob_0_11 = ["www.jianshu.com", () => {
+  const __vite_glob_0_10 = ["www.jianshu.com", () => {
     addSansFont("a.title");
   }];
-  const __vite_glob_0_12 = ["juejin.cn", () => {
+  const __vite_glob_0_11 = ["juejin.cn", () => {
     addCSS(".markdown-body pre>code.copyable.hljs[lang]:before", "right:90px");
     addCSS("copy-code-btn", "top:8px");
   }];
-  const __vite_glob_0_13 = ["developer.mozilla.org", () => {
+  const __vite_glob_0_12 = ["developer.mozilla.org", () => {
     addCSS(":root", [
       `--font-body:${getSettingsVariable("SANS")}!important;`,
       `--font-code:${getSettingsVariable("MONO")}!important;`
     ]);
   }];
-  const __vite_glob_0_14 = ["wx.mail.qq.com", () => {
+  const __vite_glob_0_13 = ["wx.mail.qq.com", () => {
     addSansFont("body");
   }];
-  const __vite_glob_0_15 = ["ray.so", () => {
+  const __vite_glob_0_14 = ["ray.so", () => {
     addCodeFont('textarea[class^="Editor_textarea"]');
   }];
-  const __vite_glob_0_16 = ["regex101.com", () => {
+  const __vite_glob_0_15 = ["regex101.com", () => {
     addRootCSS("--code-font", "monospace,sans-serif!important");
     addRootCSS("--app-font", "sans-serif!important");
   }];
-  const __vite_glob_0_17 = ["sourcegraph.com", () => {
+  const __vite_glob_0_16 = ["sourcegraph.com", () => {
     addCodeFont(".FileDiffHunks-module__body *");
   }];
-  const __vite_glob_0_18 = ["stackoverflow.com", () => {
+  const __vite_glob_0_17 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
   }];
-  const __vite_glob_0_19 = ["tieba.baidu.com", () => {
+  const __vite_glob_0_18 = ["tieba.baidu.com", () => {
     addSansFont(".core_title_theme_bright .core_title_txt");
   }];
-  const __vite_glob_0_20 = [["twitter.com", "x.com"], () => {
+  const __vite_glob_0_19 = [["twitter.com", "x.com"], () => {
     addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${getSettingsVariable("SANS")}!important;`);
   }];
-  const __vite_glob_0_21 = ["v2ex.com", () => {
+  const __vite_glob_0_20 = ["v2ex.com", () => {
     addSansFont("#search-container #search");
   }];
-  const __vite_glob_0_22 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_21 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_23 = ["mp.weixin.qq.com", () => {
+  const __vite_glob_0_22 = ["mp.weixin.qq.com", () => {
     const list = ["p"];
     for (let i = 1; i <= 6; i++) {
       list.push(`h${i}`);
     }
     addSansFont(`:is(${list.join(", ")})[style]`);
   }];
-  const __vite_glob_0_24 = ["www.yuque.com", () => {
+  const __vite_glob_0_23 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
-    const globs = /* @__PURE__ */ Object.assign({ "./sites/51cto.ts": __vite_glob_0_0, "./sites/affine.ts": __vite_glob_0_1, "./sites/baidu.ts": __vite_glob_0_2, "./sites/bilibili.ts": __vite_glob_0_3, "./sites/cnblog.ts": __vite_glob_0_4, "./sites/csdn.ts": __vite_glob_0_5, "./sites/discord.ts": __vite_glob_0_6, "./sites/gitee.ts": __vite_glob_0_7, "./sites/github.ts": __vite_glob_0_8, "./sites/greasyfork.ts": __vite_glob_0_9, "./sites/jb51.ts": __vite_glob_0_10, "./sites/jianshu.ts": __vite_glob_0_11, "./sites/juejin.ts": __vite_glob_0_12, "./sites/mdn.ts": __vite_glob_0_13, "./sites/qqmail.ts": __vite_glob_0_14, "./sites/raycast-website.ts": __vite_glob_0_15, "./sites/regex101.ts": __vite_glob_0_16, "./sites/sourcegraph.ts": __vite_glob_0_17, "./sites/stackoverflow.ts": __vite_glob_0_18, "./sites/tieba.ts": __vite_glob_0_19, "./sites/twitter.ts": __vite_glob_0_20, "./sites/v2ex.ts": __vite_glob_0_21, "./sites/w3cschools.ts": __vite_glob_0_22, "./sites/wechat.ts": __vite_glob_0_23, "./sites/yuque.ts": __vite_glob_0_24 });
+    const globs = /* @__PURE__ */ Object.assign({ "./sites/51cto.ts": __vite_glob_0_0, "./sites/affine.ts": __vite_glob_0_1, "./sites/baidu.ts": __vite_glob_0_2, "./sites/bilibili.ts": __vite_glob_0_3, "./sites/cnblog.ts": __vite_glob_0_4, "./sites/csdn.ts": __vite_glob_0_5, "./sites/discord.ts": __vite_glob_0_6, "./sites/gitee.ts": __vite_glob_0_7, "./sites/github.ts": __vite_glob_0_8, "./sites/jb51.ts": __vite_glob_0_9, "./sites/jianshu.ts": __vite_glob_0_10, "./sites/juejin.ts": __vite_glob_0_11, "./sites/mdn.ts": __vite_glob_0_12, "./sites/qqmail.ts": __vite_glob_0_13, "./sites/raycast-website.ts": __vite_glob_0_14, "./sites/regex101.ts": __vite_glob_0_15, "./sites/sourcegraph.ts": __vite_glob_0_16, "./sites/stackoverflow.ts": __vite_glob_0_17, "./sites/tieba.ts": __vite_glob_0_18, "./sites/twitter.ts": __vite_glob_0_19, "./sites/v2ex.ts": __vite_glob_0_20, "./sites/w3cschools.ts": __vite_glob_0_21, "./sites/wechat.ts": __vite_glob_0_22, "./sites/yuque.ts": __vite_glob_0_23 });
     for (let [pattern, callback] of Object.values(globs).concat(customs)) {
       if (typeof pattern === "string") {
         pattern = [pattern];
