@@ -1,4 +1,5 @@
 import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
+
 import { SITEMAP } from './_head'
 import { blocklist, moduleName } from './constants'
 import { loadSites } from './load'

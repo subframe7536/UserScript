@@ -1,4 +1,5 @@
 import { readdir, writeFile } from 'node:fs/promises'
+
 import { consola } from 'consola'
 
 const name = await consola.prompt('site name', { type: 'text' })

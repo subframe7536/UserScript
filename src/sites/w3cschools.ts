@@ -1,4 +1,5 @@
 import type { Site } from '../load'
+
 import { addSansFont } from '../utils'
 
 export default ['www.w3cschool.com.cn', () => {

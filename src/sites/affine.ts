@@ -1,4 +1,5 @@
 import type { Site } from '../load'
+
 import { addCSS } from '../utils'
 
 export default ['app.affine.pro', () => {
