@@ -11,6 +11,7 @@ export default [current => current.endsWith('github.com'), () => {
 
   addCSS('#read-only-cursor-text-area', codeStyles)
   addCSS('.CodeMirror-lines', codeStyles)
+  addCSS('.react-code-text', codeStyles)
   addCSS('.markdown-body', sansStylesImportant)
   addCSS('body', sansStylesImportant)
   addCSS('.code-navigation-cursor', 'display:none')
