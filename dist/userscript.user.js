@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.12
+// @version      1.2.13
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -587,11 +587,20 @@ Monospace 字体特性: ${getMonoFeature()}
     addRootCSS("--fontStack-monospace", getSettingsVariable("MONO"));
     addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS"));
     addRootCSS("--fontStack-system", getSettingsVariable("SANS"));
-    addCSS("#read-only-cursor-text-area", codeStyles);
-    addCSS(".CodeMirror-lines", codeStyles);
-    addCSS(".react-code-text", codeStyles);
-    addCSS(".markdown-body", sansStylesImportant);
-    addCSS("body", sansStylesImportant);
+    addCSS([
+      "#read-only-cursor-text-area",
+      ".CodeMirror-lines",
+      ".react-code-text",
+      "pre",
+      "code",
+      "textarea",
+      "[id^=find-in-file-item]",
+      ".react-code-size-details-in-header *"
+    ], codeStyles);
+    addCSS([
+      ".markdown-body",
+      "body"
+    ], sansStylesImportant);
     addCSS(".code-navigation-cursor", "display:none");
     addCSS("#read-only-cursor-text-area", "caret-color:var(--fgColor-default, var(--color-fg-default));");
   }];
