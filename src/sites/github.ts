@@ -9,11 +9,20 @@ export default [current => current.endsWith('github.com'), () => {
   addRootCSS('--fontStack-sansSerif', getSettingsVariable('SANS'))
   addRootCSS('--fontStack-system', getSettingsVariable('SANS'))
 
-  addCSS('#read-only-cursor-text-area', codeStyles)
-  addCSS('.CodeMirror-lines', codeStyles)
-  addCSS('.react-code-text', codeStyles)
-  addCSS('.markdown-body', sansStylesImportant)
-  addCSS('body', sansStylesImportant)
+  addCSS([
+    '#read-only-cursor-text-area',
+    '.CodeMirror-lines',
+    '.react-code-text',
+    'pre',
+    'code',
+    'textarea',
+    '[id^=find-in-file-item]',
+    '.react-code-size-details-in-header *',
+  ], codeStyles)
+  addCSS([
+    '.markdown-body',
+    'body',
+  ], sansStylesImportant)
   addCSS('.code-navigation-cursor', 'display:none')
   addCSS('#read-only-cursor-text-area', 'caret-color:var(--fgColor-default, var(--color-fg-default));')
 }] satisfies Site
