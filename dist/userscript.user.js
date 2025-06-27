@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.13
+// @version      1.2.14
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -595,7 +595,8 @@ Monospace 字体特性: ${getMonoFeature()}
       "code",
       "textarea",
       "[id^=find-in-file-item]",
-      ".react-code-size-details-in-header *"
+      ".react-code-size-details-in-header *",
+      ".blob-code-inner *"
     ], codeStyles);
     addCSS([
       ".markdown-body",
