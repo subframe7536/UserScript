@@ -18,6 +18,7 @@ export default [current => current.endsWith('github.com'), () => {
     'textarea',
     '[id^=find-in-file-item]',
     '.react-code-size-details-in-header *',
+    '.blob-code-inner *',
   ], codeStyles)
   addCSS([
     '.markdown-body',
