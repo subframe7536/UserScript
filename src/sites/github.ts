@@ -19,6 +19,7 @@ export default [current => current.endsWith('github.com'), () => {
     '[id^=find-in-file-item]',
     '.react-code-size-details-in-header *',
     '.blob-code-inner *',
+    '.commit-ref *',
   ], codeStyles)
   addCSS([
     '.markdown-body',
