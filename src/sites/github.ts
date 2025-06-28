@@ -23,7 +23,7 @@ export default [current => current.endsWith('github.com'), () => {
     '.blob-code-inner *',
     '.commit-ref *',
     '.diff-view :is(.file-info, table) *',
-    '.action-text a',
+    '[class*=BranchName]',
   ], codeStyles)
   addCSS([
     '.markdown-body',
