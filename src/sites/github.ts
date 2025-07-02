@@ -24,6 +24,9 @@ export default [current => current.endsWith('github.com'), () => {
     '.commit-ref *',
     '.diff-view :is(.file-info, table tr:not(.inline-comments), .blob-code-inner)',
     '[class*=BranchName]',
+    'samp',
+    'kbd',
+    'tt',
   ], codeStyles)
   addCSS([
     '.markdown-body',
