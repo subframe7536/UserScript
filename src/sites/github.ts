@@ -30,6 +30,7 @@ export default [current => current.endsWith('github.com'), () => {
   ], codeStyles)
   addCSS([
     '.markdown-body',
+    '.markdown-title',
     'body',
   ], sansStylesImportant)
   addCSS('.code-navigation-cursor', 'display:none')
