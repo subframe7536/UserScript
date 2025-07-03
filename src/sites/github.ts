@@ -22,6 +22,7 @@ export default [current => current.endsWith('github.com'), () => {
     '.react-code-size-details-in-header *',
     '.blob-code-inner *',
     '.commit-ref *',
+    '.branch-name *',
     '.diff-view :is(.file-info, table tr:not(.inline-comments), .blob-code-inner)',
     '[class*=BranchName]',
     'samp',
