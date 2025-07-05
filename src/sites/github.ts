@@ -18,6 +18,7 @@ export default [current => current.endsWith('github.com'), () => {
     '.text-mono',
     '.text-mono *',
     'textarea',
+    'table.highlight *',
     '[id^=find-in-file-item]',
     '.react-code-size-details-in-header *',
     '.blob-code-inner *',
