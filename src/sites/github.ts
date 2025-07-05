@@ -29,6 +29,8 @@ export default [current => current.endsWith('github.com'), () => {
     'samp',
     'kbd',
     'tt',
+    '#gist-share-url-sized-down',
+    '.file-info *',
   ], codeStyles)
   addCSS([
     '.markdown-body',
