@@ -31,6 +31,7 @@ export default [current => current.endsWith('github.com'), () => {
     'tt',
     '#gist-share-url-sized-down',
     '.file-info *',
+    '[class*=monospace]',
   ], codeStyles)
   addCSS([
     '.markdown-body',
