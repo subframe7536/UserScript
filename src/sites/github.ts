@@ -32,6 +32,7 @@ export default [current => current.endsWith('github.com'), () => {
     '#gist-share-url-sized-down',
     '.file-info *',
     '[class*=monospace]',
+    '.cm-editor *',
   ], codeStyles)
   addCSS([
     '.markdown-body',
