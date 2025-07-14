@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.27
+// @version      1.2.28
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -584,9 +584,10 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
   const __vite_glob_0_8 = [(current2) => current2.endsWith("github.com"), () => {
-    addRootCSS("--fontStack-monospace", getSettingsVariable("MONO"));
-    addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS"));
-    addRootCSS("--fontStack-system", getSettingsVariable("SANS"));
+    const imp = " !important";
+    addRootCSS("--fontStack-monospace", getSettingsVariable("MONO") + imp);
+    addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS") + imp);
+    addRootCSS("--fontStack-system", getSettingsVariable("SANS") + imp);
     addCSS([
       "#read-only-cursor-text-area",
       ".CodeMirror-lines",
@@ -601,6 +602,7 @@ Monospace 字体特性: ${getMonoFeature()}
       ".react-code-size-details-in-header *",
       ".blob-code-inner *",
       ".commit-ref *",
+      ".branch-name",
       ".branch-name *",
       ".diff-view :is(.file-info, table tr:not(.inline-comments), .blob-code-inner)",
       "[class*=BranchName]",
