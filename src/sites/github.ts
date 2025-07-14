@@ -5,9 +5,10 @@ import { addCSS, addRootCSS, codeStyles, sansStylesImportant } from '../utils'
 
 export default [current => current.endsWith('github.com'), () => {
   // manully setup font
-  addRootCSS('--fontStack-monospace', getSettingsVariable('MONO'))
-  addRootCSS('--fontStack-sansSerif', getSettingsVariable('SANS'))
-  addRootCSS('--fontStack-system', getSettingsVariable('SANS'))
+  const imp = ' !important'
+  addRootCSS('--fontStack-monospace', getSettingsVariable('MONO') + imp)
+  addRootCSS('--fontStack-sansSerif', getSettingsVariable('SANS') + imp)
+  addRootCSS('--fontStack-system', getSettingsVariable('SANS') + imp)
 
   addCSS([
     '#read-only-cursor-text-area',
@@ -23,6 +24,7 @@ export default [current => current.endsWith('github.com'), () => {
     '.react-code-size-details-in-header *',
     '.blob-code-inner *',
     '.commit-ref *',
+    '.branch-name',
     '.branch-name *',
     '.diff-view :is(.file-info, table tr:not(.inline-comments), .blob-code-inner)',
     '[class*=BranchName]',
