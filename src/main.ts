@@ -95,7 +95,7 @@ if (isDark) {
 window.onload = () => {
   setTimeout(() => {
     const list = document.documentElement.classList
-    if (list.contains('theme-dark') || list.contains('dark')) {
+    if (isDark && (list.contains('theme-dark') || list.contains('dark'))) {
       addRootCSS('color-scheme', 'dark')
     }
     loadStyles()
