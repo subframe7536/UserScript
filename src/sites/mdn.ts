@@ -5,7 +5,7 @@ import { addCSS } from '../utils'
 
 export default ['developer.mozilla.org', () => {
   addCSS(':root', [
-    `--font-body:${getSettingsVariable('SANS')}!important;`,
-    `--font-code:${getSettingsVariable('MONO')}!important;`,
+    `--font-family-text:${getSettingsVariable('SANS')}!important;`,
+    `--font-family-code:${getSettingsVariable('MONO')}!important;`,
   ])
 }] satisfies Site
