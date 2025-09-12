@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.31
+// @version      1.2.32
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -583,7 +583,7 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS("#git-header-nav #navbar-search-form", "border-radius:4px");
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
-  const __vite_glob_0_8 = [(current2) => current2.endsWith("github.com"), () => {
+  const __vite_glob_0_8 = [(current2) => current2.endsWith("github.com") || current2.endsWith("bgithub.xyz"), () => {
     const imp = " !important";
     addRootCSS("--fontStack-monospace", getSettingsVariable("MONO") + imp);
     addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS") + imp);
