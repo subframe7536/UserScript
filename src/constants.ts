@@ -103,6 +103,8 @@ export const monospaceSelectors = [
   // bing
   '.rd_inl_code',
   '.rd_code *',
+  // mui
+  'textarea.npm__react-simple-code-editor__textarea',
 ]
 
 // ban default css, no affect to site rules
