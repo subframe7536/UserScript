@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.33
+// @version      1.2.34
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -44,6 +44,7 @@
    */
   const SITEMAP = [];
   const moduleName = "script-mono";
+  const isMac = /Macintosh/.test(navigator.userAgent);
   const monacoCharWidthCheckElement = 'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *';
   const sansExcludeSelector = [
     monacoCharWidthCheckElement,
@@ -379,7 +380,7 @@
     window.location.reload();
   }
   function getSans() {
-    return getSettings("SANS", "sans-serif");
+    return getSettings("SANS", isMac ? "system-ui" : "sans-serif");
   }
   function getMono() {
     return getSettings("MONO", "monospace");
@@ -543,8 +544,8 @@ Monospace 字体特性: ${getMonoFeature()}
     );
   }];
   const __vite_glob_0_1 = ["app.affine.pro", () => {
-    addCSS("body", "--affine-font-code-family:monospace,sans-serif!important");
-    addCSS("body", "--affine-font-family:sans-serif!important");
+    addCSS("body", `--affine-font-code-family:${getMono()},${getSans()}!important`);
+    addCSS("body", `--affine-font-family:${getSans()}!important`);
   }];
   const __vite_glob_0_2 = ["www.baidu.com", () => {
     addSansFont("input");
@@ -647,14 +648,14 @@ Monospace 字体特性: ${getMonoFeature()}
     addCodeFont('textarea[class^="Editor_textarea"]');
   }];
   const __vite_glob_0_15 = ["regex101.com", () => {
-    addRootCSS("--code-font", "monospace,sans-serif!important");
-    addRootCSS("--app-font", "sans-serif!important");
+    addRootCSS("--code-font", `${getMono()},${getSans()}!important`);
+    addRootCSS("--app-font", `${getSans()}!important`);
   }];
   const __vite_glob_0_16 = ["sourcegraph.com", () => {
     addCodeFont(".FileDiffHunks-module__body *");
   }];
   const __vite_glob_0_17 = ["stackoverflow.com", () => {
-    addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}sans-serif!important`));
+    addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}${getSans()}!important`));
   }];
   const __vite_glob_0_18 = ["tieba.baidu.com", () => {
     addSansFont(".core_title_theme_bright .core_title_txt");
@@ -694,7 +695,7 @@ Monospace 字体特性: ${getMonoFeature()}
     }
     loadStyles();
   }
-  const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility;-webkit-text-stroke:.05px!important}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif}b,strong{font-weight:bolder}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-weight:inherit;line-height:inherit}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
+  const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif}b,strong{font-weight:bolder}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-weight:inherit;line-height:inherit}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
   const fontfamily = '@font-face{font-family:Microsoft YaHei Light;src:local("sans-serif")}@font-face{font-family:Consolas;src:local("monospace")}@font-face{font-family:microsoft yahei;src:local("sans-serif")}@font-face{font-family:consolas;src:local("monospace")}';
   const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}@supports not selector(::-webkit-scrollbar){html{scrollbar-color:rgb(var(--scrollbar-color-rgb));scrollbar-width:thin}}";
   const current = window.location.hostname;
