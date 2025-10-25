@@ -1,5 +1,6 @@
 import { GM_deleteValue, GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
+import { isMac } from './constants'
 /* eslint-disable no-alert */
 import { logger, setCssVariable } from './utils'
 
@@ -51,7 +52,7 @@ export function delSettings() {
 }
 
 export function getSans() {
-  return getSettings('SANS', 'sans-serif')
+  return getSettings('SANS', isMac ? 'system-ui' : 'sans-serif')
 }
 
 export function getMono() {

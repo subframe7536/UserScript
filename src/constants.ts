@@ -1,5 +1,7 @@
 export const moduleName = 'script-mono'
 
+export const isMac = /Macintosh/.test(navigator.userAgent)
+
 // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
 const monacoCharWidthCheckElement = 'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *'
 
