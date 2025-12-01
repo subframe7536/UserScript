@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.34
+// @version      1.2.35
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -644,44 +644,47 @@ Monospace 字体特性: ${getMonoFeature()}
   const __vite_glob_0_13 = ["wx.mail.qq.com", () => {
     addSansFont("body");
   }];
-  const __vite_glob_0_14 = ["ray.so", () => {
+  const __vite_glob_0_14 = ["chat.qwen.ai", () => {
+    addCodeFont(".qwen-markdown-codespan", ".qwen-markdown-code .qwen-markdown-code-body .monaco-editor *");
+  }];
+  const __vite_glob_0_15 = ["ray.so", () => {
     addCodeFont('textarea[class^="Editor_textarea"]');
   }];
-  const __vite_glob_0_15 = ["regex101.com", () => {
+  const __vite_glob_0_16 = ["regex101.com", () => {
     addRootCSS("--code-font", `${getMono()},${getSans()}!important`);
     addRootCSS("--app-font", `${getSans()}!important`);
   }];
-  const __vite_glob_0_16 = ["sourcegraph.com", () => {
+  const __vite_glob_0_17 = ["sourcegraph.com", () => {
     addCodeFont(".FileDiffHunks-module__body *");
   }];
-  const __vite_glob_0_17 = ["stackoverflow.com", () => {
+  const __vite_glob_0_18 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}${getSans()}!important`));
   }];
-  const __vite_glob_0_18 = ["tieba.baidu.com", () => {
+  const __vite_glob_0_19 = ["tieba.baidu.com", () => {
     addSansFont(".core_title_theme_bright .core_title_txt");
   }];
-  const __vite_glob_0_19 = [["twitter.com", "x.com"], () => {
+  const __vite_glob_0_20 = [["twitter.com", "x.com"], () => {
     addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${getSettingsVariable("SANS")}!important;`);
   }];
-  const __vite_glob_0_20 = ["v2ex.com", () => {
+  const __vite_glob_0_21 = ["v2ex.com", () => {
     addSansFont("#search-container #search");
   }];
-  const __vite_glob_0_21 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_22 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_22 = ["mp.weixin.qq.com", () => {
+  const __vite_glob_0_23 = ["mp.weixin.qq.com", () => {
     const list = ["p"];
     for (let i = 1; i <= 6; i++) {
       list.push(`h${i}`);
     }
     addSansFont(`:is(${list.join(", ")})[style]`);
   }];
-  const __vite_glob_0_23 = ["www.yuque.com", () => {
+  const __vite_glob_0_24 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
-    const globs = /* @__PURE__ */ Object.assign({ "./sites/51cto.ts": __vite_glob_0_0, "./sites/affine.ts": __vite_glob_0_1, "./sites/baidu.ts": __vite_glob_0_2, "./sites/bilibili.ts": __vite_glob_0_3, "./sites/cnblog.ts": __vite_glob_0_4, "./sites/csdn.ts": __vite_glob_0_5, "./sites/discord.ts": __vite_glob_0_6, "./sites/gitee.ts": __vite_glob_0_7, "./sites/github.ts": __vite_glob_0_8, "./sites/jb51.ts": __vite_glob_0_9, "./sites/jianshu.ts": __vite_glob_0_10, "./sites/juejin.ts": __vite_glob_0_11, "./sites/mdn.ts": __vite_glob_0_12, "./sites/qqmail.ts": __vite_glob_0_13, "./sites/raycast-website.ts": __vite_glob_0_14, "./sites/regex101.ts": __vite_glob_0_15, "./sites/sourcegraph.ts": __vite_glob_0_16, "./sites/stackoverflow.ts": __vite_glob_0_17, "./sites/tieba.ts": __vite_glob_0_18, "./sites/twitter.ts": __vite_glob_0_19, "./sites/v2ex.ts": __vite_glob_0_20, "./sites/w3cschools.ts": __vite_glob_0_21, "./sites/wechat.ts": __vite_glob_0_22, "./sites/yuque.ts": __vite_glob_0_23 });
+    const globs = /* @__PURE__ */ Object.assign({ "./sites/51cto.ts": __vite_glob_0_0, "./sites/affine.ts": __vite_glob_0_1, "./sites/baidu.ts": __vite_glob_0_2, "./sites/bilibili.ts": __vite_glob_0_3, "./sites/cnblog.ts": __vite_glob_0_4, "./sites/csdn.ts": __vite_glob_0_5, "./sites/discord.ts": __vite_glob_0_6, "./sites/gitee.ts": __vite_glob_0_7, "./sites/github.ts": __vite_glob_0_8, "./sites/jb51.ts": __vite_glob_0_9, "./sites/jianshu.ts": __vite_glob_0_10, "./sites/juejin.ts": __vite_glob_0_11, "./sites/mdn.ts": __vite_glob_0_12, "./sites/qqmail.ts": __vite_glob_0_13, "./sites/qwen.ts": __vite_glob_0_14, "./sites/raycast-website.ts": __vite_glob_0_15, "./sites/regex101.ts": __vite_glob_0_16, "./sites/sourcegraph.ts": __vite_glob_0_17, "./sites/stackoverflow.ts": __vite_glob_0_18, "./sites/tieba.ts": __vite_glob_0_19, "./sites/twitter.ts": __vite_glob_0_20, "./sites/v2ex.ts": __vite_glob_0_21, "./sites/w3cschools.ts": __vite_glob_0_22, "./sites/wechat.ts": __vite_glob_0_23, "./sites/yuque.ts": __vite_glob_0_24 });
     for (let [pattern, callback] of Object.values(globs).concat(customs)) {
       if (typeof pattern === "string") {
         pattern = [pattern];

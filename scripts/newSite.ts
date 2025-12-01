@@ -9,11 +9,13 @@ const existingSites = (await readdir('./src/sites')).map(name => name.slice(0, -
 if (existingSites.includes(name)) {
   consola.error(`site "${name}" already exists`)
   process.exit(1)
+} else if (!name) {
+  process.exit(1)
 }
 
-await writeFile(`./src/sites/${name}.ts`, `import type { Site } from '.'
+await writeFile(`./src/sites/${name}.ts`, `import type { Site } from '../load'
 
-export default ['', () => {
+export default ['${name}', () => {
 
 }] satisfies Site
 `)
