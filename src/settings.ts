@@ -1,6 +1,12 @@
 import { GM_deleteValue, GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 
-import { isMac } from './constants'
+import {
+  isMac,
+  monoFeatureVariableName,
+  monoVariableName,
+  sansVariableName,
+  scrollbarWidthVariableName,
+} from './constants'
 /* eslint-disable no-alert */
 import { logger, setCssVariable } from './utils'
 
@@ -17,11 +23,6 @@ type Settings = {
 export function getSettings<K extends keyof Settings>(key: K, defaultValue: any): Settings[K] {
   return GM_getValue(key) ?? defaultValue
 }
-export const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches && getSettings('DARK', false)
-export const sansVariableName = 'userscript-sans'
-export const monoVariableName = 'userscript-mono'
-export const monoFeatureVariableName = 'userscript-mono-feature'
-export const scrollbarWidthVariableName = 'scrollbar-width'
 
 export function getSettingsVariable<K extends keyof Settings>(key: K): string {
   switch (key) {

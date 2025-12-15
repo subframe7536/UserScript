@@ -130,3 +130,8 @@ export const blocklist = [
   'github.com',
   '192.168',
 ]
+
+export const sansVariableName = 'userscript-sans'
+export const monoVariableName = 'userscript-mono'
+export const monoFeatureVariableName = 'userscript-mono-feature'
+export const scrollbarWidthVariableName = 'scrollbar-width'

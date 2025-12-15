@@ -6,21 +6,20 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "new-site": "esno scripts/newSite.ts",
-    "release": "bumpp -x \"pnpm build\" --all",
+    "new-site": "bun scripts/newSite.ts",
+    "release": "bumpp -x \"bun run build\" --all",
     "format": "eslint . --fix"
   },
   "devDependencies": {
-    "@subframe7536/eslint-config": "^1.2.4",
+    "@subframe7536/eslint-config": "^1.3.2",
     "@subframe7536/type-utils": "^0.2.0",
     "@types/node": "^22.15.21",
-    "bumpp": "^10.1.1",
+    "bumpp": "^10.3.2",
     "consola": "^3.4.2",
-    "consoloo": "^2.0.0",
-    "eslint": "^9.27.0",
-    "esno": "^4.8.0",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.5",
-    "vite-plugin-monkey": "^5.0.8"
+    "consoloo": "^2.1.0",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7",
+    "vite-plugin-monkey": "^7.1.6"
   }
 }
