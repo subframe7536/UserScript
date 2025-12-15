@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.37
+// @version      1.2.38
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -411,7 +411,7 @@ Monospace 字体特性: ${getMonoFeature()}
     _GM_registerMenuCommand("重置设置并刷新", delSettings);
   }
   const __vite_glob_0_0 = ["2libra.com", () => {
-    addCSS("body", `--md-editor-font-family:${getMono()},${getSans()}!important`);
+    addCSS(".w-md-editor", `--md-editor-font-family:${getMono()},${getSans()}!important`);
   }];
   const __vite_glob_0_1 = ["www.51cto.com", () => {
     addCodeFont(
