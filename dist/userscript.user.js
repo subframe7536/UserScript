@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.35
+// @version      1.2.36
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -346,6 +346,83 @@
     const { logMode = "info", timeFormat = (date) => date.toLocaleString() } = options;
     return createLogger(logMode, [createBrowserReporter(timeFormat)]);
   }
+  let styleArray = [];
+  const logger = createBrowserLogger({ logMode: getDebug() ? "debug" : "disable" }).withScope("scripts-mono");
+  function loadStyles(style) {
+    if (styleArray.length || style) {
+      const targetStyle = style || [...new Set(styleArray)].join("");
+      document.documentElement.insertAdjacentHTML(
+        "beforeend",
+        `<style class="${moduleName}">${targetStyle}</style>`
+      );
+      logger.debug(targetStyle);
+      if (!style) {
+        styleArray = [];
+      }
+    }
+  }
+  function setCssVariable(name, value) {
+    var _a;
+    const variableName = name.startsWith("--") ? name : `--${name}`;
+    (_a = document.body) == null ? void 0 : _a.style.setProperty(variableName, value);
+  }
+  function addRootCSS(property, value) {
+    styleArray.push(`:root{${property}:${value}}`);
+  }
+  function addBodyAndRootVariable(property, value) {
+    styleArray.push(`:is(:root,body){--${property}:${value}}`);
+  }
+  function addCSS(selectors, styles) {
+    selectors = Array.isArray(selectors) ? selectors : [selectors];
+    styles = Array.isArray(styles) ? styles : [styles];
+    styleArray.push(`${selectors.join(",")}{${styles.join(";")}}`);
+  }
+  let codeFontSelectors = [];
+  function __fontVariable() {
+    addBodyAndRootVariable(monoVariableName, `${getMono()},${getSans()}`);
+    addBodyAndRootVariable(monoFeatureVariableName, getMonoFeature());
+    addBodyAndRootVariable(sansVariableName, getSans());
+  }
+  const codeStyles = [
+    `font-family:${getSettingsVariable("MONO")}!important`,
+    `font-feature-settings:${getSettingsVariable("MONO_SETTING")}!important`,
+    "letter-spacing:0px!important"
+  ];
+  function __codeFont() {
+    addCSS(monospaceSelectors.concat(codeFontSelectors), codeStyles);
+    codeFontSelectors = [];
+  }
+  function addCodeFont(...selectors) {
+    codeFontSelectors.push(...selectors);
+  }
+  let sansFontSelectors = [];
+  const sansStyles = [
+    `font-family:${getSettingsVariable("SANS")}`,
+    "letter-spacing:0px!important"
+  ];
+  const sansStylesImportant = [
+    `font-family:${getSettingsVariable("SANS")}!important`,
+    "letter-spacing:0px!important"
+  ];
+  function __sansFont() {
+    addCSS(`body :not(${sansExcludeSelector.join(",")})`, sansStyles);
+    addCSS(sansFontSelectors, sansStylesImportant);
+    sansFontSelectors = [];
+  }
+  function addSansFont(...selectors) {
+    sansFontSelectors.push(...selectors);
+  }
+  function isInBlockList(current2, blocklist2) {
+    return current2 && blocklist2.some((pattern) => current2.includes(pattern));
+  }
+  function getDebug() {
+    return _GM_getValue("debug", false);
+  }
+  function toggleDebug() {
+    const debug = !getDebug();
+    logger.setLogMode(debug ? "debug" : "disable");
+    _GM_setValue("debug", debug);
+  }
   function getSettings(key, defaultValue) {
     return _GM_getValue(key) ?? defaultValue;
   }
@@ -457,84 +534,10 @@ Monospace 字体特性: ${getMonoFeature()}
     }
     _GM_registerMenuCommand("重置设置并刷新", delSettings);
   }
-  let styleArray = [];
-  const logger = createBrowserLogger({ logMode: getDebug() ? "debug" : "disable" }).withScope("scripts-mono");
-  function loadStyles(style) {
-    if (styleArray.length || style) {
-      const targetStyle = style || [...new Set(styleArray)].join("");
-      document.documentElement.insertAdjacentHTML(
-        "beforeend",
-        `<style class="${moduleName}">${targetStyle}</style>`
-      );
-      logger.debug(targetStyle);
-      if (!style) {
-        styleArray = [];
-      }
-    }
-  }
-  function setCssVariable(name, value) {
-    var _a;
-    const variableName = name.startsWith("--") ? name : `--${name}`;
-    (_a = document.body) == null ? void 0 : _a.style.setProperty(variableName, value);
-  }
-  function addRootCSS(property, value) {
-    styleArray.push(`:root{${property}:${value}}`);
-  }
-  function addBodyAndRootVariable(property, value) {
-    styleArray.push(`:is(:root,body){--${property}:${value}}`);
-  }
-  function addCSS(selectors, styles) {
-    selectors = Array.isArray(selectors) ? selectors : [selectors];
-    styles = Array.isArray(styles) ? styles : [styles];
-    styleArray.push(`${selectors.join(",")}{${styles.join(";")}}`);
-  }
-  let codeFontSelectors = [];
-  function __fontVariable() {
-    addBodyAndRootVariable(monoVariableName, `${getMono()},${getSans()}`);
-    addBodyAndRootVariable(monoFeatureVariableName, getMonoFeature());
-    addBodyAndRootVariable(sansVariableName, getSans());
-  }
-  const codeStyles = [
-    `font-family:${getSettingsVariable("MONO")}!important`,
-    `font-feature-settings:${getSettingsVariable("MONO_SETTING")}!important`,
-    "letter-spacing:0px!important"
-  ];
-  function __codeFont() {
-    addCSS(monospaceSelectors.concat(codeFontSelectors), codeStyles);
-    codeFontSelectors = [];
-  }
-  function addCodeFont(...selectors) {
-    codeFontSelectors.push(...selectors);
-  }
-  let sansFontSelectors = [];
-  const sansStyles = [
-    `font-family:${getSettingsVariable("SANS")}`,
-    "letter-spacing:0px!important"
-  ];
-  const sansStylesImportant = [
-    `font-family:${getSettingsVariable("SANS")}!important`,
-    "letter-spacing:0px!important"
-  ];
-  function __sansFont() {
-    addCSS(`body :not(${sansExcludeSelector.join(",")})`, sansStyles);
-    addCSS(sansFontSelectors, sansStylesImportant);
-    sansFontSelectors = [];
-  }
-  function addSansFont(...selectors) {
-    sansFontSelectors.push(...selectors);
-  }
-  function isInBlockList(current2, blocklist2) {
-    return current2 && blocklist2.some((pattern) => current2.includes(pattern));
-  }
-  function getDebug() {
-    return _GM_getValue("debug", false);
-  }
-  function toggleDebug() {
-    const debug = !getDebug();
-    logger.setLogMode(debug ? "debug" : "disable");
-    _GM_setValue("debug", debug);
-  }
-  const __vite_glob_0_0 = ["www.51cto.com", () => {
+  const __vite_glob_0_0 = ["2libra.com", () => {
+    addCSS("body", `--md-editor-font-family:${getMono()},${getSans()}!important`);
+  }];
+  const __vite_glob_0_1 = ["www.51cto.com", () => {
     addCodeFont(
       "#result [class*=language-]",
       ".prettyprint *",
@@ -543,14 +546,14 @@ Monospace 字体特性: ${getMonoFeature()}
       "pre[class*=language-] *"
     );
   }];
-  const __vite_glob_0_1 = ["app.affine.pro", () => {
+  const __vite_glob_0_2 = ["app.affine.pro", () => {
     addCSS("body", `--affine-font-code-family:${getMono()},${getSans()}!important`);
     addCSS("body", `--affine-font-family:${getSans()}!important`);
   }];
-  const __vite_glob_0_2 = ["www.baidu.com", () => {
+  const __vite_glob_0_3 = ["www.baidu.com", () => {
     addSansFont("input");
   }];
-  const __vite_glob_0_3 = [(current2) => current2.endsWith("bilibili.com"), () => {
+  const __vite_glob_0_4 = [(current2) => current2.endsWith("bilibili.com"), () => {
     addSansFont(
       ".bili-comment.browser-pc *",
       ".video-page-card-small .card-box .info .title",
@@ -562,10 +565,10 @@ Monospace 字体特性: ${getMonoFeature()}
     );
     addCSS(".video-share", "display:none!important");
   }];
-  const __vite_glob_0_4 = ["www.cnblogs.com", () => {
+  const __vite_glob_0_5 = ["www.cnblogs.com", () => {
     addCodeFont(".cnblogs-markdown code", " .cnblogs_code", " .cnblogs_code *");
   }];
-  const __vite_glob_0_5 = ["blog.csdn.net", () => {
+  const __vite_glob_0_6 = ["blog.csdn.net", () => {
     addSansFont(
       "#csdn-toolbar *",
       " #csdn_tool_otherPlace *",
@@ -573,20 +576,20 @@ Monospace 字体特性: ${getMonoFeature()}
     );
     addCodeFont("body .markdown_views pre code.prism .token.comment");
   }];
-  const __vite_glob_0_6 = ["discord.com", () => {
+  const __vite_glob_0_7 = ["discord.com", () => {
     addCodeFont("[class^=codeBlockSyntax]", "[class^=codeLine] *", "[class*=inlineCode]>span");
     addRootCSS("--font-code", `${getSettingsVariable("MONO")}!important`);
     addRootCSS("--font-display", `${getSettingsVariable("SANS")}!important`);
     addRootCSS("--font-primary", `${getSettingsVariable("SANS")}!important`);
     addRootCSS("--font-headline", `${getSettingsVariable("SANS")}!important`);
   }];
-  const __vite_glob_0_7 = ["gitee.com", () => {
+  const __vite_glob_0_8 = ["gitee.com", () => {
     addCodeFont(".commit-id", "textarea");
     addSansFont("button", ".ui:not(.iconfont)");
     addCSS("#git-header-nav #navbar-search-form", "border-radius:4px");
     addCSS(".markdown-body .markdown-code-block-copy-btn", "font-family:iconfont!important");
   }];
-  const __vite_glob_0_8 = [(current2) => current2.endsWith("github.com") || current2.endsWith("bgithub.xyz"), () => {
+  const __vite_glob_0_9 = [(current2) => current2.endsWith("github.com") || current2.endsWith("bgithub.xyz"), () => {
     const imp = " !important";
     addRootCSS("--fontStack-monospace", getSettingsVariable("MONO") + imp);
     addRootCSS("--fontStack-sansSerif", getSettingsVariable("SANS") + imp);
@@ -625,66 +628,66 @@ Monospace 字体特性: ${getMonoFeature()}
     addCSS(".code-navigation-cursor", "display:none");
     addCSS("#read-only-cursor-text-area", "caret-color:var(--fgColor-default, var(--color-fg-default));");
   }];
-  const __vite_glob_0_9 = ["www.jb51.net", () => {
+  const __vite_glob_0_10 = ["www.jb51.net", () => {
     addCodeFont("body div .syntaxhighlighter *");
   }];
-  const __vite_glob_0_10 = ["www.jianshu.com", () => {
+  const __vite_glob_0_11 = ["www.jianshu.com", () => {
     addSansFont("a.title");
   }];
-  const __vite_glob_0_11 = ["juejin.cn", () => {
+  const __vite_glob_0_12 = ["juejin.cn", () => {
     addCSS(".markdown-body pre>code.copyable.hljs[lang]:before", "right:90px");
     addCSS("copy-code-btn", "top:8px");
   }];
-  const __vite_glob_0_12 = ["developer.mozilla.org", () => {
+  const __vite_glob_0_13 = ["developer.mozilla.org", () => {
     addCSS(":root", [
       `--font-family-text:${getSettingsVariable("SANS")}!important;`,
       `--font-family-code:${getSettingsVariable("MONO")}!important;`
     ]);
   }];
-  const __vite_glob_0_13 = ["wx.mail.qq.com", () => {
+  const __vite_glob_0_14 = ["wx.mail.qq.com", () => {
     addSansFont("body");
   }];
-  const __vite_glob_0_14 = ["chat.qwen.ai", () => {
+  const __vite_glob_0_15 = ["chat.qwen.ai", () => {
     addCodeFont(".qwen-markdown-codespan", ".qwen-markdown-code .qwen-markdown-code-body .monaco-editor *");
   }];
-  const __vite_glob_0_15 = ["ray.so", () => {
+  const __vite_glob_0_16 = ["ray.so", () => {
     addCodeFont('textarea[class^="Editor_textarea"]');
   }];
-  const __vite_glob_0_16 = ["regex101.com", () => {
+  const __vite_glob_0_17 = ["regex101.com", () => {
     addRootCSS("--code-font", `${getMono()},${getSans()}!important`);
     addRootCSS("--app-font", `${getSans()}!important`);
   }];
-  const __vite_glob_0_17 = ["sourcegraph.com", () => {
+  const __vite_glob_0_18 = ["sourcegraph.com", () => {
     addCodeFont(".FileDiffHunks-module__body *");
   }];
-  const __vite_glob_0_18 = ["stackoverflow.com", () => {
+  const __vite_glob_0_19 = ["stackoverflow.com", () => {
     addCSS("body", ["--ff-sans:", "--ff-mono:monospace,"].map((s) => `${s}${getSans()}!important`));
   }];
-  const __vite_glob_0_19 = ["tieba.baidu.com", () => {
+  const __vite_glob_0_20 = ["tieba.baidu.com", () => {
     addSansFont(".core_title_theme_bright .core_title_txt");
   }];
-  const __vite_glob_0_20 = [["twitter.com", "x.com"], () => {
+  const __vite_glob_0_21 = [["twitter.com", "x.com"], () => {
     addCSS("div:is([lang=ja],[lang=en],[lang=ko])", `font-family:${getSettingsVariable("SANS")}!important;`);
   }];
-  const __vite_glob_0_21 = ["v2ex.com", () => {
+  const __vite_glob_0_22 = ["v2ex.com", () => {
     addSansFont("#search-container #search");
   }];
-  const __vite_glob_0_22 = ["www.w3cschool.com.cn", () => {
+  const __vite_glob_0_23 = ["www.w3cschool.com.cn", () => {
     addSansFont("strong,h1,h2,h3,h4,h5,h6");
   }];
-  const __vite_glob_0_23 = ["mp.weixin.qq.com", () => {
+  const __vite_glob_0_24 = ["mp.weixin.qq.com", () => {
     const list = ["p"];
     for (let i = 1; i <= 6; i++) {
       list.push(`h${i}`);
     }
     addSansFont(`:is(${list.join(", ")})[style]`);
   }];
-  const __vite_glob_0_24 = ["www.yuque.com", () => {
+  const __vite_glob_0_25 = ["www.yuque.com", () => {
     addCodeFont(".ne-code");
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
-    const globs = /* @__PURE__ */ Object.assign({ "./sites/51cto.ts": __vite_glob_0_0, "./sites/affine.ts": __vite_glob_0_1, "./sites/baidu.ts": __vite_glob_0_2, "./sites/bilibili.ts": __vite_glob_0_3, "./sites/cnblog.ts": __vite_glob_0_4, "./sites/csdn.ts": __vite_glob_0_5, "./sites/discord.ts": __vite_glob_0_6, "./sites/gitee.ts": __vite_glob_0_7, "./sites/github.ts": __vite_glob_0_8, "./sites/jb51.ts": __vite_glob_0_9, "./sites/jianshu.ts": __vite_glob_0_10, "./sites/juejin.ts": __vite_glob_0_11, "./sites/mdn.ts": __vite_glob_0_12, "./sites/qqmail.ts": __vite_glob_0_13, "./sites/qwen.ts": __vite_glob_0_14, "./sites/raycast-website.ts": __vite_glob_0_15, "./sites/regex101.ts": __vite_glob_0_16, "./sites/sourcegraph.ts": __vite_glob_0_17, "./sites/stackoverflow.ts": __vite_glob_0_18, "./sites/tieba.ts": __vite_glob_0_19, "./sites/twitter.ts": __vite_glob_0_20, "./sites/v2ex.ts": __vite_glob_0_21, "./sites/w3cschools.ts": __vite_glob_0_22, "./sites/wechat.ts": __vite_glob_0_23, "./sites/yuque.ts": __vite_glob_0_24 });
+    const globs = /* @__PURE__ */ Object.assign({ "./sites/2libra.ts": __vite_glob_0_0, "./sites/51cto.ts": __vite_glob_0_1, "./sites/affine.ts": __vite_glob_0_2, "./sites/baidu.ts": __vite_glob_0_3, "./sites/bilibili.ts": __vite_glob_0_4, "./sites/cnblog.ts": __vite_glob_0_5, "./sites/csdn.ts": __vite_glob_0_6, "./sites/discord.ts": __vite_glob_0_7, "./sites/gitee.ts": __vite_glob_0_8, "./sites/github.ts": __vite_glob_0_9, "./sites/jb51.ts": __vite_glob_0_10, "./sites/jianshu.ts": __vite_glob_0_11, "./sites/juejin.ts": __vite_glob_0_12, "./sites/mdn.ts": __vite_glob_0_13, "./sites/qqmail.ts": __vite_glob_0_14, "./sites/qwen.ts": __vite_glob_0_15, "./sites/raycast-website.ts": __vite_glob_0_16, "./sites/regex101.ts": __vite_glob_0_17, "./sites/sourcegraph.ts": __vite_glob_0_18, "./sites/stackoverflow.ts": __vite_glob_0_19, "./sites/tieba.ts": __vite_glob_0_20, "./sites/twitter.ts": __vite_glob_0_21, "./sites/v2ex.ts": __vite_glob_0_22, "./sites/w3cschools.ts": __vite_glob_0_23, "./sites/wechat.ts": __vite_glob_0_24, "./sites/yuque.ts": __vite_glob_0_25 });
     for (let [pattern, callback] of Object.values(globs).concat(customs)) {
       if (typeof pattern === "string") {
         pattern = [pattern];
