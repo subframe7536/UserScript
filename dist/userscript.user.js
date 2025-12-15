@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.2.36
+// @version      1.2.37
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -18,13 +18,10 @@
 (function () {
   'use strict';
 
-  var __defProp = Object.defineProperty;
-  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  var _GM_deleteValue = /* @__PURE__ */ (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
-  var _GM_getValue = /* @__PURE__ */ (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
-  var _GM_registerMenuCommand = /* @__PURE__ */ (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
-  var _GM_setValue = /* @__PURE__ */ (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
+  var _GM_deleteValue = (() => typeof GM_deleteValue != "undefined" ? GM_deleteValue : void 0)();
+  var _GM_getValue = (() => typeof GM_getValue != "undefined" ? GM_getValue : void 0)();
+  var _GM_registerMenuCommand = (() => typeof GM_registerMenuCommand != "undefined" ? GM_registerMenuCommand : void 0)();
+  var _GM_setValue = (() => typeof GM_setValue != "undefined" ? GM_setValue : void 0)();
   /**
    * @preserve
    * 字体修改的规则
@@ -50,10 +47,8 @@
     monacoCharWidthCheckElement,
     "v-text",
     "[data-virgo-text=true]",
-    // math
-    "mjx-container *",
-    // icons
-    "[class*=material-symbols]",
+"mjx-container *",
+"[class*=material-symbols]",
     "[class*=codicon]",
     "[class*=icon]",
     "[class*=icon] *",
@@ -65,8 +60,7 @@
     '[class*="fa"]',
     "[class*=heroButton]",
     ".pi, .pi *",
-    // elements
-    "em, i, svg *, kbd, kdb *, samp, samp *, var, var *, tt",
+"em, i, svg *, kbd, kdb *, samp, samp *, var, var *, tt",
     [".font-mono", "[font-mono]", ".tw-font-mono", "pre", ".text-mono", "[text-mono]"].map((s) => `${s} *`),
     "#formattedJson *",
     ":is(.katex, .katex *)",
@@ -136,18 +130,14 @@
     "[class^=code-block]",
     ".job-console :is(span, a)",
     ".codeflask *",
-    // gitbook
-    ".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *",
-    // tsdoc
-    ".tsd-signature>*",
+".gitbook-root div[data-rnwi-handle=codeblock-toolbar] *",
+".tsd-signature>*",
     "[class*=tsd-signature]",
     ".tsd-kind-parameter",
     ".urvanov-syntax-highlighter-font-monaco *",
-    // bing
-    ".rd_inl_code",
+".rd_inl_code",
     ".rd_code *",
-    // mui
-    "textarea.npm__react-simple-code-editor__textarea"
+"textarea.npm__react-simple-code-editor__textarea"
   ];
   const blocklist = [
     "font",
@@ -169,130 +159,25 @@
     "github.com",
     "192.168"
   ];
-  var NON_SERIALIZABLE_VALUE = "non-serializable value";
-  var NormalizedError = class _NormalizedError extends Error {
-    /**
-     * normalize unknown error in try-catch
-     *
-     * if input is not Error, `data` will be set
-     */
-    constructor(e) {
-      var __super = (...args) => {
-        super(...args);
-        __publicField(this, "data");
-        __publicField(this, "stack", "");
-        return this;
-      };
-      if (isError(e)) {
-        __super(e.message);
-        e.stack && (this.stack = e.stack);
-      } else {
-        let msg;
-        try {
-          msg = typeof e === "string" ? e : JSON.stringify(e);
-        } catch {
-          msg = NON_SERIALIZABLE_VALUE;
-        }
-        __super(msg);
-        this.data = e;
-      }
-      !this.stack && ("captureStackTrace" in Error && typeof Error.captureStackTrace === "function" ? Error.captureStackTrace(this, _NormalizedError) : this.stack = new RangeError("ERROR").stack);
-    }
-  };
-  function toNormalizedError(e) {
-    return new NormalizedError(e);
-  }
-  var ERROR_TAGS = /* @__PURE__ */ new Set([
-    // Cross-realm errors
-    "[object Error]",
-    // Browsers
-    "[object DOMException]",
-    // Sentry
-    "[object Exception]"
-  ]);
-  function isError(value) {
-    try {
-      return value instanceof Error && ERROR_TAGS.has(Object.prototype.toString.call(value));
-    } catch {
-      return false;
-    }
-  }
-  function isPromise(value) {
-    return value instanceof Promise || typeof value === "object" && typeof (value == null ? void 0 : value.then) === "function";
-  }
-  function isNormalizedError(e) {
-    return e !== null && e instanceof NormalizedError;
-  }
-  function to(fn) {
-    try {
-      const result = typeof fn === "function" ? fn() : fn;
-      return isPromise(result) ? result.catch(toNormalizedError) : result;
-    } catch (e) {
-      return toNormalizedError(e);
-    }
-  }
-  function tryCatch(fn) {
-    try {
-      const result = typeof fn === "function" ? fn() : fn;
-      return isPromise(result) ? result.then((v) => [v, void 0]).catch((e) => [void 0, toNormalizedError(e)]) : [result, void 0];
-    } catch (e) {
-      return [void 0, toNormalizedError(e)];
-    }
-  }
-  const import_normal_error = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    NON_SERIALIZABLE_VALUE,
-    NormalizedError,
-    isError,
-    isNormalizedError,
-    isPromise,
-    to,
-    toNormalizedError,
-    tryCatch
-  }, Symbol.toStringTag, { value: "Module" }));
-  var __defProp2 = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __export = (target, all) => {
-    for (var name in all) __defProp2(target, name, {
-      get: all[name],
-      enumerable: true
-    });
-  };
-  var __copyProps = (to2, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++) {
-      key = keys[i];
-      if (!__hasOwnProp.call(to2, key) && key !== except) __defProp2(to2, key, {
-        get: ((k) => from[k]).bind(null, key),
-        enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable
-      });
-    }
-    return to2;
-  };
-  var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget);
+  const sansVariableName = "userscript-sans";
+  const monoVariableName = "userscript-mono";
+  const monoFeatureVariableName = "userscript-mono-feature";
+  const scrollbarWidthVariableName = "scrollbar-width";
   const _LEVEL = [
     "debug",
     "info",
     "warn",
     "error"
   ];
-  var core_exports = {};
-  __export(core_exports, {
-    _LEVEL: () => _LEVEL,
-    createBaseLogger: () => createBaseLogger,
-    createLogger: () => createLogger
-  });
-  __reExport(core_exports, import_normal_error);
   function createLogger(mode, report) {
-    let rep = (...args) => report.forEach((r2) => r2(...args)), filter = (level, s) => (msg, e, scope) => (mode === _LEVEL[3] && level > 2 || mode === _LEVEL[1] && level > 0 || mode === _LEVEL[0]) && rep(/* @__PURE__ */ new Date(), msg, _LEVEL[level], ...level > 2 ? [s || scope, e] : [s || e]), withScope = (scope) => ({
+    let rep = (...args) => report.forEach((r$1) => r$1(...args)), filter = (level, s) => (msg, e, scope) => (mode === _LEVEL[3] && level > 2 || mode === _LEVEL[1] && level > 0 || mode === _LEVEL[0]) && rep( new Date(), msg, _LEVEL[level], ...level > 2 ? [s || scope, e] : [s || e]), withScope = (scope) => ({
       debug: filter(0, scope),
       info: filter(1, scope),
       warn: filter(2, scope),
       error: filter(3, scope),
       timer: (label) => {
         let start = Date.now(), d;
-        return () => (d = /* @__PURE__ */ new Date(), rep(d, `${(d.getTime() - start).toFixed(2)}ms`, "timer", label));
+        return () => (d = new Date(), rep(d, (d.getTime() - start).toFixed(2) + "ms", "timer", label));
       },
       setLogMode: (m) => mode = m
     });
@@ -300,9 +185,6 @@
       ...withScope(),
       withScope
     };
-  }
-  function createBaseLogger(logMode = "info") {
-    return createLogger(logMode, [(date, level, msg, scope, e) => console.log(`[${date.toISOString()}]`, `${level.toUpperCase()}${scope ? `(${scope})` : ""}:`, msg, e || "")]);
   }
   const scopeColors = ["#3f6894", "#feecd8"];
   const timeColor = "#918abc";
@@ -362,9 +244,8 @@
     }
   }
   function setCssVariable(name, value) {
-    var _a;
     const variableName = name.startsWith("--") ? name : `--${name}`;
-    (_a = document.body) == null ? void 0 : _a.style.setProperty(variableName, value);
+    document.body?.style.setProperty(variableName, value);
   }
   function addRootCSS(property, value) {
     styleArray.push(`:root{${property}:${value}}`);
@@ -426,11 +307,6 @@
   function getSettings(key, defaultValue) {
     return _GM_getValue(key) ?? defaultValue;
   }
-  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches && getSettings("DARK", false);
-  const sansVariableName = "userscript-sans";
-  const monoVariableName = "userscript-mono";
-  const monoFeatureVariableName = "userscript-mono-feature";
-  const scrollbarWidthVariableName = "scrollbar-width";
   function getSettingsVariable(key) {
     switch (key) {
       case "MONO":
@@ -687,7 +563,7 @@ Monospace 字体特性: ${getMonoFeature()}
     addSansFont("[class^=catalogTreeItem-module_title]");
   }];
   function loadSites(current2, customs) {
-    const globs = /* @__PURE__ */ Object.assign({ "./sites/2libra.ts": __vite_glob_0_0, "./sites/51cto.ts": __vite_glob_0_1, "./sites/affine.ts": __vite_glob_0_2, "./sites/baidu.ts": __vite_glob_0_3, "./sites/bilibili.ts": __vite_glob_0_4, "./sites/cnblog.ts": __vite_glob_0_5, "./sites/csdn.ts": __vite_glob_0_6, "./sites/discord.ts": __vite_glob_0_7, "./sites/gitee.ts": __vite_glob_0_8, "./sites/github.ts": __vite_glob_0_9, "./sites/jb51.ts": __vite_glob_0_10, "./sites/jianshu.ts": __vite_glob_0_11, "./sites/juejin.ts": __vite_glob_0_12, "./sites/mdn.ts": __vite_glob_0_13, "./sites/qqmail.ts": __vite_glob_0_14, "./sites/qwen.ts": __vite_glob_0_15, "./sites/raycast-website.ts": __vite_glob_0_16, "./sites/regex101.ts": __vite_glob_0_17, "./sites/sourcegraph.ts": __vite_glob_0_18, "./sites/stackoverflow.ts": __vite_glob_0_19, "./sites/tieba.ts": __vite_glob_0_20, "./sites/twitter.ts": __vite_glob_0_21, "./sites/v2ex.ts": __vite_glob_0_22, "./sites/w3cschools.ts": __vite_glob_0_23, "./sites/wechat.ts": __vite_glob_0_24, "./sites/yuque.ts": __vite_glob_0_25 });
+    const globs = Object.assign({ "./sites/2libra.ts": __vite_glob_0_0, "./sites/51cto.ts": __vite_glob_0_1, "./sites/affine.ts": __vite_glob_0_2, "./sites/baidu.ts": __vite_glob_0_3, "./sites/bilibili.ts": __vite_glob_0_4, "./sites/cnblog.ts": __vite_glob_0_5, "./sites/csdn.ts": __vite_glob_0_6, "./sites/discord.ts": __vite_glob_0_7, "./sites/gitee.ts": __vite_glob_0_8, "./sites/github.ts": __vite_glob_0_9, "./sites/jb51.ts": __vite_glob_0_10, "./sites/jianshu.ts": __vite_glob_0_11, "./sites/juejin.ts": __vite_glob_0_12, "./sites/mdn.ts": __vite_glob_0_13, "./sites/qqmail.ts": __vite_glob_0_14, "./sites/qwen.ts": __vite_glob_0_15, "./sites/raycast-website.ts": __vite_glob_0_16, "./sites/regex101.ts": __vite_glob_0_17, "./sites/sourcegraph.ts": __vite_glob_0_18, "./sites/stackoverflow.ts": __vite_glob_0_19, "./sites/tieba.ts": __vite_glob_0_20, "./sites/twitter.ts": __vite_glob_0_21, "./sites/v2ex.ts": __vite_glob_0_22, "./sites/w3cschools.ts": __vite_glob_0_23, "./sites/wechat.ts": __vite_glob_0_24, "./sites/yuque.ts": __vite_glob_0_25 });
     for (let [pattern, callback] of Object.values(globs).concat(customs)) {
       if (typeof pattern === "string") {
         pattern = [pattern];
@@ -703,7 +579,7 @@ Monospace 字体特性: ${getMonoFeature()}
   }
   const base = "*{-webkit-font-smoothing:antialiased!important;font-optical-sizing:auto;font-kerning:auto;text-rendering:optimizeLegibility}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,sans-serif}b,strong{font-weight:bolder}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-weight:inherit;line-height:inherit}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}::selection{background-color:#aad0ffd9;color:#111}::highlight{background-color:#f6be49}";
   const fontfamily = '@font-face{font-family:Microsoft YaHei Light;src:local("sans-serif")}@font-face{font-family:Consolas;src:local("monospace")}@font-face{font-family:microsoft yahei;src:local("sans-serif")}@font-face{font-family:consolas;src:local("monospace")}';
-  const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media (prefers-color-scheme: light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media (prefers-color-scheme: dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}@supports not selector(::-webkit-scrollbar){html{scrollbar-color:rgb(var(--scrollbar-color-rgb));scrollbar-width:thin}}";
+  const scrollbar = ":root{--scrollbar-width: max(.85vw, 10px)}@media(prefers-color-scheme:light){:root{--scrollbar-color-rgb: 0, 0, 0}}@media(prefers-color-scheme:dark){:root{--scrollbar-color-rgb: 255, 255, 255}}*::-webkit-scrollbar{width:var(--scrollbar-width)!important;height:var(--scrollbar-width)!important}*::-webkit-scrollbar-track{background-color:transparent!important;border-radius:var(--scrollbar-width)!important;box-shadow:none!important}*::-webkit-scrollbar-thumb{box-shadow:inset 0 0 0 var(--scrollbar-width)!important;border-radius:var(--scrollbar-width)!important;border:calc(var(--scrollbar-width) * 2 / 9) solid transparent!important;background-clip:content-box;background-color:transparent!important;color:rgba(var(--scrollbar-color-rgb),30%)!important}*::-webkit-scrollbar-thumb:hover{color:rgba(var(--scrollbar-color-rgb),45%)!important}*::-webkit-scrollbar-thumb:active{color:rgba(var(--scrollbar-color-rgb),60%)!important}@supports not selector(::-webkit-scrollbar){html{scrollbar-color:rgb(var(--scrollbar-color-rgb));scrollbar-width:thin}}";
   const current = window.location.hostname;
   logger.info(current);
   function init() {
@@ -764,6 +640,7 @@ Monospace 字体特性: ${getMonoFeature()}
     toggleDebug();
     location.reload();
   });
+  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches && getSettings("DARK", false);
   if (isDark) {
     addRootCSS("color-scheme", "dark");
   }
