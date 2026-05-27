@@ -4,5 +4,5 @@ import { addCodeFont } from '../utils'
 
 export default ['sourcegraph.com', () => {
   addCodeFont('.FileDiffHunks-module__body *')
-  addCodeFont('.FileDiffHunks.hunkline *')
+  addCodeFont('[data-testid="FileDiffHunks.hunkline"] *')
 }] satisfies Site
