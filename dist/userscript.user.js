@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         全局滚动条美化 & 字体修改
 // @namespace    http://tampermonkey.net/
-// @version      1.3.0
+// @version      1.3.1
 // @author       subframe7536
 // @description  全局字体美化，滚动条美化，支持自定义字体、自定义规则
 // @license      MIT
@@ -126,8 +126,7 @@
 		".urvanov-syntax-highlighter-font-monaco *",
 		".rd_inl_code",
 		".rd_code *",
-		"textarea.npm__react-simple-code-editor__textarea",
-		".diff-line"
+		"textarea.npm__react-simple-code-editor__textarea"
 	];
 	var blocklist = [
 		"font",
@@ -390,6 +389,9 @@ Monospace 字体特性: ${getMonoFeature()}
 		addSansFont(".bili-comment.browser-pc *", ".video-page-card-small .card-box .info .title", ".h .h-sign", ".video-info-container .video-title", ".bili-video-card *", ".room-info-ctnr *", ".player-and-aside-area *");
 		addCSS(".video-share", "display:none!important");
 	}];
+	var chatgpt_default = ["chatgpt.com", () => {
+		addCodeFont(".diff-line *");
+	}];
 	var cnblog_default = ["www.cnblogs.com", () => {
 		addCodeFont(".cnblogs-markdown code", " .cnblogs_code", " .cnblogs_code *");
 	}];
@@ -510,6 +512,7 @@ Monospace 字体特性: ${getMonoFeature()}
 			"./sites/affine.ts": affine_default,
 			"./sites/baidu.ts": baidu_default,
 			"./sites/bilibili.ts": bilibili_default,
+			"./sites/chatgpt.ts": chatgpt_default,
 			"./sites/cnblog.ts": cnblog_default,
 			"./sites/csdn.ts": csdn_default,
 			"./sites/discord.ts": discord_default,
