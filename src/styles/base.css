@@ -89,6 +89,12 @@ button,
   color: #111;
 }
 
-::highlight {
-  background-color: #f6be49;
+:root::search-text {
+  background: #f2ce82;
+  color: #000;
+}
+
+:root::search-text:current {
+  background: #f3ac42;
+  color: #000;
 }
