@@ -1,4 +1,5 @@
 import { GM_getValue, GM_setValue } from '$'
+import type { Logger } from 'consoloo'
 import { createBrowserLogger } from 'consoloo/browser'
 
 import {
@@ -13,7 +14,9 @@ import { getMono, getMonoFeature, getSans, getSettingsVariable } from './setting
 
 let styleArray: string[] = []
 
-export const logger = createBrowserLogger({ logMode: getDebug() ? 'debug' : 'disable' }).withScope('scripts-mono')
+export const logger = createBrowserLogger({
+  logMode: getDebug() ? 'debug' : 'disable',
+}).withScope('scripts-mono') as Logger<'scripts-mono'>
 
 /**
  * load all cached css if absent, else load param
@@ -109,7 +112,7 @@ export function addSansFont(...selectors: string[]) {
  * ban default css, no affect to site rules
  */
 export function isInBlockList(current: string, blocklist: string[]) {
-  return current && blocklist.some(pattern => current.includes(pattern))
+  return current && blocklist.some((pattern) => current.includes(pattern))
 }
 
 export function getDebug() {

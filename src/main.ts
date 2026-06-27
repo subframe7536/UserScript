@@ -3,7 +3,13 @@ import { GM_getValue, GM_registerMenuCommand, GM_setValue } from '$'
 import { SITEMAP } from './_head'
 import { blocklist, moduleName, scrollbarWidthVariableName } from './constants'
 import { loadSites } from './load'
-import { getScrollbar, getScrollbarWidth, getSettings, loadSettingMenus, setSettings } from './settings'
+import {
+  getScrollbar,
+  getScrollbarWidth,
+  getSettings,
+  loadSettingMenus,
+  setSettings,
+} from './settings'
 import base from './styles/base.css?inline'
 import fontfamily from './styles/font.css?inline'
 import scrollbar from './styles/scrollbar.css?inline'
@@ -88,7 +94,8 @@ GM_registerMenuCommand(`${getDebug() ? '关闭' : '开启'} Debug 模式并刷�
   location.reload()
 })
 
-const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches && getSettings('DARK', false)
+const isDark =
+  window.matchMedia('(prefers-color-scheme: dark)').matches && getSettings('DARK', false)
 if (isDark) {
   addRootCSS('color-scheme', 'dark')
 }

@@ -3,7 +3,8 @@ export const moduleName = 'script-mono'
 export const isMac = /Macintosh/.test(navigator.userAgent)
 
 // https://github.com/microsoft/vscode/blob/main/src/vs/editor/browser/config/charWidthReader.ts#L53
-const monacoCharWidthCheckElement = 'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *'
+const monacoCharWidthCheckElement =
+  'body>div[style="position: absolute; top: -50000px; width: 50000px;"] *'
 
 export const sansExcludeSelector = [
   monacoCharWidthCheckElement,
@@ -26,7 +27,9 @@ export const sansExcludeSelector = [
   '.pi, .pi *',
   // elements
   'em, i, svg *, kbd, kdb *, samp, samp *, var, var *, tt',
-  ['.font-mono', '[font-mono]', '.tw-font-mono', 'pre', '.text-mono', '[text-mono]'].map(s => `${s} *`),
+  ['.font-mono', '[font-mono]', '.tw-font-mono', 'pre', '.text-mono', '[text-mono]'].map(
+    (s) => `${s} *`,
+  ),
   '#formattedJson *',
   ':is(.katex, .katex *)',
   ':is(mjx-container, .MathJax) *',
@@ -82,8 +85,8 @@ export const monospaceSelectors = [
   '.CodeMirror-code *',
   '.code-editor :is(.token-line, .token)',
   '.crayon-table *',
-  '[class*="monospace"]:not([class*="\:font-monospace"])',
-  '[class*="monospace"]:not([class*="\:font-monospace"]) *',
+  '[class*="monospace"]:not([class*=":font-monospace"])',
+  '[class*="monospace"]:not([class*=":font-monospace"]) *',
   '[class*="terminal"] *',
   '.whitespace-pre',
   '[class^=console]>*',

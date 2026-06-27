@@ -14,7 +14,7 @@
 
 ## 自定义配置
 
-```ts
+````ts
 /**
  * 字体修改的规则
  * type: [pattern, callback]
@@ -32,4 +32,4 @@
  * ```
  */
 const SITEMAP = []
-```
+````

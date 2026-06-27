@@ -2,7 +2,10 @@ import type { Arrayable } from '@subframe7536/type-utils'
 
 import { loadStyles, logger } from './utils'
 
-export type Site = [pattern: Arrayable<string> | ((current: string) => boolean), callback: (current: string) => void]
+export type Site = [
+  pattern: Arrayable<string> | ((current: string) => boolean),
+  callback: (current: string) => void,
+]
 
 export function loadSites(current: string, customs: Site[]) {
   const globs = import.meta.glob<Site>('./sites/**.ts', { eager: true, import: 'default' })
