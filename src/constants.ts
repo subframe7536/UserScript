@@ -110,6 +110,8 @@ export const monospaceSelectors = [
   '.rd_code *',
   // mui
   'textarea.npm__react-simple-code-editor__textarea',
+  // codex
+  '.diff-line',
 ]
 
 // ban default css, no affect to site rules
