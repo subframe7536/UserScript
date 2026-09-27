@@ -34,6 +34,7 @@ export const sansExcludeSelector = [
   ':is(.katex, .katex *)',
   ':is(mjx-container, .MathJax) *',
   '.video-js *',
+  '[data-cds="Icon"]',
 ]
 export const monospaceSelectors = [
   monacoCharWidthCheckElement,
